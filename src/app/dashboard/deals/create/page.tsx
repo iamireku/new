@@ -23,9 +23,13 @@ import {
   CheckCircle,
   PlusCircle,
   X,
+  Mail,
+  Phone,
+  FileText,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Separator } from '@/components/ui/separator';
 
 const totalSteps = 4;
 
@@ -42,6 +46,10 @@ export default function CreateDealPage() {
     { id: 2, text: 'Service completed on time' },
   ]);
   const [newCriterion, setNewCriterion] = useState('');
+
+  const [partyEmail, setPartyEmail] = useState('');
+  const [partyPhone, setPartyPhone] = useState('');
+  const [dealAmount, setDealAmount] = useState('');
 
 
   const router = useRouter();
@@ -83,7 +91,7 @@ export default function CreateDealPage() {
       case 3:
         return <Banknote className="h-6 w-6" />;
       case 4:
-        return <CheckCircle className="h-16 w-16 text-green-500" />;
+        return <FileText className="h-6 w-6" />;
       default:
         return null;
     }
@@ -101,13 +109,13 @@ export default function CreateDealPage() {
                 {step === 1 && 'Deal Details'}
                 {step === 2 && 'The Other Person'}
                 {step === 3 && 'Amount and Terms'}
-                {step === 4 && 'Deal Ready!'}
+                {step === 4 && 'Review Your Deal'}
               </CardTitle>
               <CardDescription>
                 {step === 1 && "What's this deal about?"}
                 {step === 2 && 'Who are you making this deal with?'}
                 {step === 3 && 'How much is the deal for?'}
-                {step === 4 && 'Review and create the deal.'}
+                {step === 4 && 'Check the details below before creating the deal.'}
               </CardDescription>
             </div>
           </div>
@@ -162,6 +170,8 @@ export default function CreateDealPage() {
                   id="party-email"
                   type="email"
                   placeholder="friend@example.com"
+                  value={partyEmail}
+                  onChange={(e) => setPartyEmail(e.target.value)}
                 />
               </div>
                <div className="my-4 flex items-center">
@@ -175,6 +185,8 @@ export default function CreateDealPage() {
                   id="party-phone"
                   type="tel"
                   placeholder="+233 12 345 6789"
+                  value={partyPhone}
+                  onChange={(e) => setPartyPhone(e.target.value)}
                 />
               </div>
                <p className="text-xs text-muted-foreground pt-2">We will send an invitation to them to join the deal.</p>
@@ -184,7 +196,13 @@ export default function CreateDealPage() {
             <form className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="deal-amount">Deal Amount (GHS)</Label>
-                <Input id="deal-amount" type="number" placeholder="5000" />
+                <Input 
+                  id="deal-amount" 
+                  type="number" 
+                  placeholder="5000" 
+                  value={dealAmount}
+                  onChange={(e) => setDealAmount(e.target.value)}
+                />
               </div>
                <p className="text-xs text-muted-foreground pt-2">
                 This amount will be held safely by us once the deal is accepted and funded. Ensure you have sufficient funds in your wallet.
@@ -192,11 +210,33 @@ export default function CreateDealPage() {
             </form>
           )}
           {step === 4 && (
-            <div className="flex flex-col items-center justify-center text-center space-y-4">
-              <h2 className="text-2xl font-bold">You are all set!</h2>
-              <p className="text-muted-foreground max-w-md">
-                A deal invitation will be sent. The money will be held safely by us once funded.
-              </p>
+            <div className="space-y-6">
+                <div className="space-y-4 rounded-lg border p-4">
+                    <h3 className="font-semibold text-lg">{dealTitle || 'Untitled Deal'}</h3>
+                    <div className="grid gap-2 text-sm">
+                        <div className="flex items-center gap-2">
+                            <Banknote className="h-4 w-4 text-muted-foreground" />
+                            <span className="font-mono text-base">GHS {parseFloat(dealAmount || '0').toLocaleString()}</span>
+                        </div>
+                         {(partyEmail || partyPhone) && <Separator />}
+                        {partyEmail && <div className="flex items-center gap-2">
+                            <Mail className="h-4 w-4 text-muted-foreground" />
+                            <span>{partyEmail}</span>
+                        </div>}
+                        {partyPhone && <div className="flex items-center gap-2">
+                            <Phone className="h-4 w-4 text-muted-foreground" />
+                            <span>{partyPhone}</span>
+                        </div>}
+                    </div>
+                </div>
+
+                <div className="space-y-2">
+                    <Label className="font-medium">Acceptance Criteria</Label>
+                    <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
+                        {acceptanceCriteria.map(c => <li key={c.id}>{c.text}</li>)}
+                        {acceptanceCriteria.length === 0 && <li>No criteria defined.</li>}
+                    </ul>
+                </div>
             </div>
           )}
         </CardContent>
