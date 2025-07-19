@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Card,
   CardContent,
@@ -41,6 +44,12 @@ const getStatusText = (status: string) => {
 }
 
 export default function TransactionsPage() {
+  const router = useRouter();
+
+  const handleRowClick = (dealId: string) => {
+    router.push(`/dashboard/transactions/${dealId}`);
+  }
+  
   return (
     <div className="space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -73,7 +82,15 @@ export default function TransactionsPage() {
             </TableHeader>
             <TableBody>
               {transactions.map((tx) => (
-                <TableRow key={tx.id} className={cn({'bg-yellow-50 dark:bg-yellow-900/20': tx.status === 'funding', 'bg-red-50 dark:bg-red-900/20': tx.status === 'dispute'})}>
+                <TableRow 
+                    key={tx.id} 
+                    onClick={() => handleRowClick(tx.id)}
+                    className={cn(
+                        'cursor-pointer',
+                        {'bg-yellow-50 dark:bg-yellow-900/20': tx.status === 'funding'}, 
+                        {'bg-red-50 dark:bg-red-900/20': tx.status === 'dispute'}
+                    )}
+                >
                   <TableCell className="font-mono text-xs">{tx.id}</TableCell>
                   <TableCell className="font-medium">{tx.title}</TableCell>
                   <TableCell className="text-muted-foreground">{tx.party}</TableCell>
@@ -92,7 +109,7 @@ export default function TransactionsPage() {
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right font-mono">GHS {tx.amount.toLocaleString()}</TableCell>
-                  <TableCell>
+                  <TableCell onClick={(e) => e.stopPropagation()}>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -101,9 +118,11 @@ export default function TransactionsPage() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>
-                            <ExternalLink className="mr-2 h-4 w-4" />
-                            View Deal
+                        <DropdownMenuItem asChild>
+                            <Link href={`/dashboard/transactions/${tx.id}`}>
+                                <ExternalLink className="mr-2 h-4 w-4" />
+                                View Deal
+                            </Link>
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
