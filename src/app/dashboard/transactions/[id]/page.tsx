@@ -122,6 +122,8 @@ export default function DealDetailsPage({ params }: { params: { id: string } }) 
   const [reminderFigure, setReminderFigure] = useState(1);
   const [reminderPeriod, setReminderPeriod] = useState<Period>('days');
 
+  const isDealInactive = deal.status === 'completed' || deal.status === 'cancelled';
+
   const isReminderInPast = useMemo(() => {
     if (!deal.deadline || !remindersEnabled || reminderFigure <= 0) return false;
     
@@ -268,17 +270,18 @@ export default function DealDetailsPage({ params }: { params: { id: string } }) 
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
-                    <Label htmlFor="reminders-enabled" className="font-medium">
+                    <Label htmlFor="reminders-enabled" className={cn("font-medium", {"text-muted-foreground": isDealInactive})}>
                         Enable Reminders
                     </Label>
                     <Switch 
                       id="reminders-enabled" 
                       checked={remindersEnabled}
                       onCheckedChange={handleRemindersToggle}
+                      disabled={isDealInactive}
                     />
                 </div>
                 <div className="space-y-2">
-                   <Label>Frequency</Label>
+                   <Label className={cn({"text-muted-foreground": isDealInactive})}>Frequency</Label>
                     <div className="flex items-center gap-2">
                         <Input
                             type="number"
@@ -287,7 +290,7 @@ export default function DealDetailsPage({ params }: { params: { id: string } }) 
                             onChange={(e) => setReminderFigure(parseInt(e.target.value, 10) || 1)}
                             onBlur={handleFrequencyChange}
                             min="1"
-                            disabled={!remindersEnabled}
+                            disabled={!remindersEnabled || isDealInactive}
                         />
                         <Select
                             value={reminderPeriod}
@@ -295,7 +298,7 @@ export default function DealDetailsPage({ params }: { params: { id: string } }) 
                                 setReminderPeriod(value);
                                 handleFrequencyChange();
                             }}
-                            disabled={!remindersEnabled}
+                            disabled={!remindersEnabled || isDealInactive}
                         >
                             <SelectTrigger>
                                 <SelectValue />
@@ -308,11 +311,16 @@ export default function DealDetailsPage({ params }: { params: { id: string } }) 
                         </Select>
                     </div>
                 </div>
-                {isReminderInPast && (
+                {isReminderInPast && !isDealInactive && (
                     <div className="flex items-center gap-2 text-xs text-yellow-600 p-2 bg-yellow-50 rounded-md">
                         <Info className="h-4 w-4" />
                         <span>This frequency will send reminders past the deal's deadline.</span>
                     </div>
+                )}
+                 {isDealInactive && (
+                    <p className="text-xs text-muted-foreground">
+                        Reminders are disabled for completed or cancelled deals.
+                    </p>
                 )}
             </CardContent>
           </Card>
