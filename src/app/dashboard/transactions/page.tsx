@@ -83,7 +83,7 @@ export default function TransactionsPage() {
                         {tx.status.charAt(0).toUpperCase() + tx.status.slice(1)}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right font-mono">${tx.amount.toLocaleString()}</TableCell>
+                  <TableCell className="text-right font-mono">GHS {tx.amount.toLocaleString()}</TableCell>
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>

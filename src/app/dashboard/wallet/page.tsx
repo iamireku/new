@@ -43,7 +43,7 @@ export default function WalletPage() {
             <CardDescription>Funds you can withdraw or use immediately.</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-4xl font-bold">$12,345.67</p>
+            <p className="text-4xl font-bold">GHS 12,345.67</p>
           </CardContent>
         </Card>
         <Card>
@@ -52,7 +52,7 @@ export default function WalletPage() {
             <CardDescription>Funds currently held in active escrows.</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-4xl font-bold">$5,000.00</p>
+            <p className="text-4xl font-bold">GHS 5,000.00</p>
           </CardContent>
         </Card>
       </div>
@@ -94,7 +94,7 @@ export default function WalletPage() {
                     </Badge>
                   </TableCell>
                   <TableCell className={`text-right font-mono ${tx.amount > 0 ? 'text-green-500' : 'text-red-500'}`}>
-                    {tx.amount > 0 ? '+' : ''}${Math.abs(tx.amount).toLocaleString()}
+                    {tx.amount > 0 ? '+' : ''}GHS {Math.abs(tx.amount).toLocaleString()}
                   </TableCell>
                 </TableRow>
               ))}

@@ -98,7 +98,7 @@ export default function DashboardPage() {
             <Wallet className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$12,345.67</div>
+            <div className="text-2xl font-bold">GHS 12,345.67</div>
             <p className="text-xs text-muted-foreground">+20.1% from last month</p>
           </CardContent>
         </Card>
@@ -108,7 +108,7 @@ export default function DashboardPage() {
             <Landmark className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$5,000.00</div>
+            <div className="text-2xl font-bold">GHS 5,000.00</div>
             <p className="text-xs text-muted-foreground">Across 3 active deals</p>
           </CardContent>
         </Card>
@@ -177,7 +177,7 @@ export default function DashboardPage() {
                     </div>
                   </TableCell>
                   <TableCell className={`text-right font-mono ${tx.amount > 0 ? 'text-green-500' : 'text-red-500'}`}>
-                    {tx.amount > 0 ? '+' : ''}${Math.abs(tx.amount).toFixed(2)}
+                    {tx.amount > 0 ? '+' : ''}GHS {Math.abs(tx.amount).toFixed(2)}
                   </TableCell>
                   <TableCell className="text-center">
                     <Badge variant={tx.status === 'completed' ? 'default' : 'secondary'} className={
