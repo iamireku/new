@@ -16,23 +16,25 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Copy, Check, Share2, Sun, Moon, Monitor, AlertTriangle } from 'lucide-react';
+import { Copy, Check, Share2, Sun, Moon, Monitor, AlertTriangle, Building, Briefcase } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 const avatars = [
-  { src: 'https://placehold.co/100x100.png?text=A', hint: 'letter A', alt: 'Avatar A' },
-  { src: 'https://placehold.co/100x100.png?text=B', hint: 'letter B', alt: 'Avatar B' },
-  { src: 'https://placehold.co/100x100.png?text=C', hint: 'letter C', alt: 'Avatar C' },
-  { src: 'https://placehold.co/100x100.png?text=D', hint: 'letter D', alt: 'Avatar D' },
-  { src: 'https://placehold.co/100x100.png?text=E', hint: 'letter E', alt: 'Avatar E' },
-  { src: 'https://placehold.co/100x100.png?text=F', hint: 'letter F', alt: 'Avatar F' },
+  { src: 'https://placehold.co/100x100.png', hint: 'abstract shape', alt: 'Avatar A' },
+  { src: 'https://placehold.co/100x100.png', hint: 'abstract pattern', alt: 'Avatar B' },
+  { src: 'https://placehold.co/100x100.png', hint: 'geometric design', alt: 'Avatar C' },
+  { src: 'https://placehold.co/100x100.png', hint: 'colorful gradient', alt: 'Avatar D' },
+  { src: 'https://placehold.co/100x100.png', hint: 'minimalist logo', alt: 'Avatar E' },
+  { src: 'https://placehold.co/100x100.png', hint: 'abstract art', alt: 'Avatar F' },
 ];
 
 export default function ProfilePage() {
   const [name, setName] = useState('User');
+  const [businessName, setBusinessName] = useState('Acme Inc.');
+  const [businessRole, setBusinessRole] = useState('Founder');
   const [referralCode, setReferralCode] = useState('BETA-USER-123');
   const [isReferralCustomized, setIsReferralCustomized] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -101,11 +103,11 @@ export default function ProfilePage() {
           <TabsTrigger value="referral">Referrals</TabsTrigger>
           <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
-        <TabsContent value="profile">
+        <TabsContent value="profile" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Your Information</CardTitle>
-              <CardDescription>Update your details here.</CardDescription>
+              <CardTitle>Personal Information</CardTitle>
+              <CardDescription>Update your personal details here.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center gap-4">
@@ -157,6 +159,29 @@ export default function ProfilePage() {
             </CardContent>
             <CardFooter>
               <Button>Save Changes</Button>
+            </CardFooter>
+          </Card>
+           <Card>
+            <CardHeader>
+              <CardTitle>Business Information</CardTitle>
+              <CardDescription>Update your business details here.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+               <div className="space-y-2">
+                <Label htmlFor="business-name">Business Name</Label>
+                <Input id="business-name" value={businessName} onChange={(e) => setBusinessName(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="business-role">Your Role</Label>
+                <Input id="business-role" value={businessRole} onChange={(e) => setBusinessRole(e.target.value)} placeholder="e.g. Founder, CEO" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="business-email">Business Email</Label>
+                <Input id="business-email" type="email" defaultValue="contact@acme.com" />
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button>Save Business Info</Button>
             </CardFooter>
           </Card>
         </TabsContent>
