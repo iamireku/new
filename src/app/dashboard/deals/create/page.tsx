@@ -168,10 +168,10 @@ export default function CreateDealPage() {
           {step === 2 && (
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="deal-title">Deal Title</Label>
+                <Label htmlFor="deal-title">Service or Product</Label>
                 <Input
                   id="deal-title"
-                  placeholder="e.g., Website Design Project"
+                  placeholder="e.g., iPhone 15 or Website Design"
                   value={dealTitle}
                   onChange={(e) => setDealTitle(e.target.value)}
                 />
