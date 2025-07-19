@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   Card,
   CardContent,
@@ -36,15 +36,19 @@ import {
   X,
   ArrowLeft,
   BellRing,
+  AlarmClock,
+  Info,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { add, isAfter } from 'date-fns';
 
 const deal = {
   id: 'DEAL003',
   title: 'Mobile App UI/UX',
   party: 'Appify Inc.',
   date: '2023-11-05',
+  deadline: '2023-11-30',
   amount: 8000,
   status: 'in_escrow',
   role: 'seller', // 'buyer' or 'seller'
@@ -113,6 +117,34 @@ export default function DealDetailsPage({ params }: { params: { id: string } }) 
   const [remindersEnabled, setRemindersEnabled] = useState(false);
   const [reminderFrequency, setReminderFrequency] = useState('daily');
 
+  const isReminderInPast = useMemo(() => {
+    if (!deal.deadline || !remindersEnabled) return false;
+    
+    const now = new Date();
+    const deadlineDate = new Date(deal.deadline);
+    let nextReminderDate;
+
+    switch(reminderFrequency) {
+      case '6_hours':
+        nextReminderDate = add(now, { hours: 6 });
+        break;
+      case '12_hours':
+        nextReminderDate = add(now, { hours: 12 });
+        break;
+      case 'daily':
+        nextReminderDate = add(now, { days: 1 });
+        break;
+      case 'weekly':
+        nextReminderDate = add(now, { weeks: 1 });
+        break;
+      default:
+        return false;
+    }
+    
+    return isAfter(nextReminderDate, deadlineDate);
+  }, [reminderFrequency, remindersEnabled]);
+
+
   const handleRemindersToggle = (enabled: boolean) => {
     setRemindersEnabled(enabled);
     toast({
@@ -177,6 +209,13 @@ export default function DealDetailsPage({ params }: { params: { id: string } }) 
                 <div>
                   <p className="text-sm text-muted-foreground">Creation Date</p>
                   <p className="text-lg font-bold">{deal.date}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <AlarmClock className="h-8 w-8 text-muted-foreground" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Deadline</p>
+                  <p className="text-lg font-bold">{deal.deadline}</p>
                 </div>
               </div>
             </CardContent>
@@ -263,12 +302,20 @@ export default function DealDetailsPage({ params }: { params: { id: string } }) 
                        <SelectValue placeholder="Select frequency" />
                      </SelectTrigger>
                      <SelectContent>
+                        <SelectItem value="6_hours">Every 6 Hours</SelectItem>
+                        <SelectItem value="12_hours">Every 12 Hours</SelectItem>
                        <SelectItem value="daily">Daily</SelectItem>
                        <SelectItem value="weekly">Weekly</SelectItem>
                        <SelectItem value="status_change">On Status Change</SelectItem>
                      </SelectContent>
                    </Select>
                 </div>
+                {isReminderInPast && (
+                    <div className="flex items-center gap-2 text-xs text-yellow-600 p-2 bg-yellow-50 rounded-md">
+                        <Info className="h-4 w-4" />
+                        <span>This frequency will send reminders past the deal's deadline.</span>
+                    </div>
+                )}
             </CardContent>
           </Card>
 
