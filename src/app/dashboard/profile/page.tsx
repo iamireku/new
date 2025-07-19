@@ -14,7 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Copy, Check } from 'lucide-react';
+import { Copy, Check, Share2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function ProfilePage() {
@@ -32,14 +32,39 @@ export default function ProfilePage() {
     });
   };
 
+  const referralLink = `https://betweena.app/signup?ref=${referralCode}`;
+
   const copyToClipboard = () => {
-    navigator.clipboard.writeText(`https://betweena.app/signup?ref=${referralCode}`);
+    navigator.clipboard.writeText(referralLink);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
     toast({
         title: 'Copied to clipboard!',
     });
   };
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'Join me on Betweena!',
+          text: `Use my referral code to sign up: ${referralCode}`,
+          url: referralLink,
+        });
+      } catch (error) {
+        // User cancelled the share or an error occurred
+        console.error('Sharing failed:', error);
+      }
+    } else {
+        // Fallback for browsers that don't support the Web Share API
+        copyToClipboard();
+        toast({
+            title: 'Share not supported',
+            description: 'Link copied to clipboard instead.',
+        });
+    }
+  };
+
 
   return (
     <div className="space-y-6">
@@ -101,9 +126,12 @@ export default function ProfilePage() {
                 <div className="space-y-2">
                   <Label htmlFor="referral-link">Your Referral Link</Label>
                   <div className="flex gap-2">
-                    <Input id="referral-link" value={`https://betweena.app/signup?ref=${referralCode}`} readOnly />
-                    <Button type="button" variant="outline" size="icon" onClick={copyToClipboard}>
+                    <Input id="referral-link" value={referralLink} readOnly />
+                    <Button type="button" variant="outline" size="icon" onClick={copyToClipboard} aria-label="Copy referral link">
                       {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                    </Button>
+                     <Button type="button" variant="outline" size="icon" onClick={handleShare} aria-label="Share referral link">
+                        <Share2 className="h-4 w-4" />
                     </Button>
                   </div>
                 </div>
