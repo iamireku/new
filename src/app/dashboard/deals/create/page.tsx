@@ -14,7 +14,6 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
-import { Textarea } from '@/components/ui/textarea';
 import {
   ArrowRight,
   ArrowLeft,
@@ -22,15 +21,28 @@ import {
   Info,
   Banknote,
   CheckCircle,
+  PlusCircle,
+  X,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const totalSteps = 4;
+
+interface Criterion {
+  id: number;
+  text: string;
+}
 
 export default function CreateDealPage() {
   const [step, setStep] = useState(1);
   const [dealTitle, setDealTitle] = useState('');
-  const [dealDescription, setDealDescription] = useState('');
+  const [acceptanceCriteria, setAcceptanceCriteria] = useState<Criterion[]>([
+    { id: 1, text: 'Product delivered as described' },
+    { id: 2, text: 'Service completed on time' },
+  ]);
+  const [newCriterion, setNewCriterion] = useState('');
+
 
   const router = useRouter();
   const { toast } = useToast();
@@ -46,6 +58,20 @@ export default function CreateDealPage() {
       description: 'Your new deal has been sent to the other party.',
     });
     router.push('/dashboard/transactions');
+  };
+
+  const handleAddCriterion = () => {
+    if (newCriterion.trim()) {
+      setAcceptanceCriteria([
+        ...acceptanceCriteria,
+        { id: Date.now(), text: newCriterion.trim() },
+      ]);
+      setNewCriterion('');
+    }
+  };
+
+  const handleRemoveCriterion = (idToRemove: number) => {
+    setAcceptanceCriteria(acceptanceCriteria.filter((c) => c.id !== idToRemove));
   };
 
   const getStepIcon = (currentStep: number) => {
@@ -100,14 +126,31 @@ export default function CreateDealPage() {
               </div>
 
               <div className="space-y-2">
-                 <Label htmlFor="deal-description">Description</Label>
-                <Textarea
-                  id="deal-description"
-                  placeholder="Describe the agreement, deliverables, and terms."
-                  rows={5}
-                  value={dealDescription}
-                  onChange={(e) => setDealDescription(e.target.value)}
-                />
+                 <Label>Acceptance Criteria</Label>
+                 <p className="text-xs text-muted-foreground">Define what needs to be done for the deal to be complete.</p>
+                 <div className="space-y-2">
+                    {acceptanceCriteria.map((criterion) => (
+                      <div key={criterion.id} className="flex items-center gap-2">
+                        <Checkbox id={`criterion-${criterion.id}`} disabled checked />
+                        <Label htmlFor={`criterion-${criterion.id}`} className="flex-1 font-normal text-sm">{criterion.text}</Label>
+                        <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleRemoveCriterion(criterion.id)}>
+                            <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                 </div>
+                 <div className="flex gap-2 pt-2">
+                    <Input 
+                        placeholder="Add a new criterion..."
+                        value={newCriterion}
+                        onChange={(e) => setNewCriterion(e.target.value)}
+                        onKeyDown={(e) => { if(e.key === 'Enter') { e.preventDefault(); handleAddCriterion(); }}}
+                    />
+                    <Button type="button" onClick={handleAddCriterion}>
+                        <PlusCircle className="mr-2" />
+                        Add
+                    </Button>
+                 </div>
               </div>
             </div>
           )}
