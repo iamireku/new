@@ -17,6 +17,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Wallet, Landmark, Users, ArrowUpRight, ArrowDownLeft, Clock } from 'lucide-react';
 import Image from 'next/image';
+import { cn } from '@/lib/utils';
 
 const recentTransactions = [
   { id: 'T001', description: 'Website Design', amount: 2500, type: 'incoming', status: 'completed' },
