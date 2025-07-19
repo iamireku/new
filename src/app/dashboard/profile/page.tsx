@@ -16,9 +16,10 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Copy, Check, Share2, Sun, Moon, Monitor } from 'lucide-react';
+import { Copy, Check, Share2, Sun, Moon, Monitor, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
 export default function ProfilePage() {
   const [referralCode, setReferralCode] = useState('BETA-USER-123');
@@ -191,6 +192,39 @@ export default function ProfilePage() {
               </CardContent>
               <CardFooter>
                 <Button>Change Password</Button>
+              </CardFooter>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Data & Privacy</CardTitle>
+                <CardDescription>Manage your personal data.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                 <Button variant="outline">Export My Data</Button>
+              </CardContent>
+              <CardFooter className="border-t border-destructive/20 bg-destructive/5 pt-4">
+                <div className="flex-1">
+                    <p className="text-sm font-semibold text-destructive">Delete Account</p>
+                    <p className="text-xs text-destructive/80">Permanently delete your account and all associated data. This action cannot be undone.</p>
+                </div>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive">Delete Account</Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently delete your
+                        account and remove your data from our servers.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction>Continue</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </CardFooter>
             </Card>
           </div>
