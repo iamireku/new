@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -14,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -111,38 +113,24 @@ const getStatusInfo = (status: string) => {
 
 const statusInfo = getStatusInfo(deal.status);
 
+type Period = 'hours' | 'days' | 'weeks';
+
 export default function DealDetailsPage({ params }: { params: { id: string } }) {
   const reversedTimeline = [...deal.timeline].reverse();
   const { toast } = useToast();
   const [remindersEnabled, setRemindersEnabled] = useState(false);
-  const [reminderFrequency, setReminderFrequency] = useState('daily');
+  const [reminderFigure, setReminderFigure] = useState(1);
+  const [reminderPeriod, setReminderPeriod] = useState<Period>('days');
 
   const isReminderInPast = useMemo(() => {
-    if (!deal.deadline || !remindersEnabled) return false;
+    if (!deal.deadline || !remindersEnabled || reminderFigure <= 0) return false;
     
     const now = new Date();
     const deadlineDate = new Date(deal.deadline);
-    let nextReminderDate;
-
-    switch(reminderFrequency) {
-      case '6_hours':
-        nextReminderDate = add(now, { hours: 6 });
-        break;
-      case '12_hours':
-        nextReminderDate = add(now, { hours: 12 });
-        break;
-      case 'daily':
-        nextReminderDate = add(now, { days: 1 });
-        break;
-      case 'weekly':
-        nextReminderDate = add(now, { weeks: 1 });
-        break;
-      default:
-        return false;
-    }
+    let nextReminderDate = add(now, { [reminderPeriod]: reminderFigure });
     
     return isAfter(nextReminderDate, deadlineDate);
-  }, [reminderFrequency, remindersEnabled]);
+  }, [reminderFigure, reminderPeriod, remindersEnabled, deal.deadline]);
 
 
   const handleRemindersToggle = (enabled: boolean) => {
@@ -153,12 +141,11 @@ export default function DealDetailsPage({ params }: { params: { id: string } }) 
     });
   };
   
-  const handleFrequencyChange = (frequency: string) => {
-    setReminderFrequency(frequency);
+  const handleFrequencyChange = () => {
     if(remindersEnabled) {
       toast({
         title: 'Reminder Frequency Updated',
-        description: `You will now receive reminders ${frequency}.`,
+        description: `You will now receive reminders every ${reminderFigure} ${reminderPeriod}.`,
       });
     }
   }
@@ -291,24 +278,35 @@ export default function DealDetailsPage({ params }: { params: { id: string } }) 
                     />
                 </div>
                 <div className="space-y-2">
-                   <Label htmlFor="reminder-frequency">Frequency</Label>
-                   <Select
-                    id="reminder-frequency"
-                    value={reminderFrequency}
-                    onValueChange={handleFrequencyChange}
-                    disabled={!remindersEnabled}
-                   >
-                     <SelectTrigger>
-                       <SelectValue placeholder="Select frequency" />
-                     </SelectTrigger>
-                     <SelectContent>
-                        <SelectItem value="6_hours">Every 6 Hours</SelectItem>
-                        <SelectItem value="12_hours">Every 12 Hours</SelectItem>
-                       <SelectItem value="daily">Daily</SelectItem>
-                       <SelectItem value="weekly">Weekly</SelectItem>
-                       <SelectItem value="status_change">On Status Change</SelectItem>
-                     </SelectContent>
-                   </Select>
+                   <Label>Frequency</Label>
+                    <div className="flex items-center gap-2">
+                        <Input
+                            type="number"
+                            className="w-20"
+                            value={reminderFigure}
+                            onChange={(e) => setReminderFigure(parseInt(e.target.value, 10) || 1)}
+                            onBlur={handleFrequencyChange}
+                            min="1"
+                            disabled={!remindersEnabled}
+                        />
+                        <Select
+                            value={reminderPeriod}
+                            onValueChange={(value: Period) => {
+                                setReminderPeriod(value);
+                                handleFrequencyChange();
+                            }}
+                            disabled={!remindersEnabled}
+                        >
+                            <SelectTrigger>
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="hours">Hours</SelectItem>
+                                <SelectItem value="days">Days</SelectItem>
+                                <SelectItem value="weeks">Weeks</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
                 </div>
                 {isReminderInPast && (
                     <div className="flex items-center gap-2 text-xs text-yellow-600 p-2 bg-yellow-50 rounded-md">
