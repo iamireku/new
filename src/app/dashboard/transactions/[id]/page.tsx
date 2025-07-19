@@ -23,6 +23,7 @@ import {
   AlertTriangle,
   CheckCircle,
   Truck,
+  X,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -164,7 +165,7 @@ export default function DealDetailsPage({ params }: { params: { id: string } }) 
             </CardContent>
              <CardFooter className="border-t pt-4">
                 {deal.role === 'buyer' && deal.status === 'in_escrow' && <Button><CheckCircle className="mr-2"/>Release Money</Button>}
-                {deal.role === 'seller' && deal.status === 'in_escrow' && <Button><Truck className="mr-2"/>Mark as Shipped/Completed</Button>}
+                {deal.role === 'seller' && deal.status === 'in_escrow' && <Button><Truck className="mr-2"/>Mark as Delivered/Completed</Button>}
                  {deal.status === 'funding' && deal.role === 'buyer' && <Button><Banknote className="mr-2" />Fund Deal</Button>}
                  {deal.status !== 'completed' && deal.status !== 'cancelled' && (
                     <Button variant="outline" className="ml-auto">
