@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -39,6 +39,7 @@ import {
   BellRing,
   AlarmClock,
   Info,
+  UserCheck as UserCheckIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -59,9 +60,9 @@ const deal = {
     { id: 3, text: 'Prototype link provided for review', completed: false },
   ],
   timeline: [
-    { date: '2023-11-05', event: 'Deal created by You (Seller)' },
-    { date: '2023-11-06', event: 'Appify Inc. accepted the deal' },
-    { date: '2023-11-07', event: 'Buyer funded the deal. Money is on hold.' },
+    { date: '2023-11-05', event: 'Deal created by You (Seller)', icon: FileText },
+    { date: '2023-11-06', event: 'Appify Inc. accepted the deal', icon: UserCheckIcon },
+    { date: '2023-11-07', event: 'Buyer funded the deal. Money is on hold.', icon: ShieldCheck },
   ],
   messages: [
     {
@@ -120,6 +121,10 @@ export default function DealDetailsPage({ params }: { params: { id: string } }) 
   const [remindersEnabled, setRemindersEnabled] = useState(false);
   const [reminderFigure, setReminderFigure] = useState(1);
   const [reminderPeriod, setReminderPeriod] = useState<Period>('days');
+
+  useEffect(() => {
+    document.title = `${deal.title} - Deal Details`;
+  }, [deal.title]);
 
   const isDealInactive = deal.status === 'completed' || deal.status === 'cancelled';
 
@@ -248,7 +253,7 @@ export default function DealDetailsPage({ params }: { params: { id: string } }) 
                         <li key={index} className="flex gap-4">
                             <div className="flex flex-col items-center">
                                 <div className={cn("flex h-8 w-8 items-center justify-center rounded-full", index === 0 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground")}>
-                                    <FileText className="h-4 w-4" />
+                                    <item.icon className="h-4 w-4" />
                                 </div>
                                 {index < reversedTimeline.length - 1 && <div className="w-px flex-1 bg-border" />}
                             </div>
@@ -325,7 +330,8 @@ export default function DealDetailsPage({ params }: { params: { id: string } }) 
           </Card>
 
           <Card>
-            <CardHeader>
+            <CardHeader className="flex items-center gap-2">
+                <MessageSquare className="h-5 w-5"/>
                 <CardTitle>Messages</CardTitle>
             </CardHeader>
             <CardContent>

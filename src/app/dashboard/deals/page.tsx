@@ -176,7 +176,7 @@ export default function DealsPage() {
                   >
                     <TableCell className="font-medium">{tx.title}</TableCell>
                     <TableCell className="text-muted-foreground hidden md:table-cell">{tx.party}</TableCell>
-                    <TableCell className="text-muted-foreground hidden md-table-cell">{tx.date}</TableCell>
+                    <TableCell className="text-muted-foreground hidden md:table-cell">{tx.date}</TableCell>
                     <TableCell className="text-center">
                       <Badge variant="secondary" className={
                           cn({
