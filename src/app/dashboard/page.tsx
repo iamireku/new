@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -15,8 +18,9 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Wallet, Landmark, Users, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
-import Image from 'next/image';
+import { Wallet, Landmark, Users, ArrowUpRight, ArrowDownLeft, Copy, Share2, Check } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
 const recentTransactions = [
@@ -36,9 +40,42 @@ const leaderboard = [
     { name: 'Michael Chen', referrals: 12, avatar: 'https://placehold.co/40x40.png', hint: 'man smiling', rank: 6 },
 ];
 
-const currentUser = { name: 'You', referrals: 17 };
+const currentUser = { name: 'You', referrals: 17, referralCode: 'BETA-USER-123' };
 
 export default function DashboardPage() {
+    const { toast } = useToast();
+    const [copied, setCopied] = useState(false);
+
+    const referralLink = `https://betweena.app/signup?ref=${currentUser.referralCode}`;
+
+    const copyToClipboard = () => {
+        navigator.clipboard.writeText(referralLink);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+        toast({
+            title: 'Copied to clipboard!',
+        });
+    };
+
+    const handleShare = async () => {
+        if (navigator.share) {
+            try {
+            await navigator.share({
+                title: 'Join me on Betweena!',
+                text: `Use my referral code to sign up: ${currentUser.referralCode}`,
+                url: referralLink,
+            });
+            } catch (error) {
+            console.error('Sharing failed:', error);
+            }
+        } else {
+            copyToClipboard();
+            toast({
+                title: 'Share not supported',
+                description: 'Link copied to clipboard instead.',
+            });
+        }
+    };
 
     const currentUserIndex = leaderboard.findIndex(u => u.name === currentUser.name);
     let displayUsers = [];
@@ -47,7 +84,6 @@ export default function DashboardPage() {
         const endIndex = Math.min(leaderboard.length, currentUserIndex + 2);
         displayUsers = leaderboard.slice(startIndex, endIndex);
     } else {
-        // Fallback to top 3 if current user is not in the list
         displayUsers = leaderboard.slice(0, 3);
     }
 
@@ -93,7 +129,18 @@ export default function DashboardPage() {
                             <p className="text-sm font-medium leading-none">{user.name}</p>
                             <p className="text-sm text-muted-foreground">{user.referrals} referrals</p>
                         </div>
-                        <div className="font-medium">{`#${user.rank}`}</div>
+                        {user.name === currentUser.name ? (
+                            <div className="flex items-center gap-1">
+                                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={copyToClipboard} aria-label="Copy referral link">
+                                    {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
+                                </Button>
+                                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleShare} aria-label="Share referral link">
+                                    <Share2 className="h-4 w-4" />
+                                </Button>
+                            </div>
+                        ) : (
+                            <div className="font-medium text-right w-[72px]">{`#${user.rank}`}</div>
+                        )}
                     </div>
                 ))}
             </div>
