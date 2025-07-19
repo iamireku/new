@@ -122,7 +122,7 @@ export default function CreateDealPage() {
               </CardTitle>
               <CardDescription>
                 {step === 1 && 'Are you the buyer or the seller in this deal?'}
-                {step === 2 && "What's this deal about?"}
+                {step === 2 && (role === 'buyer' ? "What are you buying?" : "What are you selling?")}
                 {step === 3 && `Who are you making this deal with?`}
                 {step === 4 && 'How much is the deal for?'}
                 {step === 5 && 'Check the details below before creating the deal.'}
