@@ -93,12 +93,12 @@ export default function TransactionsPage() {
                     onClick={() => handleRowClick(tx.id)}
                     className={cn(
                         'cursor-pointer',
-                        {'bg-yellow-50 dark:bg-yellow-900/20': tx.status === 'funding'}, 
-                        {'bg-red-50 dark:bg-red-900/20': tx.status === 'dispute'}
+                        {'bg-yellow-100/50 dark:bg-yellow-900/20 font-medium': tx.status === 'funding'}, 
+                        {'bg-red-100/50 dark:bg-red-900/20 font-medium': tx.status === 'dispute'}
                     )}
                 >
                   <TableCell className="font-mono text-xs">{tx.id}</TableCell>
-                  <TableCell className="font-medium">{tx.title}</TableCell>
+                  <TableCell>{tx.title}</TableCell>
                   <TableCell className="text-muted-foreground">{tx.party}</TableCell>
                   <TableCell className="text-muted-foreground">{tx.date}</TableCell>
                   <TableCell className="text-center">
@@ -106,8 +106,8 @@ export default function TransactionsPage() {
                         cn({
                             'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': tx.status === 'completed',
                             'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': tx.status === 'in_escrow',
-                            'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200': tx.status === 'funding',
-                            'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200': tx.status === 'dispute',
+                            'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 ring-2 ring-yellow-500/50': tx.status === 'funding',
+                            'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 ring-2 ring-red-500/50': tx.status === 'dispute',
                              'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200': tx.status === 'cancelled',
                         })
                     }>
