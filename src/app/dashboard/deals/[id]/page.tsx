@@ -44,6 +44,8 @@ import {
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { add, isAfter } from 'date-fns';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+
 
 const deal = {
   id: 'DEAL003',
@@ -231,13 +233,65 @@ export default function DealDetailsPage({ params }: { params: { id: string } }) 
               ))}
             </CardContent>
              <CardFooter className="border-t pt-4 flex flex-col sm:flex-row gap-2">
-                {deal.role === 'buyer' && deal.status === 'in_escrow' && <Button className="w-full sm:w-auto"><CheckCircle className="mr-2"/>Release Money</Button>}
-                {deal.role === 'seller' && deal.status === 'in_escrow' && <Button className="w-full sm:w-auto"><Truck className="mr-2"/>Mark as Delivered/Completed</Button>}
+                {deal.role === 'buyer' && deal.status === 'in_escrow' && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button className="w-full sm:w-auto"><CheckCircle className="mr-2"/>Release Money</Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure you want to release the money?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. The money will be sent to the seller. Make sure all acceptance criteria have been met.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction>Confirm & Release</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
+                {deal.role === 'seller' && deal.status === 'in_escrow' && (
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button className="w-full sm:w-auto"><Truck className="mr-2"/>Mark as Delivered/Completed</Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Mark as Delivered/Completed?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This will notify the buyer that you have completed your side of the deal. They will then be able to release the money.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction>Yes, Mark as Completed</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                )}
                  {deal.status === 'funding' && deal.role === 'buyer' && <Button className="w-full sm:w-auto"><Banknote className="mr-2" />Fund Deal</Button>}
                  {deal.status !== 'completed' && deal.status !== 'cancelled' && (
-                    <Button variant="outline" className="w-full sm:w-auto sm:ml-auto">
-                        <AlertTriangle className="mr-2"/>Raise a Dispute
-                    </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="outline" className="w-full sm:w-auto sm:ml-auto">
+                          <AlertTriangle className="mr-2"/>Raise a Dispute
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure you want to raise a dispute?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This will pause the deal and a member of our team will contact both parties to resolve the issue. This should only be used as a last resort.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction>Yes, Raise Dispute</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                  )}
             </CardFooter>
           </Card>

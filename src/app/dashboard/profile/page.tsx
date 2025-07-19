@@ -28,8 +28,7 @@ export default function ProfilePage() {
   const { toast } = useToast();
   const { theme, setTheme } = useTheme();
 
-  const handleCustomizeReferral = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleCustomizeReferral = () => {
     setIsReferralCustomized(true);
     toast({
       title: 'Referral Code Updated!',
@@ -116,36 +115,50 @@ export default function ProfilePage() {
                   : 'You can change your code once. This cannot be undone.'}
               </CardDescription>
             </CardHeader>
-            <form onSubmit={handleCustomizeReferral}>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="referral-code">Your Code</Label>
-                  <Input
-                    id="referral-code"
-                    value={referralCode}
-                    onChange={(e) => setReferralCode(e.target.value)}
-                    readOnly={isReferralCustomized}
-                  />
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="referral-code">Your Code</Label>
+                <Input
+                  id="referral-code"
+                  value={referralCode}
+                  onChange={(e) => setReferralCode(e.target.value)}
+                  readOnly={isReferralCustomized}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="referral-link">Your Referral Link</Label>
+                <div className="flex gap-2">
+                  <Input id="referral-link" value={referralLink} readOnly />
+                  <Button type="button" variant="outline" size="icon" onClick={copyToClipboard} aria-label="Copy referral link">
+                    {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  </Button>
+                   <Button type="button" variant="outline" size="icon" onClick={handleShare} aria-label="Share referral link">
+                      <Share2 className="h-4 w-4" />
+                  </Button>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="referral-link">Your Referral Link</Label>
-                  <div className="flex gap-2">
-                    <Input id="referral-link" value={referralLink} readOnly />
-                    <Button type="button" variant="outline" size="icon" onClick={copyToClipboard} aria-label="Copy referral link">
-                      {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                    </Button>
-                     <Button type="button" variant="outline" size="icon" onClick={handleShare} aria-label="Share referral link">
-                        <Share2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-              {!isReferralCustomized && (
-                <CardFooter>
-                  <Button type="submit">Set and Lock Code</Button>
-                </CardFooter>
-              )}
-            </form>
+              </div>
+            </CardContent>
+            {!isReferralCustomized && (
+              <CardFooter>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button>Set and Lock Code</Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        You can only customize your referral code once. This action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleCustomizeReferral}>Confirm and Set Code</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </CardFooter>
+            )}
           </Card>
         </TabsContent>
         <TabsContent value="settings">
