@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
@@ -21,14 +22,17 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, PlusCircle, ExternalLink } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { PlusCircle, Search, ListFilter } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const transactions = [
+const transactionsData = [
     { id: 'DEAL001', title: 'E-commerce Platform Development', party: 'ClientCorp', date: '2023-10-26', amount: 15000, status: 'completed' },
     { id: 'DEAL002', title: 'Brand Identity Design', party: 'Creative LLC', date: '2023-10-22', amount: 3500, status: 'completed' },
     { id: 'DEAL003', title: 'Mobile App UI/UX', party: 'Appify Inc.', date: '2023-11-05', amount: 8000, status: 'in_escrow' },
@@ -43,12 +47,31 @@ const getStatusText = (status: string) => {
     return status.charAt(0).toUpperCase() + status.slice(1);
 }
 
+const statusOptions = ['in_escrow', 'funding', 'completed', 'dispute', 'cancelled'];
+
 export default function TransactionsPage() {
   const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilters, setStatusFilters] = useState<string[]>([]);
 
   const handleRowClick = (dealId: string) => {
     router.push(`/dashboard/transactions/${dealId}`);
   }
+
+  const handleStatusFilterChange = (status: string) => {
+    setStatusFilters(prev => 
+      prev.includes(status) 
+        ? prev.filter(s => s !== status) 
+        : [...prev, status]
+    );
+  };
+
+  const filteredTransactions = transactionsData.filter(tx => {
+    const searchTermLower = searchTerm.toLowerCase();
+    const matchesSearch = tx.title.toLowerCase().includes(searchTermLower) || tx.party.toLowerCase().includes(searchTermLower);
+    const matchesStatus = statusFilters.length === 0 || statusFilters.includes(tx.status);
+    return matchesSearch && matchesStatus;
+  });
   
   return (
     <div className="space-y-6">
@@ -74,6 +97,37 @@ export default function TransactionsPage() {
           <CardDescription>A list of all your deals.</CardDescription>
         </CardHeader>
         <CardContent>
+          <div className="flex flex-col sm:flex-row items-center gap-4 mb-4">
+              <div className="relative w-full">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input 
+                      placeholder="Search deals..." 
+                      className="pl-10 w-full"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+              </div>
+              <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                      <Button variant="outline" className="w-full sm:w-auto">
+                          <ListFilter className="mr-2" /> Filter by Status
+                      </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Status</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      {statusOptions.map(status => (
+                        <DropdownMenuCheckboxItem
+                            key={status}
+                            checked={statusFilters.includes(status)}
+                            onCheckedChange={() => handleStatusFilterChange(status)}
+                        >
+                            {getStatusText(status)}
+                        </DropdownMenuCheckboxItem>
+                      ))}
+                  </DropdownMenuContent>
+              </DropdownMenu>
+          </div>
           <Table>
             <TableHeader>
               <TableRow>
@@ -85,7 +139,7 @@ export default function TransactionsPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {transactions.map((tx) => (
+              {filteredTransactions.length > 0 ? filteredTransactions.map((tx) => (
                 <TableRow 
                     key={tx.id} 
                     onClick={() => handleRowClick(tx.id)}
@@ -113,7 +167,13 @@ export default function TransactionsPage() {
                   </TableCell>
                   <TableCell className="text-right font-mono">GHS {tx.amount.toLocaleString()}</TableCell>
                 </TableRow>
-              ))}
+              )) : (
+                <TableRow>
+                  <TableCell colSpan={5} className="h-24 text-center">
+                    No transactions found.
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
         </CardContent>
