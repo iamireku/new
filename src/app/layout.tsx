@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
 export const metadata: Metadata = {
   title: 'Betweena',
-  description: 'Secure Escrow for Modern Commerce',
+  description: 'Safe Payments for Your Business',
 };
 
 export default function RootLayout({

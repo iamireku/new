@@ -34,8 +34,6 @@ export default function SignupPage() {
 
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, you'd handle registration here.
-    // For this scaffold, we'll navigate to the onboarding page.
     router.push('/onboarding');
   };
 
@@ -47,7 +45,7 @@ export default function SignupPage() {
             <AppLogo />
           </div>
           <CardTitle className="text-2xl font-headline">Create an Account</CardTitle>
-          <CardDescription>Enter your information to get started.</CardDescription>
+          <CardDescription>Enter your info to start.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSignup} className="space-y-4">
@@ -64,7 +62,7 @@ export default function SignupPage() {
               <Input id="password" type="password" required />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="referral-code">Referral Code (Optional)</Label>
+              <Label htmlFor="referral-code">Referral Code (If you have one)</Label>
               <Input id="referral-code" placeholder="Enter referral code" />
             </div>
             <Button type="submit" className="w-full">
@@ -82,7 +80,7 @@ export default function SignupPage() {
           </Button>
         </CardContent>
         <CardFooter className="flex justify-center text-sm">
-          Already have an account?&nbsp;
+          Have an account?&nbsp;
           <Link href="/login" className="font-semibold text-primary underline">
             Sign in
           </Link>

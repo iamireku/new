@@ -22,10 +22,10 @@ export default function LandingPage() {
       <main className="flex-1">
         <section className="container mx-auto flex flex-col items-center justify-center px-4 py-20 text-center md:px-6 md:py-32">
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl font-headline">
-            Secure Escrow for Modern Commerce
+            Safe Payments for Your Business
           </h1>
           <p className="mt-4 max-w-2xl text-lg text-muted-foreground md:text-xl">
-            The trusted intermediary for all your transactions. Simple, secure, and seamless.
+            We hold money safely for you. Simple, secure, and clear.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Button size="lg" asChild>
@@ -43,18 +43,18 @@ export default function LandingPage() {
             <div className="grid gap-8 md:grid-cols-3">
               <FeatureCard
                 icon={<ShieldCheck className="h-10 w-10 text-primary" />}
-                title="Ironclad Security"
-                description="Your funds are held securely in escrow until both parties are satisfied, eliminating the risk of fraud."
+                title="Very Secure"
+                description="Your money is safe until everyone is happy. No room for fraud."
               />
               <FeatureCard
                 icon={<Users className="h-10 w-10 text-primary" />}
-                title="Fair for Everyone"
-                description="We act as a neutral third party, ensuring a fair and transparent process for both buyers and sellers."
+                title="Fair for All"
+                description="We are neutral. The process is clear for both buyers and sellers."
               />
               <FeatureCard
                 icon={<DollarSign className="h-10 w-10 text-primary" />}
-                title="Simple & Transparent"
-                description="A straightforward process with clear fee structures. No hidden costs, no surprises."
+                title="Simple & Clear"
+                description="Easy process with clear fees. No hidden costs."
               />
             </div>
           </div>

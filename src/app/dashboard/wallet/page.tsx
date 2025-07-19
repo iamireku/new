@@ -39,8 +39,8 @@ export default function WalletPage() {
       <div className="grid gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Available Balance</CardTitle>
-            <CardDescription>Funds you can withdraw or use immediately.</CardDescription>
+            <CardTitle>Available Money</CardTitle>
+            <CardDescription>Money you can use now.</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-4xl font-bold">GHS 12,345.67</p>
@@ -48,8 +48,8 @@ export default function WalletPage() {
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>In-Holding Balance</CardTitle>
-            <CardDescription>Funds currently held in active escrows.</CardDescription>
+            <CardTitle>Money on Hold</CardTitle>
+            <CardDescription>Money in active deals.</CardDescription>
           </CardHeader>
           <CardContent>
             <p className="text-4xl font-bold">GHS 5,000.00</p>
@@ -60,7 +60,7 @@ export default function WalletPage() {
       <Card>
         <CardHeader>
           <CardTitle>Wallet History</CardTitle>
-          <CardDescription>A record of all your wallet movements.</CardDescription>
+          <CardDescription>A record of your money movements.</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>

@@ -35,21 +35,21 @@ export default function OnboardingPage() {
           <Progress value={progress} className="mb-4" />
           <CardTitle className="text-center font-headline">
             {step === 1 && 'Welcome to Betweena!'}
-            {step === 2 && 'Tell us about yourself'}
-            {step === 3 && 'Your Business Information'}
+            {step === 2 && 'About You'}
+            {step === 3 && 'Your Business'}
             {step === 4 && 'All Set!'}
           </CardTitle>
           <CardDescription className="text-center">
-            {step === 1 && 'Let\'s get your account set up in a few easy steps.'}
-            {step === 2 && 'This information helps us verify your identity.'}
-            {step === 3 && 'Tell us about the business you represent.'}
-            {step === 4 && 'You are ready to start transacting securely.'}
+            {step === 1 && 'Let\'s set up your account.'}
+            {step === 2 && 'This helps us know who you are.'}
+            {step === 3 && 'Tell us about your business.'}
+            {step === 4 && 'You are ready to start.'}
           </CardDescription>
         </CardHeader>
         <CardContent className="min-h-[250px]">
           {step === 1 && (
             <div className="flex flex-col items-center justify-center text-center">
-              <p className="text-muted-foreground">Ready to start with secure transactions?</p>
+              <p className="text-muted-foreground">Ready to start with safe payments?</p>
             </div>
           )}
           {step === 2 && (
@@ -79,9 +79,9 @@ export default function OnboardingPage() {
           {step === 4 && (
             <div className="flex flex-col items-center justify-center text-center space-y-4">
               <CheckCircle className="h-16 w-16 text-green-500" />
-              <p className="text-lg font-medium">Your profile is complete!</p>
+              <p className="text-lg font-medium">Your profile is ready!</p>
               <p className="text-muted-foreground">
-                You can now access your dashboard and start using Betweena.
+                You can now go to your dashboard.
               </p>
             </div>
           )}

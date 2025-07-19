@@ -28,7 +28,7 @@ export default function ProfilePage() {
     setIsReferralCustomized(true);
     toast({
       title: 'Referral Code Updated!',
-      description: 'Your new referral code is now active.',
+      description: 'Your new code is now active.',
     });
   };
 
@@ -52,11 +52,9 @@ export default function ProfilePage() {
           url: referralLink,
         });
       } catch (error) {
-        // User cancelled the share or an error occurred
         console.error('Sharing failed:', error);
       }
     } else {
-        // Fallback for browsers that don't support the Web Share API
         copyToClipboard();
         toast({
             title: 'Share not supported',
@@ -77,8 +75,8 @@ export default function ProfilePage() {
         <TabsContent value="profile">
           <Card>
             <CardHeader>
-              <CardTitle>Profile Information</CardTitle>
-              <CardDescription>Update your personal details here.</CardDescription>
+              <CardTitle>Your Information</CardTitle>
+              <CardDescription>Update your details here.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center gap-4">
@@ -108,8 +106,8 @@ export default function ProfilePage() {
               <CardTitle>Your Referral Code</CardTitle>
               <CardDescription>
                 {isReferralCustomized
-                  ? 'Share your unique code to earn rewards.'
-                  : 'Customize your referral code once. This action cannot be undone.'}
+                  ? 'Share your code to earn rewards.'
+                  : 'You can change your code once. This cannot be undone.'}
               </CardDescription>
             </CardHeader>
             <form onSubmit={handleCustomizeReferral}>
@@ -138,7 +136,7 @@ export default function ProfilePage() {
               </CardContent>
               {!isReferralCustomized && (
                 <CardFooter>
-                  <Button type="submit">Customize and Lock Code</Button>
+                  <Button type="submit">Set and Lock Code</Button>
                 </CardFooter>
               )}
             </form>

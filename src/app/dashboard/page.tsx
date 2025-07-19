@@ -94,27 +94,27 @@ export default function DashboardPage() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Wallet Balance</CardTitle>
+            <CardTitle className="text-sm font-medium">Your Balance</CardTitle>
             <Wallet className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">GHS 12,345.67</div>
-            <p className="text-xs text-muted-foreground">+20.1% from last month</p>
+            <p className="text-xs text-muted-foreground">Up 20.1% this month</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Funds in Escrow</CardTitle>
+            <CardTitle className="text-sm font-medium">Money on Hold</CardTitle>
             <Landmark className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">GHS 5,000.00</div>
-            <p className="text-xs text-muted-foreground">Across 3 active deals</p>
+            <p className="text-xs text-muted-foreground">In 3 active deals</p>
           </CardContent>
         </Card>
         <Card className="md:col-span-2 lg:col-span-1">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Referral Leaderboard</CardTitle>
+            <CardTitle className="text-sm font-medium">Referral Ranks</CardTitle>
              <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -150,14 +150,14 @@ export default function DashboardPage() {
       
       <Card>
         <CardHeader>
-          <CardTitle>Recent Transactions</CardTitle>
-          <CardDescription>A list of your most recent transactions.</CardDescription>
+          <CardTitle>Recent Money Moves</CardTitle>
+          <CardDescription>Your latest account activity.</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Description</TableHead>
+                <TableHead>Details</TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead className="text-right">Amount</TableHead>
                 <TableHead className="text-center">Status</TableHead>

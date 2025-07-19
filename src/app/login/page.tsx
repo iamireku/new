@@ -34,8 +34,6 @@ export default function LoginPage() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, you'd handle authentication here.
-    // For this scaffold, we'll navigate to the onboarding page first.
     router.push('/onboarding');
   };
 
@@ -47,7 +45,7 @@ export default function LoginPage() {
             <AppLogo />
           </div>
           <CardTitle className="text-2xl font-headline">Welcome Back</CardTitle>
-          <CardDescription>Enter your credentials to access your account.</CardDescription>
+          <CardDescription>Enter your details to sign in.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
@@ -59,7 +57,7 @@ export default function LoginPage() {
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
                 <Link href="#" className="ml-auto inline-block text-sm underline">
-                  Forgot your password?
+                  Forgot password?
                 </Link>
               </div>
               <Input id="password" type="password" required />
@@ -70,16 +68,16 @@ export default function LoginPage() {
           </form>
           <div className="my-4 flex items-center">
             <div className="flex-grow border-t border-muted" />
-            <span className="mx-4 flex-shrink text-xs uppercase text-muted-foreground">Or continue with</span>
+            <span className="mx-4 flex-shrink text-xs uppercase text-muted-foreground">Or</span>
             <div className="flex-grow border-t border-muted" />
           </div>
           <Button variant="outline" className="w-full">
             <GoogleIcon className="mr-2 h-4 w-4" />
-            Google
+            Sign in with Google
           </Button>
         </CardContent>
         <CardFooter className="flex justify-center text-sm">
-          Don't have an account?&nbsp;
+          No account?&nbsp;
           <Link href="/signup" className="font-semibold text-primary underline">
             Sign up
           </Link>

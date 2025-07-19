@@ -48,7 +48,7 @@ export default function TransactionsPage() {
       <Card>
         <CardHeader>
           <CardTitle>Transaction History</CardTitle>
-          <CardDescription>A complete list of all your deals.</CardDescription>
+          <CardDescription>A list of all your deals.</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
@@ -56,7 +56,7 @@ export default function TransactionsPage() {
               <TableRow>
                 <TableHead>Deal ID</TableHead>
                 <TableHead>Title</TableHead>
-                <TableHead>Other Party</TableHead>
+                <TableHead>Other Person</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead className="text-center">Status</TableHead>
                 <TableHead className="text-right">Amount</TableHead>
