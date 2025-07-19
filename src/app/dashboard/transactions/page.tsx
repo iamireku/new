@@ -77,10 +77,9 @@ export default function TransactionsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Deal ID</TableHead>
                 <TableHead>Title</TableHead>
-                <TableHead>Other Person</TableHead>
-                <TableHead>Date</TableHead>
+                <TableHead className="hidden md:table-cell">Other Person</TableHead>
+                <TableHead className="hidden md:table-cell">Date</TableHead>
                 <TableHead className="text-center">Status</TableHead>
                 <TableHead className="text-right">Amount</TableHead>
                 <TableHead className="w-[50px]"></TableHead>
@@ -97,10 +96,9 @@ export default function TransactionsPage() {
                         {'bg-red-100/50 dark:bg-red-900/20 font-medium': tx.status === 'dispute'}
                     )}
                 >
-                  <TableCell className="font-mono text-xs">{tx.id}</TableCell>
-                  <TableCell>{tx.title}</TableCell>
-                  <TableCell className="text-muted-foreground">{tx.party}</TableCell>
-                  <TableCell className="text-muted-foreground">{tx.date}</TableCell>
+                  <TableCell className="font-medium">{tx.title}</TableCell>
+                  <TableCell className="text-muted-foreground hidden md:table-cell">{tx.party}</TableCell>
+                  <TableCell className="text-muted-foreground hidden md:table-cell">{tx.date}</TableCell>
                   <TableCell className="text-center">
                     <Badge variant="secondary" className={
                         cn({
