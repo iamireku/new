@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Wallet, Landmark, Users, ArrowUpRight, ArrowDownLeft, Clock } from 'lucide-react';
+import { Wallet, Landmark, Users, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
@@ -28,13 +28,30 @@ const recentTransactions = [
 ];
 
 const leaderboard = [
-    { name: 'Alex Johnson', referrals: 25, avatar: 'https://placehold.co/40x40.png', hint: 'man face' },
-    { name: 'Maria Garcia', referrals: 21, avatar: 'https://placehold.co/40x40.png', hint: 'woman face' },
-    { name: 'David Smith', referrals: 18, avatar: 'https://placehold.co/40x40.png', hint: 'person glasses' },
-    { name: 'Sophia Wang', referrals: 15, avatar: 'https://placehold.co/40x40.png', hint: 'woman smiling' },
+    { name: 'Alex Johnson', referrals: 25, avatar: 'https://placehold.co/40x40.png', hint: 'man face', rank: 1 },
+    { name: 'Maria Garcia', referrals: 21, avatar: 'https://placehold.co/40x40.png', hint: 'woman face', rank: 2 },
+    { name: 'David Smith', referrals: 18, avatar: 'https://placehold.co/40x40.png', hint: 'person glasses', rank: 3 },
+    { name: 'You', referrals: 17, avatar: 'https://placehold.co/100x100.png', hint: 'person portrait', rank: 4 },
+    { name: 'Sophia Wang', referrals: 15, avatar: 'https://placehold.co/40x40.png', hint: 'woman smiling', rank: 5 },
+    { name: 'Michael Chen', referrals: 12, avatar: 'https://placehold.co/40x40.png', hint: 'man smiling', rank: 6 },
 ];
 
+const currentUser = { name: 'You', referrals: 17 };
+
 export default function DashboardPage() {
+
+    const currentUserIndex = leaderboard.findIndex(u => u.name === currentUser.name);
+    let displayUsers = [];
+    if (currentUserIndex !== -1) {
+        const startIndex = Math.max(0, currentUserIndex - 1);
+        const endIndex = Math.min(leaderboard.length, currentUserIndex + 2);
+        displayUsers = leaderboard.slice(startIndex, endIndex);
+    } else {
+        // Fallback to top 3 if current user is not in the list
+        displayUsers = leaderboard.slice(0, 3);
+    }
+
+
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold font-headline">Dashboard</h1>
@@ -66,8 +83,8 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
              <div className="space-y-4">
-                {leaderboard.map((user, index) => (
-                    <div key={index} className="flex items-center gap-4">
+                {displayUsers.map((user) => (
+                    <div key={user.rank} className={cn("flex items-center gap-4 p-2 rounded-lg", {"bg-primary/10": user.name === currentUser.name})}>
                         <Avatar className="h-9 w-9">
                             <AvatarImage src={user.avatar} alt={user.name} data-ai-hint={user.hint} />
                             <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
@@ -76,7 +93,7 @@ export default function DashboardPage() {
                             <p className="text-sm font-medium leading-none">{user.name}</p>
                             <p className="text-sm text-muted-foreground">{user.referrals} referrals</p>
                         </div>
-                        <div className="font-medium">{`#${index + 1}`}</div>
+                        <div className="font-medium">{`#${user.rank}`}</div>
                     </div>
                 ))}
             </div>
