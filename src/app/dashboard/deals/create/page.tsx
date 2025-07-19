@@ -177,7 +177,7 @@ export default function CreateDealPage() {
                   placeholder="+233 12 345 6789"
                 />
               </div>
-               <p className="text-xs text-muted-foreground pt-2">Provide an email, phone number, or both. We will send an invitation to them to join the deal.</p>
+               <p className="text-xs text-muted-foreground pt-2">We will send an invitation to them to join the deal.</p>
             </form>
           )}
           {step === 3 && (
@@ -186,6 +186,9 @@ export default function CreateDealPage() {
                 <Label htmlFor="deal-amount">Deal Amount (GHS)</Label>
                 <Input id="deal-amount" type="number" placeholder="5000" />
               </div>
+               <p className="text-xs text-muted-foreground pt-2">
+                This amount will be held in escrow once the deal is accepted and funded. Ensure you have sufficient funds in your wallet.
+              </p>
             </form>
           )}
           {step === 4 && (
