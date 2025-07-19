@@ -20,8 +20,8 @@ import { PlusCircle, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
 const walletTransactions = [
   { id: 'WTX001', type: 'Deposit', date: '2023-11-28', amount: 1000, status: 'Completed' },
   { id: 'WTX002', type: 'Withdrawal', date: '2023-11-25', amount: -500, status: 'Completed' },
-  { id: 'WTX003', type: 'Escrow Release', date: '2023-11-22', amount: 3500, status: 'Completed' },
-  { id: 'WTX004', type: 'Escrow Funding', date: '2023-11-20', amount: -8000, status: 'Completed' },
+  { id: 'WTX003', type: 'Release from hold', date: '2023-11-22', amount: 3500, status: 'Completed' },
+  { id: 'WTX004', type: 'Funding for deal', date: '2023-11-20', amount: -8000, status: 'Completed' },
   { id: 'WTX005', type: 'Withdrawal', date: '2023-11-18', amount: -2000, status: 'Pending' },
 ];
 

@@ -35,6 +35,11 @@ const transactions = [
     { id: 'DEAL007', title: 'Cloud Migration', party: 'Serverless Solutions', date: '2023-11-20', amount: 25000, status: 'cancelled' },
 ];
 
+const getStatusText = (status: string) => {
+    if (status === 'in_escrow') return 'On Hold';
+    return status.charAt(0).toUpperCase() + status.slice(1);
+}
+
 export default function TransactionsPage() {
   return (
     <div className="space-y-6">
@@ -83,7 +88,7 @@ export default function TransactionsPage() {
                              'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200': tx.status === 'cancelled',
                         })
                     }>
-                        {tx.status.charAt(0).toUpperCase() + tx.status.slice(1)}
+                        {getStatusText(tx.status)}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-right font-mono">GHS {tx.amount.toLocaleString()}</TableCell>

@@ -88,6 +88,11 @@ export default function DashboardPage() {
         displayUsers = leaderboard.slice(0, 3);
     }
 
+    const getStatusText = (status: string) => {
+        if (status === 'in_escrow') return 'On Hold';
+        return status.replace('_', ' ');
+    }
+
 
   return (
     <div className="space-y-6">
@@ -202,7 +207,7 @@ export default function DashboardPage() {
                             'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': tx.status === 'in_escrow'
                         })
                     }>
-                        {tx.status.replace('_', ' ')}
+                        {getStatusText(tx.status)}
                     </Badge>
                   </TableCell>
                 </TableRow>

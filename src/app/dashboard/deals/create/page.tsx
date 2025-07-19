@@ -187,7 +187,7 @@ export default function CreateDealPage() {
                 <Input id="deal-amount" type="number" placeholder="5000" />
               </div>
                <p className="text-xs text-muted-foreground pt-2">
-                This amount will be held in escrow once the deal is accepted and funded. Ensure you have sufficient funds in your wallet.
+                This amount will be held safely by us once the deal is accepted and funded. Ensure you have sufficient funds in your wallet.
               </p>
             </form>
           )}
