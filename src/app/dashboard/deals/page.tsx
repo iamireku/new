@@ -34,7 +34,7 @@ import { Input } from '@/components/ui/input';
 import { PlusCircle, Search, ListFilter, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const transactionsData = [
+const dealsData = [
     { id: 'DEAL001', title: 'E-commerce Platform Development', party: 'ClientCorp', date: '2023-10-26', amount: 15000, status: 'completed', role: 'seller' },
     { id: 'DEAL002', title: 'Brand Identity Design', party: 'Creative LLC', date: '2023-10-22', amount: 3500, status: 'completed', role: 'buyer' },
     { id: 'DEAL003', title: 'Mobile App UI/UX', party: 'Appify Inc.', date: '2023-11-05', amount: 8000, status: 'in_escrow', role: 'seller' },
@@ -53,14 +53,14 @@ const statusOptions = ['in_escrow', 'funding', 'completed', 'dispute', 'cancelle
 const roleOptions = ['all', 'seller', 'buyer'];
 
 
-export default function TransactionsPage() {
+export default function DealsPage() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilters, setStatusFilters] = useState<string[]>([]);
   const [roleFilter, setRoleFilter] = useState('all');
 
   const handleRowClick = (dealId: string) => {
-    router.push(`/dashboard/transactions/${dealId}`);
+    router.push(`/dashboard/deals/${dealId}`);
   }
 
   const handleStatusFilterChange = (status: string) => {
@@ -71,7 +71,7 @@ export default function TransactionsPage() {
     );
   };
 
-  const filteredTransactions = transactionsData.filter(tx => {
+  const filteredDeals = dealsData.filter(tx => {
     const searchTermLower = searchTerm.toLowerCase();
     const matchesSearch = tx.title.toLowerCase().includes(searchTermLower) || tx.party.toLowerCase().includes(searchTermLower);
     const matchesStatus = statusFilters.length === 0 || statusFilters.includes(tx.status);
@@ -82,7 +82,7 @@ export default function TransactionsPage() {
   return (
     <div className="space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <h1 className="text-3xl font-bold font-headline">Transactions</h1>
+            <h1 className="text-3xl font-bold font-headline">Deals</h1>
             <div className="flex flex-col sm:flex-row gap-2">
                 <Button asChild>
                     <Link href="/dashboard/deals/create">
@@ -99,7 +99,7 @@ export default function TransactionsPage() {
       
       <Card>
         <CardHeader>
-          <CardTitle>Transaction History</CardTitle>
+          <CardTitle>Deal History</CardTitle>
           <CardDescription>A list of all your deals.</CardDescription>
         </CardHeader>
         <CardContent>
@@ -164,7 +164,7 @@ export default function TransactionsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredTransactions.length > 0 ? filteredTransactions.map((tx) => (
+                {filteredDeals.length > 0 ? filteredDeals.map((tx) => (
                   <TableRow 
                       key={tx.id} 
                       onClick={() => handleRowClick(tx.id)}
@@ -176,7 +176,7 @@ export default function TransactionsPage() {
                   >
                     <TableCell className="font-medium">{tx.title}</TableCell>
                     <TableCell className="text-muted-foreground hidden md:table-cell">{tx.party}</TableCell>
-                    <TableCell className="text-muted-foreground hidden md:table-cell">{tx.date}</TableCell>
+                    <TableCell className="text-muted-foreground hidden md-table-cell">{tx.date}</TableCell>
                     <TableCell className="text-center">
                       <Badge variant="secondary" className={
                           cn({
@@ -195,7 +195,7 @@ export default function TransactionsPage() {
                 )) : (
                   <TableRow>
                     <TableCell colSpan={5} className="h-24 text-center">
-                      No transactions found.
+                      No deals found.
                     </TableCell>
                   </TableRow>
                 )}

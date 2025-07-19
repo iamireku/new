@@ -69,7 +69,7 @@ export default function CreateDealPage() {
       title: 'Deal Created!',
       description: 'Your new deal has been sent to the other party.',
     });
-    router.push('/dashboard/transactions');
+    router.push('/dashboard/deals');
   };
 
   const handleAddCriterion = () => {

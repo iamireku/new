@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useMemo } from 'react';
@@ -155,9 +154,9 @@ export default function DealDetailsPage({ params }: { params: { id: string } }) 
 
   return (
     <div className="space-y-6">
-        <Link href="/dashboard/transactions" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+        <Link href="/dashboard/deals" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
             <ArrowLeft className="h-4 w-4" />
-            Back to Transactions
+            Back to Deals
         </Link>
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div className="flex-1">

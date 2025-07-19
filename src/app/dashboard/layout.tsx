@@ -14,11 +14,12 @@ import {
   User,
   LogOut,
   Menu,
+  Handshake,
 } from 'lucide-react';
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { href: '/dashboard/transactions', icon: ArrowLeftRight, label: 'Transactions' },
+  { href: '/dashboard/deals', icon: Handshake, label: 'Deals' },
   { href: '/dashboard/wallet', icon: Wallet, label: 'Wallet' },
   { href: '/dashboard/profile', icon: User, label: 'Profile' },
 ];
@@ -35,7 +36,7 @@ export default function DashboardLayout({
       {navItems.map((item) => (
         <Link key={item.href} href={item.href}>
           <Button
-            variant={pathname === item.href ? 'default' : 'ghost'}
+            variant={pathname.startsWith(item.href) ? 'default' : 'ghost'}
             className="w-full justify-start gap-2"
           >
             <item.icon className="h-4 w-4" />
