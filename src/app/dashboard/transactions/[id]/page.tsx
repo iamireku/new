@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -14,6 +15,15 @@ import { Separator } from '@/components/ui/separator';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { useToast } from '@/hooks/use-toast';
+import {
   Banknote,
   Users,
   Calendar,
@@ -24,10 +34,11 @@ import {
   CheckCircle,
   Truck,
   X,
+  ArrowLeft,
+  BellRing,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
 
 const deal = {
   id: 'DEAL003',
@@ -98,6 +109,28 @@ const statusInfo = getStatusInfo(deal.status);
 
 export default function DealDetailsPage({ params }: { params: { id: string } }) {
   const reversedTimeline = [...deal.timeline].reverse();
+  const { toast } = useToast();
+  const [remindersEnabled, setRemindersEnabled] = useState(false);
+  const [reminderFrequency, setReminderFrequency] = useState('daily');
+
+  const handleRemindersToggle = (enabled: boolean) => {
+    setRemindersEnabled(enabled);
+    toast({
+      title: `Reminders ${enabled ? 'Enabled' : 'Disabled'}`,
+      description: `You will ${enabled ? 'now' : 'no longer'} receive reminders for this deal.`,
+    });
+  };
+  
+  const handleFrequencyChange = (frequency: string) => {
+    setReminderFrequency(frequency);
+    if(remindersEnabled) {
+      toast({
+        title: 'Reminder Frequency Updated',
+        description: `You will now receive reminders ${frequency}.`,
+      });
+    }
+  }
+
 
   return (
     <div className="space-y-6">
@@ -201,6 +234,44 @@ export default function DealDetailsPage({ params }: { params: { id: string } }) 
                 </ul>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center gap-2">
+              <BellRing className="h-5 w-5" />
+              <CardTitle className="text-lg">Reminder Settings</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                    <Label htmlFor="reminders-enabled" className="font-medium">
+                        Enable Reminders
+                    </Label>
+                    <Switch 
+                      id="reminders-enabled" 
+                      checked={remindersEnabled}
+                      onCheckedChange={handleRemindersToggle}
+                    />
+                </div>
+                <div className="space-y-2">
+                   <Label htmlFor="reminder-frequency">Frequency</Label>
+                   <Select
+                    id="reminder-frequency"
+                    value={reminderFrequency}
+                    onValueChange={handleFrequencyChange}
+                    disabled={!remindersEnabled}
+                   >
+                     <SelectTrigger>
+                       <SelectValue placeholder="Select frequency" />
+                     </SelectTrigger>
+                     <SelectContent>
+                       <SelectItem value="daily">Daily</SelectItem>
+                       <SelectItem value="weekly">Weekly</SelectItem>
+                       <SelectItem value="status_change">On Status Change</SelectItem>
+                     </SelectContent>
+                   </Select>
+                </div>
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader>
                 <CardTitle>Messages</CardTitle>
