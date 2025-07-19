@@ -30,10 +30,16 @@ export default function WalletPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-3xl font-bold font-headline">Wallet</h1>
-        <Button>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Add Funds
-        </Button>
+        <div className="flex gap-2">
+            <Button>
+              <PlusCircle className="mr-2 h-4 w-4" />
+              Add Funds
+            </Button>
+            <Button variant="outline">
+              <ArrowUpRight className="mr-2 h-4 w-4" />
+              Withdraw Funds
+            </Button>
+        </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">

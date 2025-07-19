@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Wallet, Landmark, Users, ArrowUpRight, ArrowDownLeft, Copy, Share2, Check } from 'lucide-react';
+import { Wallet, Landmark, Users, ArrowUpRight, ArrowDownLeft, Copy, Share2, Check, PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -90,7 +90,19 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold font-headline">Dashboard</h1>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <h1 className="text-3xl font-bold font-headline">Dashboard</h1>
+        <div className="flex gap-2">
+            <Button>
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Start a New Deal
+            </Button>
+            <Button variant="outline">
+                <PlusCircle className="mr-2 h-4 w-4" />
+                Add Funds
+            </Button>
+        </div>
+      </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
