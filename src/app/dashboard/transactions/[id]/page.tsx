@@ -97,6 +97,8 @@ const getStatusInfo = (status: string) => {
 const statusInfo = getStatusInfo(deal.status);
 
 export default function DealDetailsPage({ params }: { params: { id: string } }) {
+  const reversedTimeline = [...deal.timeline].reverse();
+
   return (
     <div className="space-y-6">
         <Link href="/dashboard/transactions" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
@@ -182,13 +184,13 @@ export default function DealDetailsPage({ params }: { params: { id: string } }) 
             </CardHeader>
             <CardContent>
                 <ul className="space-y-4">
-                    {deal.timeline.map((item, index) => (
+                    {reversedTimeline.map((item, index) => (
                         <li key={index} className="flex gap-4">
                             <div className="flex flex-col items-center">
                                 <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/20 text-primary">
                                     <FileText className="h-4 w-4" />
                                 </div>
-                                {index < deal.timeline.length - 1 && <div className="w-px flex-1 bg-border" />}
+                                {index < reversedTimeline.length - 1 && <div className="w-px flex-1 bg-border" />}
                             </div>
                             <div>
                                 <p className="text-sm font-medium">{item.event}</p>
