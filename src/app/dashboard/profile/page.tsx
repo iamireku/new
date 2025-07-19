@@ -20,11 +20,25 @@ import { Copy, Check, Share2, Sun, Moon, Monitor, AlertTriangle } from 'lucide-r
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+
+const avatars = [
+  { src: 'https://placehold.co/100x100.png?text=A', hint: 'letter A', alt: 'Avatar A' },
+  { src: 'https://placehold.co/100x100.png?text=B', hint: 'letter B', alt: 'Avatar B' },
+  { src: 'https://placehold.co/100x100.png?text=C', hint: 'letter C', alt: 'Avatar C' },
+  { src: 'https://placehold.co/100x100.png?text=D', hint: 'letter D', alt: 'Avatar D' },
+  { src: 'https://placehold.co/100x100.png?text=E', hint: 'letter E', alt: 'Avatar E' },
+  { src: 'https://placehold.co/100x100.png?text=F', hint: 'letter F', alt: 'Avatar F' },
+];
 
 export default function ProfilePage() {
   const [referralCode, setReferralCode] = useState('BETA-USER-123');
   const [isReferralCustomized, setIsReferralCustomized] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [currentAvatar, setCurrentAvatar] = useState(avatars[0]);
+  const [selectedAvatar, setSelectedAvatar] = useState(currentAvatar);
+  const [isAvatarDialogOpen, setIsAvatarDialogOpen] = useState(false);
+
   const { toast } = useToast();
   const { theme, setTheme } = useTheme();
 
@@ -33,6 +47,15 @@ export default function ProfilePage() {
     toast({
       title: 'Referral Code Updated!',
       description: 'Your new code is now active.',
+    });
+  };
+  
+  const handleAvatarSave = () => {
+    setCurrentAvatar(selectedAvatar);
+    setIsAvatarDialogOpen(false);
+    toast({
+        title: 'Avatar Updated!',
+        description: 'Your new profile picture has been saved.',
     });
   };
 
@@ -86,10 +109,41 @@ export default function ProfilePage() {
             <CardContent className="space-y-4">
               <div className="flex items-center gap-4">
                 <Avatar className="h-16 w-16">
-                  <AvatarImage src="https://placehold.co/100x100.png" data-ai-hint="person portrait" />
+                  <AvatarImage src={currentAvatar.src} data-ai-hint={currentAvatar.hint} />
                   <AvatarFallback>U</AvatarFallback>
                 </Avatar>
-                <Button variant="outline">Change Photo</Button>
+                 <Dialog open={isAvatarDialogOpen} onOpenChange={setIsAvatarDialogOpen}>
+                    <DialogTrigger asChild>
+                        <Button variant="outline">Change Photo</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                        <DialogTitle>Choose Your Avatar</DialogTitle>
+                        <DialogDescription>Select a new profile picture from the options below.</DialogDescription>
+                        </DialogHeader>
+                        <div className="grid grid-cols-3 gap-4 py-4">
+                        {avatars.map((avatar, index) => (
+                            <button
+                            key={index}
+                            className={cn(
+                                "rounded-full ring-2 ring-transparent hover:ring-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2",
+                                selectedAvatar.src === avatar.src && "ring-primary"
+                            )}
+                            onClick={() => setSelectedAvatar(avatar)}
+                            >
+                            <Avatar className="h-20 w-20">
+                                <AvatarImage src={avatar.src} data-ai-hint={avatar.hint} alt={avatar.alt} />
+                                <AvatarFallback>{avatar.alt.charAt(avatar.alt.length-1)}</AvatarFallback>
+                            </Avatar>
+                            </button>
+                        ))}
+                        </div>
+                        <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsAvatarDialogOpen(false)}>Cancel</Button>
+                        <Button onClick={handleAvatarSave}>Save</Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="name">Full Name</Label>
