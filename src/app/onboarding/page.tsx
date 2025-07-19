@@ -8,12 +8,19 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Progress } from '@/components/ui/progress';
 import { AppLogo } from '@/components/AppLogo';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, Building, Phone } from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { cn } from '@/lib/utils';
 
-const totalSteps = 4;
+const totalSteps = 5;
+
+type PaymentMethodType = 'bank' | 'mobile_money';
+type MobileMoneyProvider = 'mtn' | 'telecel' | 'airteltigo';
 
 export default function OnboardingPage() {
   const [step, setStep] = useState(1);
+  const [newPaymentType, setNewPaymentType] = useState<PaymentMethodType>('mobile_money');
+  const [momoProvider, setMomoProvider] = useState<MobileMoneyProvider>('mtn');
   const router = useRouter();
 
   const nextStep = () => setStep((prev) => (prev < totalSteps ? prev + 1 : prev));
@@ -37,13 +44,15 @@ export default function OnboardingPage() {
             {step === 1 && 'Welcome to Betweena!'}
             {step === 2 && 'About You'}
             {step === 3 && 'Your Business'}
-            {step === 4 && 'All Set!'}
+            {step === 4 && 'Payment Setup'}
+            {step === 5 && 'All Set!'}
           </CardTitle>
           <CardDescription className="text-center">
             {step === 1 && 'Let\'s set up your account.'}
             {step === 2 && 'This helps us know who you are.'}
             {step === 3 && 'Tell us about your business.'}
-            {step === 4 && 'You are ready to start.'}
+            {step === 4 && 'Add a payment method for withdrawals.'}
+            {step === 5 && 'You are ready to start.'}
           </CardDescription>
         </CardHeader>
         <CardContent className="min-h-[250px]">
@@ -77,6 +86,56 @@ export default function OnboardingPage() {
             </form>
           )}
           {step === 4 && (
+            <div className="space-y-4">
+                 <RadioGroup value={newPaymentType} onValueChange={(val: any) => setNewPaymentType(val)} className="grid grid-cols-2 gap-4">
+                     <Label htmlFor="mobile_money" className={cn('flex items-center gap-2 rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground', newPaymentType === 'mobile_money' && 'border-primary')}>
+                         <RadioGroupItem value="mobile_money" id="mobile_money" />
+                         <Phone className="h-5 w-5"/>
+                         Mobile Money
+                     </Label>
+                      <Label htmlFor="bank" className={cn('flex items-center gap-2 rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground', newPaymentType === 'bank' && 'border-primary')}>
+                         <RadioGroupItem value="bank" id="bank" />
+                         <Building className="h-5 w-5"/>
+                         Bank Account
+                     </Label>
+                 </RadioGroup>
+                 {newPaymentType === 'mobile_money' && (
+                     <div className="space-y-4 p-4 border rounded-md">
+                          <RadioGroup value={momoProvider} onValueChange={(val: any) => setMomoProvider(val)} className="flex gap-4">
+                              <Label htmlFor="mtn" className="flex items-center gap-2 cursor-pointer">
+                                  <RadioGroupItem value="mtn" id="mtn" />
+                                  MTN
+                              </Label>
+                              <Label htmlFor="telecel" className="flex items-center gap-2 cursor-pointer">
+                                  <RadioGroupItem value="telecel" id="telecel" />
+                                  Telecel
+                              </Label>
+                               <Label htmlFor="airteltigo" className="flex items-center gap-2 cursor-pointer">
+                                  <RadioGroupItem value="airteltigo" id="airteltigo" />
+                                  AirtelTigo
+                              </Label>
+                          </RadioGroup>
+                          <div className="space-y-2">
+                              <Label htmlFor="momo-number">Phone Number</Label>
+                              <Input id="momo-number" placeholder="024 123 4567" />
+                          </div>
+                     </div>
+                 )}
+                 {newPaymentType === 'bank' && (
+                     <div className="space-y-4 p-4 border rounded-md">
+                         <div className="space-y-2">
+                              <Label htmlFor="bank-name">Bank</Label>
+                              <Input id="bank-name" placeholder="Fidelity Bank" />
+                          </div>
+                           <div className="space-y-2">
+                              <Label htmlFor="account-number">Account Number</Label>
+                              <Input id="account-number" placeholder="1234567890123" />
+                          </div>
+                     </div>
+                 )}
+              </div>
+          )}
+          {step === 5 && (
             <div className="flex flex-col items-center justify-center text-center space-y-4">
               <CheckCircle className="h-16 w-16 text-green-500" />
               <p className="text-lg font-medium">Your profile is ready!</p>
@@ -87,18 +146,18 @@ export default function OnboardingPage() {
           )}
         </CardContent>
         <CardFooter className="flex justify-between">
-          {step > 1 && step < 4 && (
+          {step > 1 && step < totalSteps && (
             <Button variant="outline" onClick={prevStep}>
               Previous
             </Button>
           )}
           {step === 1 && <div />}
-          {step < 4 && (
+          {step < totalSteps && (
             <Button onClick={nextStep}>
-              Next
+              {step === totalSteps - 1 ? 'Skip & Finish' : 'Next'}
             </Button>
           )}
-          {step === 4 && (
+          {step === totalSteps && (
             <Button className="w-full" onClick={handleFinish}>
               Go to Dashboard
             </Button>

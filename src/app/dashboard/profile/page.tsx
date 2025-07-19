@@ -16,7 +16,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Copy, Check, Share2, Sun, Moon, Monitor, AlertTriangle, Building, Briefcase } from 'lucide-react';
+import { Copy, Check, Share2, Sun, Moon, Monitor, AlertTriangle, Building, Briefcase, PlusCircle, CreditCard, Phone, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
@@ -31,6 +31,28 @@ const avatars = [
   { src: 'https://placehold.co/100x100.png', hint: 'abstract art', alt: 'Avatar F' },
 ];
 
+type PaymentMethodType = 'bank' | 'mobile_money';
+type MobileMoneyProvider = 'mtn' | 'telecel' | 'airteltigo';
+
+interface PaymentMethod {
+  id: string;
+  type: PaymentMethodType;
+  details: {
+    bankName?: string;
+    accountNumber?: string;
+    accountName?: string;
+    provider?: MobileMoneyProvider;
+    phoneNumber?: string;
+    phoneName?: string;
+  };
+}
+
+const initialPaymentMethods: PaymentMethod[] = [
+    { id: 'pm_1', type: 'mobile_money', details: { provider: 'mtn', phoneNumber: '024 123 4567', phoneName: 'User Name' } },
+    { id: 'pm_2', type: 'bank', details: { bankName: 'Fidelity Bank', accountNumber: '**** **** **** 1234', accountName: 'User Name' } },
+];
+
+
 export default function ProfilePage() {
   const [name, setName] = useState('User');
   const [businessName, setBusinessName] = useState('Acme Inc.');
@@ -41,6 +63,12 @@ export default function ProfilePage() {
   const [currentAvatar, setCurrentAvatar] = useState(avatars[0]);
   const [selectedAvatar, setSelectedAvatar] = useState(currentAvatar);
   const [isAvatarDialogOpen, setIsAvatarDialogOpen] = useState(false);
+  
+  const [isAddPaymentDialogOpen, setIsAddPaymentDialogOpen] = useState(false);
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>(initialPaymentMethods);
+  const [newPaymentType, setNewPaymentType] = useState<PaymentMethodType>('mobile_money');
+  const [momoProvider, setMomoProvider] = useState<MobileMoneyProvider>('mtn');
+
 
   const { toast } = useToast();
   const { theme, setTheme } = useTheme();
@@ -61,6 +89,15 @@ export default function ProfilePage() {
         description: 'Your new profile picture has been saved.',
     });
   };
+
+  const handleAddPaymentMethod = () => {
+      // Logic to save payment method would go here
+      setIsAddPaymentDialogOpen(false);
+      toast({
+          title: 'Payment Method Added',
+          description: 'Your new payment method has been saved successfully.'
+      });
+  }
 
   const referralLink = `https://betweena.app/signup?ref=${referralCode}`;
 
@@ -98,8 +135,9 @@ export default function ProfilePage() {
     <div className="space-y-6">
       <h1 className="text-3xl font-bold font-headline">My Profile</h1>
       <Tabs defaultValue="profile">
-        <TabsList>
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="profile">Profile</TabsTrigger>
+          <TabsTrigger value="payments">Payments</TabsTrigger>
           <TabsTrigger value="referral">Referrals</TabsTrigger>
           <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
@@ -184,6 +222,115 @@ export default function ProfilePage() {
               <Button>Save Business Info</Button>
             </CardFooter>
           </Card>
+        </TabsContent>
+        <TabsContent value="payments">
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between">
+                    <div>
+                        <CardTitle>Payment Methods</CardTitle>
+                        <CardDescription>Add and manage your payment methods for withdrawals.</CardDescription>
+                    </div>
+                    <Dialog open={isAddPaymentDialogOpen} onOpenChange={setIsAddPaymentDialogOpen}>
+                        <DialogTrigger asChild>
+                           <Button><PlusCircle className="mr-2"/> Add Method</Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Add New Payment Method</DialogTitle>
+                            </DialogHeader>
+                            <div className="py-4 space-y-4">
+                               <RadioGroup value={newPaymentType} onValueChange={(val: any) => setNewPaymentType(val)} className="grid grid-cols-2 gap-4">
+                                   <Label htmlFor="mobile_money" className={cn('flex items-center gap-2 rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground', newPaymentType === 'mobile_money' && 'border-primary')}>
+                                       <RadioGroupItem value="mobile_money" id="mobile_money" />
+                                       <Phone className="h-5 w-5"/>
+                                       Mobile Money
+                                   </Label>
+                                    <Label htmlFor="bank" className={cn('flex items-center gap-2 rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground', newPaymentType === 'bank' && 'border-primary')}>
+                                       <RadioGroupItem value="bank" id="bank" />
+                                       <Building className="h-5 w-5"/>
+                                       Bank Account
+                                   </Label>
+                               </RadioGroup>
+                               {newPaymentType === 'mobile_money' && (
+                                   <div className="space-y-4 p-4 border rounded-md">
+                                        <RadioGroup value={momoProvider} onValueChange={(val: any) => setMomoProvider(val)} className="flex gap-4">
+                                            <Label htmlFor="mtn" className="flex items-center gap-2 cursor-pointer">
+                                                <RadioGroupItem value="mtn" id="mtn" />
+                                                MTN
+                                            </Label>
+                                            <Label htmlFor="telecel" className="flex items-center gap-2 cursor-pointer">
+                                                <RadioGroupItem value="telecel" id="telecel" />
+                                                Telecel
+                                            </Label>
+                                             <Label htmlFor="airteltigo" className="flex items-center gap-2 cursor-pointer">
+                                                <RadioGroupItem value="airteltigo" id="airteltigo" />
+                                                AirtelTigo
+                                            </Label>
+                                        </RadioGroup>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="momo-number">Phone Number</Label>
+                                            <Input id="momo-number" placeholder="024 123 4567" />
+                                        </div>
+                                         <div className="space-y-2">
+                                            <Label htmlFor="momo-name">Registered Name</Label>
+                                            <Input id="momo-name" placeholder="John Doe" />
+                                        </div>
+                                   </div>
+                               )}
+                               {newPaymentType === 'bank' && (
+                                   <div className="space-y-4 p-4 border rounded-md">
+                                       <div className="space-y-2">
+                                            <Label htmlFor="bank-name">Bank</Label>
+                                            <Input id="bank-name" placeholder="Fidelity Bank" />
+                                        </div>
+                                         <div className="space-y-2">
+                                            <Label htmlFor="account-number">Account Number</Label>
+                                            <Input id="account-number" placeholder="1234567890123" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="account-name">Account Name</Label>
+                                            <Input id="account-name" placeholder="John Doe" />
+                                        </div>
+                                   </div>
+                               )}
+                            </div>
+                            <DialogFooter>
+                                <Button variant="outline" onClick={() => setIsAddPaymentDialogOpen(false)}>Cancel</Button>
+                                <Button onClick={handleAddPaymentMethod}>Save Method</Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                </CardHeader>
+                <CardContent>
+                    <div className="space-y-4">
+                        {paymentMethods.map(method => (
+                             <div key={method.id} className="flex items-center justify-between p-4 border rounded-lg">
+                                <div className="flex items-center gap-4">
+                                    {method.type === 'bank' ? <Building className="h-8 w-8 text-muted-foreground" /> : <Phone className="h-8 w-8 text-muted-foreground" />}
+                                    <div>
+                                        <p className="font-semibold">
+                                            {method.type === 'bank' ? method.details.bankName : `Mobile Money (${method.details.provider?.toUpperCase()})`}
+                                        </p>
+                                        <p className="text-sm text-muted-foreground">
+                                            {method.type === 'bank' ? method.details.accountNumber : method.details.phoneNumber}
+                                        </p>
+                                    </div>
+                                </div>
+                                <Button variant="ghost" size="icon">
+                                    <Trash2 className="h-4 w-4 text-destructive" />
+                                </Button>
+                            </div>
+                        ))}
+
+                        {paymentMethods.length === 0 && (
+                            <div className="text-center text-muted-foreground py-8">
+                                <CreditCard className="mx-auto h-12 w-12" />
+                                <p className="mt-4">You haven't added any payment methods yet.</p>
+                            </div>
+                        )}
+                    </div>
+                </CardContent>
+            </Card>
         </TabsContent>
         <TabsContent value="referral">
           <Card>

@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -15,7 +18,14 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { PlusCircle, ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { PlusCircle, ArrowUpRight, ArrowDownLeft, Building, Phone } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { useToast } from '@/hooks/use-toast';
+import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 const walletTransactions = [
   { id: 'WTX001', type: 'Deposit', date: '2023-11-28', amount: 1000, status: 'Completed' },
@@ -25,7 +35,41 @@ const walletTransactions = [
   { id: 'WTX005', type: 'Withdrawal', date: '2023-11-18', amount: -2000, status: 'Pending' },
 ];
 
+type PaymentMethodType = 'bank' | 'mobile_money';
+type MobileMoneyProvider = 'mtn' | 'telecel' | 'airteltigo';
+
+interface PaymentMethod {
+  id: string;
+  type: PaymentMethodType;
+  details: {
+    bankName?: string;
+    accountNumber?: string;
+    accountName?: string;
+    provider?: MobileMoneyProvider;
+    phoneNumber?: string;
+    phoneName?: string;
+  };
+}
+
+const savedPaymentMethods: PaymentMethod[] = [
+    { id: 'pm_1', type: 'mobile_money', details: { provider: 'mtn', phoneNumber: '024 123 4567', phoneName: 'User Name' } },
+    { id: 'pm_2', type: 'bank', details: { bankName: 'Fidelity Bank', accountNumber: '**** **** **** 1234', accountName: 'User Name' } },
+];
+
+
 export default function WalletPage() {
+    const [isWithdrawDialogOpen, setIsWithdrawDialogOpen] = useState(false);
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(savedPaymentMethods[0]?.id || '');
+    const { toast } = useToast();
+
+    const handleWithdraw = () => {
+        setIsWithdrawDialogOpen(false);
+        toast({
+            title: 'Withdrawal Initiated',
+            description: 'Your request has been received and is being processed.',
+        });
+    }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -35,10 +79,58 @@ export default function WalletPage() {
               <PlusCircle className="mr-2 h-4 w-4" />
               Add Funds
             </Button>
-            <Button variant="outline">
-              <ArrowUpRight className="mr-2 h-4 w-4" />
-              Withdraw Funds
-            </Button>
+            <Dialog open={isWithdrawDialogOpen} onOpenChange={setIsWithdrawDialogOpen}>
+                <DialogTrigger asChild>
+                    <Button variant="outline">
+                      <ArrowUpRight className="mr-2 h-4 w-4" />
+                      Withdraw Funds
+                    </Button>
+                </DialogTrigger>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Withdraw Funds</DialogTitle>
+                        <DialogDescription>Select a payment method and enter the amount to withdraw.</DialogDescription>
+                    </DialogHeader>
+                    <div className="py-4 space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="amount">Amount (GHS)</Label>
+                            <Input id="amount" type="number" placeholder="500.00" />
+                        </div>
+                        <div className="space-y-2">
+                             <Label>Select Payment Method</Label>
+                             {savedPaymentMethods.length > 0 ? (
+                                <RadioGroup value={selectedPaymentMethod} onValueChange={setSelectedPaymentMethod} className="space-y-2">
+                                    {savedPaymentMethods.map(method => (
+                                        <Label key={method.id} htmlFor={method.id} className={cn('flex items-center gap-4 rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground', selectedPaymentMethod === method.id && 'border-primary')}>
+                                            <RadioGroupItem value={method.id} id={method.id}/>
+                                            {method.type === 'bank' ? <Building className="h-6 w-6 text-muted-foreground" /> : <Phone className="h-6 w-6 text-muted-foreground" />}
+                                            <div className="flex-1">
+                                                <p className="font-semibold">
+                                                    {method.type === 'bank' ? method.details.bankName : `Mobile Money (${method.details.provider?.toUpperCase()})`}
+                                                </p>
+                                                <p className="text-sm text-muted-foreground">
+                                                    {method.type === 'bank' ? method.details.accountNumber : method.details.phoneNumber}
+                                                </p>
+                                            </div>
+                                        </Label>
+                                    ))}
+                                </RadioGroup>
+                             ) : (
+                                <div className="text-center text-muted-foreground py-4 border rounded-md">
+                                    <p>No payment methods found.</p>
+                                    <Button variant="link" asChild>
+                                        <Link href="/dashboard/profile?tab=payments">Add a Method</Link>
+                                    </Button>
+                                </div>
+                             )}
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsWithdrawDialogOpen(false)}>Cancel</Button>
+                        <Button onClick={handleWithdraw} disabled={savedPaymentMethods.length === 0}>Confirm Withdrawal</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
       </div>
 
