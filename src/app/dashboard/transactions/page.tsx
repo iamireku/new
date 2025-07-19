@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import {
   Card,
   CardContent,
@@ -39,9 +40,11 @@ export default function TransactionsPage() {
     <div className="space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
             <h1 className="text-3xl font-bold font-headline">Transactions</h1>
-            <Button>
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Start a New Deal
+            <Button asChild>
+                <Link href="/dashboard/deals/create">
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Start a New Deal
+                </Link>
             </Button>
         </div>
       

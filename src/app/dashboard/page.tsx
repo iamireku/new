@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import {
   Card,
   CardContent,
@@ -93,9 +94,11 @@ export default function DashboardPage() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="text-3xl font-bold font-headline">Dashboard</h1>
         <div className="flex gap-2">
-            <Button>
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Start a New Deal
+            <Button asChild>
+                <Link href="/dashboard/deals/create">
+                    <PlusCircle className="mr-2 h-4 w-4" />
+                    Start a New Deal
+                </Link>
             </Button>
             <Button variant="outline">
                 <PlusCircle className="mr-2 h-4 w-4" />
