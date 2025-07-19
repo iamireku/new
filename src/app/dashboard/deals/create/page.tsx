@@ -26,12 +26,15 @@ import {
   Mail,
   Phone,
   FileText,
+  UserCheck,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { cn } from '@/lib/utils';
 
-const totalSteps = 4;
+const totalSteps = 5;
 
 interface Criterion {
   id: number;
@@ -40,6 +43,7 @@ interface Criterion {
 
 export default function CreateDealPage() {
   const [step, setStep] = useState(1);
+  const [role, setRole] = useState<'buyer' | 'seller' | null>(null);
   const [dealTitle, setDealTitle] = useState('');
   const [acceptanceCriteria, setAcceptanceCriteria] = useState<Criterion[]>([
     { id: 1, text: 'Product delivered as described' },
@@ -85,17 +89,21 @@ export default function CreateDealPage() {
   const getStepIcon = (currentStep: number) => {
     switch (currentStep) {
       case 1:
-        return <Info className="h-6 w-6" />;
+        return <UserCheck className="h-6 w-6" />;
       case 2:
-        return <Users className="h-6 w-6" />;
+        return <Info className="h-6 w-6" />;
       case 3:
-        return <Banknote className="h-6 w-6" />;
+        return <Users className="h-6 w-6" />;
       case 4:
+        return <Banknote className="h-6 w-6" />;
+      case 5:
         return <FileText className="h-6 w-6" />;
       default:
         return null;
     }
   };
+
+  const getPronoun = () => (role === 'buyer' ? 'Seller' : 'Buyer');
 
   return (
     <div className="flex w-full justify-center">
@@ -106,22 +114,58 @@ export default function CreateDealPage() {
             {getStepIcon(step)}
             <div className="flex-1">
               <CardTitle className="font-headline">
-                {step === 1 && 'Deal Details'}
-                {step === 2 && 'The Other Person'}
-                {step === 3 && 'Amount and Terms'}
-                {step === 4 && 'Review Your Deal'}
+                {step === 1 && 'Your Role'}
+                {step === 2 && 'Deal Details'}
+                {step === 3 && `The Other Person (${getPronoun()})`}
+                {step === 4 && 'Amount and Terms'}
+                {step === 5 && 'Review Your Deal'}
               </CardTitle>
               <CardDescription>
-                {step === 1 && "What's this deal about?"}
-                {step === 2 && 'Who are you making this deal with?'}
-                {step === 3 && 'How much is the deal for?'}
-                {step === 4 && 'Check the details below before creating the deal.'}
+                {step === 1 && 'Are you the buyer or the seller in this deal?'}
+                {step === 2 && "What's this deal about?"}
+                {step === 3 && `Who are you making this deal with?`}
+                {step === 4 && 'How much is the deal for?'}
+                {step === 5 && 'Check the details below before creating the deal.'}
               </CardDescription>
             </div>
           </div>
         </CardHeader>
         <CardContent className="min-h-[250px]">
           {step === 1 && (
+            <div className="flex items-center justify-center pt-8">
+              <RadioGroup
+                value={role || ''}
+                onValueChange={(value: 'buyer' | 'seller') => setRole(value)}
+                className="grid grid-cols-2 gap-4 w-full max-w-sm"
+              >
+                <Label
+                  htmlFor="buyer"
+                  className={cn(
+                    'flex flex-col items-center justify-center rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground',
+                    role === 'buyer' && 'border-primary'
+                  )}
+                >
+                  <RadioGroupItem value="buyer" id="buyer" className="sr-only" />
+                  <span className="text-2xl mb-2">🛍️</span>
+                  <span className="font-bold">I am the Buyer</span>
+                  <span className="text-xs text-muted-foreground">I am paying for a product or service.</span>
+                </Label>
+                <Label
+                  htmlFor="seller"
+                  className={cn(
+                    'flex flex-col items-center justify-center rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground',
+                    role === 'seller' && 'border-primary'
+                  )}
+                >
+                  <RadioGroupItem value="seller" id="seller" className="sr-only" />
+                  <span className="text-2xl mb-2">📦</span>
+                  <span className="font-bold">I am the Seller</span>
+                  <span className="text-xs text-muted-foreground">I am providing a product or service.</span>
+                </Label>
+              </RadioGroup>
+            </div>
+          )}
+          {step === 2 && (
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="deal-title">Deal Title</Label>
@@ -162,7 +206,7 @@ export default function CreateDealPage() {
               </div>
             </div>
           )}
-          {step === 2 && (
+          {step === 3 && (
             <form className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="party-email">Other Person's Email</Label>
@@ -192,7 +236,7 @@ export default function CreateDealPage() {
                <p className="text-xs text-muted-foreground pt-2">We will send an invitation to them to join the deal.</p>
             </form>
           )}
-          {step === 3 && (
+          {step === 4 && (
             <form className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="deal-amount">Deal Amount (GHS)</Label>
@@ -209,7 +253,7 @@ export default function CreateDealPage() {
               </p>
             </form>
           )}
-          {step === 4 && (
+          {step === 5 && (
             <div className="space-y-6">
                 <div className="space-y-4 rounded-lg border p-4">
                     <h3 className="font-semibold text-lg">{dealTitle || 'Untitled Deal'}</h3>
@@ -227,6 +271,11 @@ export default function CreateDealPage() {
                             <Phone className="h-4 w-4 text-muted-foreground" />
                             <span>{partyPhone}</span>
                         </div>}
+                         <Separator />
+                        <div className="flex items-center gap-2">
+                            <UserCheck className="h-4 w-4 text-muted-foreground" />
+                            <span>You are the <span className="font-semibold capitalize">{role}</span></span>
+                        </div>
                     </div>
                 </div>
 
@@ -249,7 +298,7 @@ export default function CreateDealPage() {
           ) : <div />}
           
           {step < totalSteps && (
-            <Button onClick={nextStep}>
+            <Button onClick={nextStep} disabled={step === 1 && !role}>
               Next
               <ArrowRight className="ml-2" />
             </Button>
