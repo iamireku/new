@@ -96,9 +96,9 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <h1 className="text-3xl font-bold font-headline">Dashboard</h1>
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
             <Button asChild>
                 <Link href="/dashboard/deals/create">
                     <PlusCircle className="mr-2 h-4 w-4" />
@@ -174,46 +174,48 @@ export default function DashboardPage() {
           <CardDescription>Your latest account activity.</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Details</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead className="text-right">Amount</TableHead>
-                <TableHead className="text-center">Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {recentTransactions.map((tx) => (
-                <TableRow key={tx.id}>
-                  <TableCell className="font-medium">{tx.description}</TableCell>
-                   <TableCell>
-                    <div className="flex items-center gap-2">
-                     {tx.type === 'incoming' ? 
-                       <ArrowDownLeft className="h-4 w-4 text-green-500" /> : 
-                       <ArrowUpRight className="h-4 w-4 text-red-500" />
-                     }
-                      <span className="capitalize">{tx.type}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell className={`text-right font-mono ${tx.amount > 0 ? 'text-green-500' : 'text-red-500'}`}>
-                    {tx.amount > 0 ? '+' : ''}GHS {Math.abs(tx.amount).toFixed(2)}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <Badge variant={tx.status === 'completed' ? 'default' : 'secondary'} className={
-                        cn({
-                            'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': tx.status === 'completed',
-                            'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200': tx.status === 'pending',
-                            'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': tx.status === 'in_escrow'
-                        })
-                    }>
-                        {getStatusText(tx.status)}
-                    </Badge>
-                  </TableCell>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Details</TableHead>
+                  <TableHead>Type</TableHead>
+                  <TableHead className="text-right">Amount</TableHead>
+                  <TableHead className="text-center">Status</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {recentTransactions.map((tx) => (
+                  <TableRow key={tx.id}>
+                    <TableCell className="font-medium">{tx.description}</TableCell>
+                     <TableCell>
+                      <div className="flex items-center gap-2">
+                       {tx.type === 'incoming' ? 
+                         <ArrowDownLeft className="h-4 w-4 text-green-500" /> : 
+                         <ArrowUpRight className="h-4 w-4 text-red-500" />
+                       }
+                        <span className="capitalize">{tx.type}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell className={`text-right font-mono ${tx.amount > 0 ? 'text-green-500' : 'text-red-500'}`}>
+                      {tx.amount > 0 ? '+' : ''}GHS {Math.abs(tx.amount).toFixed(2)}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <Badge variant={tx.status === 'completed' ? 'default' : 'secondary'} className={
+                          cn({
+                              'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': tx.status === 'completed',
+                              'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200': tx.status === 'pending',
+                              'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': tx.status === 'in_escrow'
+                          })
+                      }>
+                          {getStatusText(tx.status)}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </div>

@@ -105,13 +105,13 @@ export default function DealDetailsPage({ params }: { params: { id: string } }) 
             <ArrowLeft className="h-4 w-4" />
             Back to Transactions
         </Link>
-        <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
             <div className="flex-1">
                 <h1 className="text-3xl font-bold font-headline">{deal.title}</h1>
                 <p className="text-muted-foreground">Deal ID: {params.id}</p>
             </div>
             <div className="flex items-center gap-2">
-                <Badge variant="secondary" className={statusInfo.color}>
+                <Badge variant="secondary" className={cn("text-base", statusInfo.color)}>
                     {statusInfo.icon}
                     <span>{statusInfo.text}</span>
                 </Badge>
@@ -165,12 +165,12 @@ export default function DealDetailsPage({ params }: { params: { id: string } }) 
                 </div>
               ))}
             </CardContent>
-             <CardFooter className="border-t pt-4">
-                {deal.role === 'buyer' && deal.status === 'in_escrow' && <Button><CheckCircle className="mr-2"/>Release Money</Button>}
-                {deal.role === 'seller' && deal.status === 'in_escrow' && <Button><Truck className="mr-2"/>Mark as Delivered/Completed</Button>}
-                 {deal.status === 'funding' && deal.role === 'buyer' && <Button><Banknote className="mr-2" />Fund Deal</Button>}
+             <CardFooter className="border-t pt-4 flex flex-col sm:flex-row gap-2">
+                {deal.role === 'buyer' && deal.status === 'in_escrow' && <Button className="w-full sm:w-auto"><CheckCircle className="mr-2"/>Release Money</Button>}
+                {deal.role === 'seller' && deal.status === 'in_escrow' && <Button className="w-full sm:w-auto"><Truck className="mr-2"/>Mark as Delivered/Completed</Button>}
+                 {deal.status === 'funding' && deal.role === 'buyer' && <Button className="w-full sm:w-auto"><Banknote className="mr-2" />Fund Deal</Button>}
                  {deal.status !== 'completed' && deal.status !== 'cancelled' && (
-                    <Button variant="outline" className="ml-auto">
+                    <Button variant="outline" className="w-full sm:w-auto sm:ml-auto">
                         <AlertTriangle className="mr-2"/>Raise a Dispute
                     </Button>
                  )}
@@ -187,7 +187,7 @@ export default function DealDetailsPage({ params }: { params: { id: string } }) 
                     {reversedTimeline.map((item, index) => (
                         <li key={index} className="flex gap-4">
                             <div className="flex flex-col items-center">
-                                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/20 text-primary">
+                                <div className={cn("flex h-8 w-8 items-center justify-center rounded-full", index === 0 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground")}>
                                     <FileText className="h-4 w-4" />
                                 </div>
                                 {index < reversedTimeline.length - 1 && <div className="w-px flex-1 bg-border" />}

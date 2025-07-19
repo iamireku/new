@@ -136,7 +136,7 @@ export default function CreateDealPage() {
               <RadioGroup
                 value={role || ''}
                 onValueChange={(value: 'buyer' | 'seller') => setRole(value)}
-                className="grid grid-cols-2 gap-4 w-full max-w-sm"
+                className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-sm"
               >
                 <Label
                   htmlFor="buyer"
@@ -191,14 +191,14 @@ export default function CreateDealPage() {
                       </div>
                     ))}
                  </div>
-                 <div className="flex gap-2 pt-2">
+                 <div className="flex flex-col sm:flex-row gap-2 pt-2">
                     <Input 
                         placeholder="Add a new criterion..."
                         value={newCriterion}
                         onChange={(e) => setNewCriterion(e.target.value)}
                         onKeyDown={(e) => { if(e.key === 'Enter') { e.preventDefault(); handleAddCriterion(); }}}
                     />
-                    <Button type="button" onClick={handleAddCriterion}>
+                    <Button type="button" onClick={handleAddCriterion} className="sm:w-auto w-full">
                         <PlusCircle className="mr-2" />
                         Add
                     </Button>
