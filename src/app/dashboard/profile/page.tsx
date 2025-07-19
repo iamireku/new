@@ -32,6 +32,7 @@ const avatars = [
 ];
 
 export default function ProfilePage() {
+  const [name, setName] = useState('User');
   const [referralCode, setReferralCode] = useState('BETA-USER-123');
   const [isReferralCustomized, setIsReferralCustomized] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -110,7 +111,7 @@ export default function ProfilePage() {
               <div className="flex items-center gap-4">
                 <Avatar className="h-16 w-16">
                   <AvatarImage src={currentAvatar.src} data-ai-hint={currentAvatar.hint} />
-                  <AvatarFallback>U</AvatarFallback>
+                  <AvatarFallback>{name.charAt(0).toUpperCase()}</AvatarFallback>
                 </Avatar>
                  <Dialog open={isAvatarDialogOpen} onOpenChange={setIsAvatarDialogOpen}>
                     <DialogTrigger asChild>
@@ -147,7 +148,7 @@ export default function ProfilePage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="name">Full Name</Label>
-                <Input id="name" defaultValue="User" />
+                <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
