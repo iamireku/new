@@ -164,7 +164,20 @@ export default function CreateDealPage() {
                   placeholder="friend@example.com"
                 />
               </div>
-               <p className="text-xs text-muted-foreground">We will send an invitation to them to join the deal.</p>
+               <div className="my-4 flex items-center">
+                  <div className="flex-grow border-t border-muted" />
+                  <span className="mx-4 flex-shrink text-xs uppercase text-muted-foreground">Or</span>
+                  <div className="flex-grow border-t border-muted" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="party-phone">Other Person's Phone Number</Label>
+                <Input
+                  id="party-phone"
+                  type="tel"
+                  placeholder="+233 12 345 6789"
+                />
+              </div>
+               <p className="text-xs text-muted-foreground pt-2">Provide an email, phone number, or both. We will send an invitation to them to join the deal.</p>
             </form>
           )}
           {step === 3 && (
