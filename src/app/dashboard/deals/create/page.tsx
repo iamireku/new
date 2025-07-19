@@ -22,12 +22,8 @@ import {
   Info,
   Banknote,
   CheckCircle,
-  Sparkles,
-  Loader2,
-  Upload,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { generateDealDescription } from '@/ai/flows/generate-deal-description';
 
 const totalSteps = 4;
 
@@ -35,8 +31,6 @@ export default function CreateDealPage() {
   const [step, setStep] = useState(1);
   const [dealTitle, setDealTitle] = useState('');
   const [dealDescription, setDealDescription] = useState('');
-  const [dealImage, setDealImage] = useState<string | null>(null);
-  const [isGenerating, setIsGenerating] = useState(false);
 
   const router = useRouter();
   const { toast } = useToast();
@@ -45,46 +39,6 @@ export default function CreateDealPage() {
   const prevStep = () => setStep((prev) => (prev > 1 ? prev - 1 : prev));
 
   const progress = (step / totalSteps) * 100;
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setDealImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleGenerateDescription = async () => {
-    if (!dealTitle) {
-      toast({
-        variant: 'destructive',
-        title: 'Title is missing',
-        description: 'Please enter a deal title before generating a description.',
-      });
-      return;
-    }
-
-    setIsGenerating(true);
-    try {
-      const result = await generateDealDescription({
-        dealTitle,
-        imageDataUri: dealImage,
-      });
-      setDealDescription(result);
-    } catch (error) {
-      console.error(error);
-      toast({
-        variant: 'destructive',
-        title: 'Error Generating Description',
-        description: 'Something went wrong. Please try again.',
-      });
-    } finally {
-      setIsGenerating(false);
-    }
-  };
 
   const handleFinish = () => {
     toast({
@@ -146,35 +100,10 @@ export default function CreateDealPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="deal-image">Product Image (Optional)</Label>
-                <div className="flex items-center gap-4">
-                  <Input id="deal-image" type="file" onChange={handleFileChange} accept="image/*" className="flex-1" />
-                  {dealImage && (
-                    <img src={dealImage} alt="Product preview" className="h-16 w-16 rounded-md object-cover" />
-                  )}
-                </div>
-              </div>
-
-              <div className="relative space-y-2">
-                 <div className="flex justify-between items-center">
-                    <Label htmlFor="deal-description">Description</Label>
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleGenerateDescription}
-                        disabled={isGenerating}
-                    >
-                        {isGenerating ? (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        ) : (
-                        <Sparkles className="mr-2 h-4 w-4" />
-                        )}
-                        Auto-write with AI
-                    </Button>
-                 </div>
+                 <Label htmlFor="deal-description">Description</Label>
                 <Textarea
                   id="deal-description"
-                  placeholder="Describe the agreement, deliverables, and terms. Or, let AI write it for you!"
+                  placeholder="Describe the agreement, deliverables, and terms."
                   rows={5}
                   value={dealDescription}
                   onChange={(e) => setDealDescription(e.target.value)}
