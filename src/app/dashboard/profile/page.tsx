@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useTheme } from "next-themes"
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -12,16 +13,19 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Copy, Check, Share2 } from 'lucide-react';
+import { Copy, Check, Share2, Sun, Moon, Monitor } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 export default function ProfilePage() {
   const [referralCode, setReferralCode] = useState('BETA-USER-123');
   const [isReferralCustomized, setIsReferralCustomized] = useState(false);
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
+  const { theme, setTheme } = useTheme();
 
   const handleCustomizeReferral = (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,6 +75,7 @@ export default function ProfilePage() {
         <TabsList>
           <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="referral">Referrals</TabsTrigger>
+          <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
         <TabsContent value="profile">
           <Card>
@@ -141,6 +146,54 @@ export default function ProfilePage() {
               )}
             </form>
           </Card>
+        </TabsContent>
+        <TabsContent value="settings">
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Theme</CardTitle>
+                <CardDescription>Choose how Betweena looks on your device.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <RadioGroup value={theme} onValueChange={setTheme} className="grid sm:grid-cols-3 gap-4">
+                    <Label htmlFor="light" className={cn('flex flex-col items-center justify-center rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground', theme === 'light' && 'border-primary')}>
+                        <RadioGroupItem value="light" id="light" className="sr-only"/>
+                        <Sun className="h-6 w-6 mb-2"/>
+                        <span>Light</span>
+                    </Label>
+                    <Label htmlFor="dark" className={cn('flex flex-col items-center justify-center rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground', theme === 'dark' && 'border-primary')}>
+                        <RadioGroupItem value="dark" id="dark" className="sr-only"/>
+                        <Moon className="h-6 w-6 mb-2"/>
+                        <span>Dark</span>
+                    </Label>
+                     <Label htmlFor="system" className={cn('flex flex-col items-center justify-center rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground', theme === 'system' && 'border-primary')}>
+                        <RadioGroupItem value="system" id="system" className="sr-only"/>
+                        <Monitor className="h-6 w-6 mb-2"/>
+                        <span>System</span>
+                    </Label>
+                </RadioGroup>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle>Password</CardTitle>
+                <CardDescription>Change your password here. After saving, you'll be logged out.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="current-password">Current Password</Label>
+                  <Input id="current-password" type="password" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="new-password">New Password</Label>
+                  <Input id="new-password" type="password" />
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button>Change Password</Button>
+              </CardFooter>
+            </Card>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
