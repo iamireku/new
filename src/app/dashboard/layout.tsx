@@ -35,7 +35,7 @@ export default function DashboardLayout({
   const pathname = usePathname();
 
   const dealsNeedingAttentionCount = dealsData.filter(
-    deal => deal.status === 'funding' || deal.status === 'dispute'
+    deal => deal.status === 'in_review' || deal.status === 'dispute'
   ).length;
 
   const sidebarNav = (

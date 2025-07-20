@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Wallet, Landmark, Users, ArrowUpRight, ArrowDownLeft, Copy, Share2, Check, PlusCircle, Building, Phone, RefreshCw, AlertCircle, Handshake } from 'lucide-react';
+import { Wallet, Landmark, Users, ArrowUpRight, ArrowDownLeft, Copy, Share2, Check, PlusCircle, Building, Phone, RefreshCw, AlertCircle, Handshake, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -82,14 +82,15 @@ export default function DashboardPage() {
     }
 
     const getStatusText = (status: string) => {
-        if (status === 'in_escrow') return 'On Hold';
+        if (status === 'inHolding') return 'On Hold';
+        if (status === 'in_review') return 'In Review';
         return status.replace('_', ' ');
     }
 
     const transactionsToShow = recentTransactions.slice(0, visibleTransactionsCount);
 
     const dealsNeedingAttention = dealsData.filter(
-        deal => deal.status === 'funding' || deal.status === 'dispute'
+        deal => deal.status === 'dispute' || deal.status === 'in_review'
     );
 
 
@@ -163,7 +164,7 @@ export default function DashboardPage() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Your Balance</CardTitle>
+            <CardTitle className="text-sm font-medium font-headline">Your Balance</CardTitle>
             <Wallet className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -173,7 +174,7 @@ export default function DashboardPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Money on Hold</CardTitle>
+            <CardTitle className="text-sm font-medium font-headline">Money on Hold</CardTitle>
             <Landmark className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -183,7 +184,7 @@ export default function DashboardPage() {
         </Card>
         <Card className="md:col-span-2 lg:col-span-1">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Referral Ranks</CardTitle>
+            <CardTitle className="text-sm font-medium font-headline">Referral Ranks</CardTitle>
              <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -219,7 +220,7 @@ export default function DashboardPage() {
       
         <Card>
             <CardHeader>
-                <CardTitle>Deals Needing Your Attention</CardTitle>
+                <CardTitle className="font-headline">Deals Needing Your Attention</CardTitle>
                 <CardDescription>
                     These deals require an action from you to proceed.
                 </CardDescription>
@@ -231,9 +232,9 @@ export default function DashboardPage() {
                             <div key={deal.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 border rounded-lg">
                                 <div className="flex items-center gap-4">
                                      <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
-                                        deal.status === 'funding' ? 'bg-yellow-100 dark:bg-yellow-900/50' : 'bg-red-100 dark:bg-red-900/50'
+                                        deal.status === 'in_review' ? 'bg-purple-100 dark:bg-purple-900/50' : 'bg-red-100 dark:bg-red-900/50'
                                     )}>
-                                        <AlertCircle className={cn(deal.status === 'funding' ? 'text-yellow-500' : 'text-red-500')}/>
+                                        {deal.status === 'in_review' ? <Eye className='text-purple-500' /> : <AlertCircle className='text-red-500'/>}
                                     </div>
                                     <div>
                                         <p className="font-semibold">{deal.title}</p>
@@ -244,7 +245,7 @@ export default function DashboardPage() {
                                 </div>
                                 <Button asChild>
                                     <Link href={`/dashboard/deals/${deal.id}`}>
-                                        {deal.status === 'funding' ? 'Fund Now' : 'View Dispute'}
+                                        {deal.status === 'in_review' ? 'Review Now' : 'View Dispute'}
                                     </Link>
                                 </Button>
                             </div>
@@ -262,7 +263,7 @@ export default function DashboardPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Recent Transactions</CardTitle>
+          <CardTitle className="font-headline">Recent Transactions</CardTitle>
           <CardDescription>Your latest wallet transactions.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -289,7 +290,7 @@ export default function DashboardPage() {
                         <Badge variant={tx.status === 'completed' ? 'default' : 'secondary'} className={cn("mt-1", {
                             'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': tx.status === 'completed',
                             'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200': tx.status === 'pending',
-                            'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': tx.status === 'in_escrow'
+                            'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': tx.status === 'inHolding'
                         })}>
                             {getStatusText(tx.status)}
                         </Badge>

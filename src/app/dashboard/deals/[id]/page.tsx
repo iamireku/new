@@ -29,7 +29,7 @@ import {
   Banknote,
   Users,
   Calendar,
-  ShieldCheck,
+  Lock,
   MessageSquare,
   FileText,
   AlertTriangle,
@@ -45,6 +45,7 @@ import {
   Building,
   Phone,
   FilePenLine,
+  Eye,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -59,17 +60,17 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 
 const getStatusInfo = (status: string) => {
     switch (status) {
-        case 'in_escrow':
+        case 'inHolding':
             return {
                 text: 'On Hold',
                 color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-                icon: <ShieldCheck className="h-4 w-4" />,
+                icon: <Lock className="h-4 w-4" />,
             };
-        case 'funding':
-            return {
-                text: 'Funding',
-                color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-                icon: <Banknote className="h-4 w-4" />,
+        case 'in_review':
+             return {
+                text: 'In Review',
+                color: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
+                icon: <Eye className="h-4 w-4" />,
             };
         case 'dispute':
             return {
@@ -89,6 +90,12 @@ const getStatusInfo = (status: string) => {
                 color: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200',
                 icon: <X className="h-4 w-4" />,
             };
+        case 'delivered':
+            return {
+                text: 'Delivered',
+                color: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
+                icon: <Truck className="h-4 w-4" />,
+            }
         default:
             return { text: 'Unknown', color: 'bg-gray-100 text-gray-800' };
     }
@@ -104,17 +111,11 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
   const [remindersEnabled, setRemindersEnabled] = useState(false);
   const [reminderFigure, setReminderFigure] = useState(1);
   const [reminderPeriod, setReminderPeriod] = useState<Period>('days');
-  const [isAddFundsDialogOpen, setIsAddFundsDialogOpen] = useState(false);
-  const [fundAmount, setFundAmount] = useState<number | string>('');
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(savedPaymentMethods[0]?.id || '');
 
 
   useEffect(() => {
     if (deal) {
       document.title = `${deal.title} - Deal Details`;
-      if (deal.status === 'funding') {
-        setFundAmount(deal.amount);
-      }
     }
   }, [deal]);
 
@@ -122,7 +123,7 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
     return (
         <div className="flex items-center justify-center h-full">
             <Card className="w-full max-w-md p-8 text-center">
-                <CardTitle className="text-2xl">Deal Not Found</CardTitle>
+                <CardTitle className="text-2xl font-headline">Deal Not Found</CardTitle>
                 <CardDescription>The deal you are looking for does not exist or has been removed.</CardDescription>
                 <Button asChild className="mt-4">
                     <Link href="/dashboard/deals">Back to Deals</Link>
@@ -136,7 +137,7 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
   const reversedTimeline = [...deal.timeline].reverse();
 
   const isDealInactive = deal.status === 'completed' || deal.status === 'cancelled';
-  const canAmendDeal = deal.status === 'in_escrow' || deal.status === 'funding';
+  const canAmendDeal = deal.status === 'inHolding';
 
 
   const isReminderInPast = useMemo(() => {
@@ -165,14 +166,6 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
         description: `You will now receive reminders every ${reminderFigure} ${reminderPeriod}.`,
       });
     }
-  }
-
-  const handleAddFunds = () => {
-      setIsAddFundsDialogOpen(false);
-      toast({
-          title: 'Deposit Initialized',
-          description: 'Your request has been received. You will be prompted to confirm the transaction.',
-      });
   }
 
 
@@ -213,7 +206,7 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
             )}
           <Card>
             <CardHeader>
-              <CardTitle>Deal Overview</CardTitle>
+              <CardTitle className="font-headline">Deal Overview</CardTitle>
             </CardHeader>
             <CardContent className="grid gap-4 md:grid-cols-2">
               <div className="flex items-center gap-3">
@@ -248,7 +241,7 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
           </Card>
           <Card>
             <CardHeader>
-              <CardTitle>Acceptance Criteria</CardTitle>
+              <CardTitle className="font-headline">Acceptance Criteria</CardTitle>
               <CardDescription>
                 These items must be completed to release the money.
               </CardDescription>
@@ -264,7 +257,7 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
               ))}
             </CardContent>
              <CardFooter className="border-t pt-4 flex flex-wrap gap-2">
-                {deal.role === 'buyer' && deal.status === 'in_escrow' && (
+                {deal.role === 'buyer' && deal.status === 'in_review' && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button><CheckCircle className="mr-2"/>Release Money</Button>
@@ -283,77 +276,24 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
                     </AlertDialogContent>
                   </AlertDialog>
                 )}
-                {deal.role === 'seller' && deal.status === 'in_escrow' && (
+                {deal.role === 'seller' && deal.status === 'inHolding' && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button><Truck className="mr-2"/>Mark as Delivered/Completed</Button>
+                      <Button><Truck className="mr-2"/>Mark as Delivered</Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Mark as Delivered/Completed?</AlertDialogTitle>
+                        <AlertDialogTitle>Mark as Delivered?</AlertDialogTitle>
                         <AlertDialogDescription>
-                          This will notify the buyer that you have completed your side of the deal. They will then be able to release the money.
+                          This will notify the buyer that you have completed your side of the deal. They will then be able to review and release the money.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction>Yes, Mark as Completed</AlertDialogAction>
+                        <AlertDialogAction>Yes, Mark as Delivered</AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
-                )}
-                {deal.status === 'funding' && deal.role === 'buyer' && (
-                  <Dialog open={isAddFundsDialogOpen} onOpenChange={setIsAddFundsDialogOpen}>
-                      <DialogTrigger asChild>
-                          <Button><Banknote className="mr-2"/>Fund Deal</Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                          <DialogHeader>
-                              <DialogTitle>Fund This Deal</DialogTitle>
-                              <DialogDescription>
-                                  Select a payment method and confirm the amount to fund this deal. You will be prompted to confirm on your device.
-                              </DialogDescription>
-                          </DialogHeader>
-                          <div className="py-4 space-y-4">
-                              <div className="space-y-2">
-                                  <Label htmlFor="amount">Amount (GHS)</Label>
-                                  <Input id="amount" type="number" value={fundAmount} readOnly className="font-bold" />
-                              </div>
-                              <div className="space-y-2">
-                                  <Label>Select Payment Method</Label>
-                                  {savedPaymentMethods.length > 0 ? (
-                                      <RadioGroup value={selectedPaymentMethod} onValueChange={setSelectedPaymentMethod} className="space-y-2">
-                                          {savedPaymentMethods.map(method => (
-                                              <Label key={method.id} htmlFor={method.id} className={cn('flex items-center gap-4 rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground', selectedPaymentMethod === method.id && 'border-primary')}>
-                                                  <RadioGroupItem value={method.id} id={method.id}/>
-                                                  {method.type === 'bank' ? <Building className="h-6 w-6 text-muted-foreground" /> : <Phone className="h-6 w-6 text-muted-foreground" />}
-                                                  <div className="flex-1">
-                                                      <p className="font-semibold">
-                                                          {method.type === 'bank' ? method.details.bankName : `Mobile Money (${method.details.provider?.toUpperCase()})`}
-                                                      </p>
-                                                      <p className="text-sm text-muted-foreground">
-                                                          {method.type === 'bank' ? method.details.accountNumber : method.details.phoneNumber}
-                                                      </p>
-                                                  </div>
-                                              </Label>
-                                          ))}
-                                      </RadioGroup>
-                                  ) : (
-                                      <div className="text-center text-muted-foreground py-4 border rounded-md">
-                                          <p>No payment methods found.</p>
-                                          <Button variant="link" asChild>
-                                              <Link href="/dashboard/profile?tab=payments" onClick={() => setIsAddFundsDialogOpen(false)}>Add a Method</Link>
-                                          </Button>
-                                      </div>
-                                  )}
-                              </div>
-                          </div>
-                          <CardFooter>
-                              <Button variant="outline" onClick={() => setIsAddFundsDialogOpen(false)}>Cancel</Button>
-                              <Button onClick={handleAddFunds} disabled={savedPaymentMethods.length === 0}>Confirm Deposit</Button>
-                          </CardFooter>
-                      </DialogContent>
-                  </Dialog>
                 )}
                  <div className="flex-grow" />
                  {canAmendDeal && (
@@ -397,7 +337,7 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
         <div className="space-y-6 lg:col-span-1">
           <Card>
             <CardHeader>
-              <CardTitle>History</CardTitle>
+              <CardTitle className="font-headline">History</CardTitle>
             </CardHeader>
             <CardContent>
                 <ul className="space-y-4">
@@ -422,7 +362,7 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
           <Card>
             <CardHeader className="flex flex-row items-center gap-2">
               <BellRing className="h-5 w-5" />
-              <CardTitle className="text-lg">Reminder Settings</CardTitle>
+              <CardTitle className="text-lg font-headline">Reminder Settings</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -484,7 +424,7 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
           <Card>
             <CardHeader className="flex items-center gap-2">
                 <MessageSquare className="h-5 w-5"/>
-                <CardTitle>Messages</CardTitle>
+                <CardTitle className="font-headline">Messages</CardTitle>
             </CardHeader>
             <CardContent>
                  <div className="space-y-4 text-sm">

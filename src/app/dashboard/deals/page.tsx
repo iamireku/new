@@ -43,8 +43,11 @@ import { dealsData, savedPaymentMethods, statusOptions, roleOptions, PaymentMeth
 
 
 const getStatusText = (status: string) => {
-    if (status === 'in_escrow') return 'On Hold';
-    return status.charAt(0).toUpperCase() + status.slice(1);
+    switch (status) {
+        case 'inHolding': return 'On Hold';
+        case 'in_review': return 'In Review';
+        default: return status.charAt(0).toUpperCase() + status.slice(1);
+    }
 }
 
 const DEALS_PER_PAGE = 5;
@@ -160,7 +163,7 @@ export default function DealsPage() {
       
       <Card>
         <CardHeader>
-          <CardTitle>Deal History</CardTitle>
+          <CardTitle className="font-headline">Deal History</CardTitle>
           <CardDescription>A list of all your deals.</CardDescription>
         </CardHeader>
         <CardContent>
@@ -231,7 +234,7 @@ export default function DealsPage() {
                       onClick={() => handleRowClick(tx.id)}
                       className={cn(
                           'cursor-pointer',
-                          {'bg-yellow-100/50 dark:bg-yellow-900/20 font-medium': tx.status === 'funding'}, 
+                          {'bg-purple-100/50 dark:bg-purple-900/20 font-medium': tx.status === 'in_review'}, 
                           {'bg-red-100/50 dark:bg-red-900/20 font-medium': tx.status === 'dispute'}
                       )}
                   >
@@ -242,10 +245,11 @@ export default function DealsPage() {
                       <Badge variant="secondary" className={
                           cn({
                               'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': tx.status === 'completed',
-                              'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': tx.status === 'in_escrow',
-                              'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 ring-2 ring-yellow-500/50': tx.status === 'funding',
+                              'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': tx.status === 'inHolding',
+                              'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200 ring-2 ring-purple-500/50': tx.status === 'in_review',
                               'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 ring-2 ring-red-500/50': tx.status === 'dispute',
                               'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200': tx.status === 'cancelled',
+                              'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200': tx.status === 'delivered',
                           })
                       }>
                           {getStatusText(tx.status)}

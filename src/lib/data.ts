@@ -1,8 +1,8 @@
 // /src/lib/data.ts
-import { FileText, UserCheck, ShieldCheck, LucideIcon } from "lucide-react";
+import { FileText, UserCheck, Lock, LucideIcon, Truck, Eye } from "lucide-react";
 
 // Types
-export type DealStatus = 'completed' | 'in_escrow' | 'funding' | 'dispute' | 'cancelled';
+export type DealStatus = 'completed' | 'inHolding' | 'in_review' | 'delivered' | 'dispute' | 'cancelled';
 export type DealRole = 'buyer' | 'seller';
 
 export interface AcceptanceCriterion {
@@ -39,7 +39,7 @@ export interface Deal {
 }
 
 export type TransactionType = 'incoming' | 'outgoing';
-export type TransactionStatus = 'completed' | 'pending' | 'in_escrow';
+export type TransactionStatus = 'completed' | 'pending' | 'inHolding';
 
 export interface Transaction {
   id: string;
@@ -103,8 +103,8 @@ export const dealsData: Deal[] = [
       date: '2023-11-05', 
       deadline: '2023-12-30',
       amount: 8000, 
-      status: 'in_escrow', 
-      role: 'seller',
+      status: 'in_review', 
+      role: 'buyer',
       acceptanceCriteria: [
         { id: 1, text: 'Final designs delivered in Figma', completed: true },
         { id: 2, text: 'All assets exported and shared', completed: true },
@@ -112,17 +112,19 @@ export const dealsData: Deal[] = [
       ],
       timeline: [
         { date: '2023-11-05', event: 'Deal created by You (Seller)', icon: FileText },
-        { date: '2023-11-06', event: 'Appify Inc. accepted the deal', icon: UserCheck },
-        { date: '2023-11-07', event: 'Buyer funded the deal. Money is on hold.', icon: ShieldCheck },
+        { date: '2023-11-06', event: 'Appify Inc. accepted & funded the deal', icon: UserCheck },
+        { date: '2023-11-07', event: 'Funds secured in holding.', icon: Lock },
+        { date: '2023-11-15', event: 'Seller marked as Delivered.', icon: Truck },
+        { date: '2023-11-15', event: 'Deal is now in review by the Buyer.', icon: Eye },
       ],
       messages: [
         { sender: 'Appify Inc.', message: 'Just checking on the status of the prototype. Any updates?', date: '2023-11-14' },
         { sender: 'You', message: 'Hey! Yes, I am just finishing up the final screens. Should be ready for review tomorrow.', date: '2023-11-14' },
       ],
     },
-    { id: 'DEAL004', title: 'SEO & Content Strategy', party: 'Growth Co.', date: '2023-11-10', deadline: '2023-12-15', amount: 2500, status: 'funding', role: 'buyer', acceptanceCriteria: [], timeline: [], messages: [] },
+    { id: 'DEAL004', title: 'SEO & Content Strategy', party: 'Growth Co.', date: '2023-11-10', deadline: '2023-12-15', amount: 2500, status: 'cancelled', role: 'buyer', acceptanceCriteria: [], timeline: [], messages: [] },
     { id: 'DEAL005', title: 'API Integration Services', party: 'ConnectAll', date: '2023-11-12', deadline: '2023-12-20', amount: 6000, status: 'dispute', role: 'seller', acceptanceCriteria: [], timeline: [], messages: [] },
-    { id: 'DEAL006', title: 'Q4 Marketing Campaign', party: 'AdVantage', date: '2023-11-15', deadline: '2024-01-15', amount: 12000, status: 'in_escrow', role: 'buyer', acceptanceCriteria: [], timeline: [], messages: [] },
+    { id: 'DEAL006', title: 'Q4 Marketing Campaign', party: 'AdVantage', date: '2023-11-15', deadline: '2024-01-15', amount: 12000, status: 'inHolding', role: 'seller', acceptanceCriteria: [], timeline: [], messages: [] },
     { id: 'DEAL007', title: 'Cloud Migration', party: 'Serverless Solutions', date: '2023-11-20', deadline: '2024-02-01', amount: 25000, status: 'cancelled', role: 'seller', acceptanceCriteria: [], timeline: [], messages: [] },
 ];
 
@@ -135,7 +137,7 @@ export const recentTransactions: Transaction[] = [
   { id: 'T002', description: 'Marketing Services', party: 'AdVantage', amount: -1200, type: 'outgoing', status: 'pending' },
   { id: 'T003', description: 'Logo Design', party: 'Creative LLC', amount: 750, type: 'incoming', status: 'completed' },
   { id: 'T004', description: 'Software Subscription', party: 'SaaS Inc.', amount: -99, type: 'outgoing', status: 'completed' },
-  { id: 'T005', description: 'Consulting Fee', party: 'Appify Inc.', amount: 5000, type: 'incoming', status: 'in_escrow' },
+  { id: 'T005', description: 'Consulting Fee', party: 'Appify Inc.', amount: 5000, type: 'incoming', status: 'inHolding' },
   { id: 'T006', description: 'Hardware Purchase', party: 'Tech Supply Co.', amount: -850, type: 'outgoing', status: 'completed' },
   { id: 'T007', description: 'Royalty Payment', party: 'Art House', amount: 450, type: 'incoming', status: 'completed' },
 ];
@@ -164,7 +166,7 @@ export const walletTransactions: WalletTransaction[] = [
   { id: 'WTX005', type: 'Withdrawal', date: '2023-11-18', amount: -2000, status: 'Pending', description: 'Withdrawal to Fidelity Bank account ending in 1234.' },
 ];
 
-export const statusOptions = ['in_escrow', 'funding', 'completed', 'dispute', 'cancelled'];
+export const statusOptions = ['inHolding', 'in_review', 'delivered', 'completed', 'dispute', 'cancelled'];
 export const roleOptions = ['all', 'seller', 'buyer'];
 
 export const avatars = [
