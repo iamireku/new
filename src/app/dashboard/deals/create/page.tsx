@@ -29,6 +29,7 @@ import {
   UserCheck,
   UploadCloud,
   ImageIcon,
+  AtSign,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -55,6 +56,7 @@ export default function CreateDealPage() {
   ]);
   const [newCriterion, setNewCriterion] = useState('');
 
+  const [partyId, setPartyId] = useState('');
   const [partyEmail, setPartyEmail] = useState('');
   const [partyPhone, setPartyPhone] = useState('');
   const [dealAmount, setDealAmount] = useState('');
@@ -247,6 +249,24 @@ export default function CreateDealPage() {
           {step === 3 && (
             <form className="space-y-4">
               <div className="space-y-2">
+                  <Label htmlFor="party-id">Other Person's Betweena ID</Label>
+                  <div className="relative">
+                      <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input 
+                          id="party-id"
+                          placeholder="e.g. acme-inc"
+                          className="pl-9"
+                          value={partyId}
+                          onChange={(e) => setPartyId(e.target.value)}
+                      />
+                  </div>
+              </div>
+               <div className="my-4 flex items-center">
+                  <div className="flex-grow border-t border-muted" />
+                  <span className="mx-4 flex-shrink text-xs uppercase text-muted-foreground">Or</span>
+                  <div className="flex-grow border-t border-muted" />
+              </div>
+              <div className="space-y-2">
                 <Label htmlFor="party-email">Other Person's Email</Label>
                 <Input
                   id="party-email"
@@ -271,7 +291,7 @@ export default function CreateDealPage() {
                   onChange={(e) => setPartyPhone(e.target.value)}
                 />
               </div>
-               <p className="text-xs text-muted-foreground pt-2">We will send an invitation to them to join the deal.</p>
+               <p className="text-xs text-muted-foreground pt-2">If the person is not on Betweena, we will send an invitation to them to join the deal.</p>
             </form>
           )}
           {step === 4 && (
@@ -306,7 +326,11 @@ export default function CreateDealPage() {
                             <Banknote className="h-4 w-4 text-muted-foreground" />
                             <span className="font-mono text-base">GHS {parseFloat(dealAmount || '0').toLocaleString()}</span>
                         </div>
-                         {(partyEmail || partyPhone) && <Separator />}
+                         {(partyId || partyEmail || partyPhone) && <Separator />}
+                        {partyId && <div className="flex items-center gap-2">
+                            <AtSign className="h-4 w-4 text-muted-foreground" />
+                            <span>@{partyId}</span>
+                        </div>}
                         {partyEmail && <div className="flex items-center gap-2">
                             <Mail className="h-4 w-4 text-muted-foreground" />
                             <span>{partyEmail}</span>

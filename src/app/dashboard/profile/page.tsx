@@ -16,7 +16,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Copy, Check, Share2, Sun, Moon, Monitor, AlertTriangle, Building, Briefcase, PlusCircle, CreditCard, Phone, Trash2 } from 'lucide-react';
+import { Copy, Check, Share2, Sun, Moon, Monitor, AlertTriangle, Building, Briefcase, PlusCircle, CreditCard, Phone, Trash2, AtSign } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
@@ -33,6 +33,8 @@ const initialPaymentMethods: PaymentMethod[] = [
 
 export default function ProfilePage() {
   const [name, setName] = useState('User');
+  const [betweenaId, setBetweenaId] = useState('user');
+  const [isIdCustomized, setIsIdCustomized] = useState(false);
   const [businessName, setBusinessName] = useState('Acme Inc.');
   const [businessRole, setBusinessRole] = useState('Founder');
   const [selectedIndustry, setSelectedIndustry] = useState('Technology & IT Services');
@@ -53,6 +55,14 @@ export default function ProfilePage() {
 
   const { toast } = useToast();
   const { theme, setTheme } = useTheme();
+
+  const handleIdCustomize = () => {
+    setIsIdCustomized(true);
+    toast({
+        title: 'Betweena ID Updated!',
+        description: 'Your new ID is now active.'
+    });
+  }
 
   const handleCustomizeReferral = () => {
     setIsReferralCustomized(true);
@@ -171,13 +181,46 @@ export default function ProfilePage() {
                 <Label htmlFor="name">Full Name</Label>
                 <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
               </div>
+               <div className="space-y-2">
+                <Label htmlFor="betweena-id">Betweena ID</Label>
+                <div className="relative">
+                    <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"/>
+                    <Input 
+                        id="betweena-id"
+                        className="pl-9"
+                        value={betweenaId} 
+                        onChange={(e) => setBetweenaId(e.target.value)} 
+                        readOnly={isIdCustomized} 
+                    />
+                </div>
+                 {!isIdCustomized && <p className="text-xs text-muted-foreground">You can set your unique Betweena ID once.</p>}
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input id="email" type="email" defaultValue="user@example.com" disabled />
               </div>
             </CardContent>
-            <CardFooter>
+            <CardFooter className="flex justify-between">
               <Button>Save Changes</Button>
+              {!isIdCustomized && (
+                  <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                          <Button variant="outline">Set and Lock ID</Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                          <AlertDialogHeader>
+                              <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                              <AlertDialogDescription>
+                                You can only customize your Betweena ID once. This action cannot be undone.
+                              </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction onClick={handleIdCustomize}>Confirm and Set ID</AlertDialogAction>
+                          </AlertDialogFooter>
+                      </AlertDialogContent>
+                  </AlertDialog>
+              )}
             </CardFooter>
           </Card>
            <Card>
