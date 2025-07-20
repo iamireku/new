@@ -34,6 +34,7 @@ export interface Deal {
   acceptanceCriteria: AcceptanceCriterion[];
   timeline: TimelineEvent[];
   messages: Message[];
+  imageUrl?: string;
 }
 
 export type TransactionType = 'incoming' | 'outgoing';
@@ -81,7 +82,7 @@ export interface PaymentMethod {
 // Mock Data
 export const dealsData: Deal[] = [
     { id: 'DEAL001', title: 'E-commerce Platform Development', party: 'ClientCorp', date: '2023-10-26', deadline: '2023-11-30', amount: 15000, status: 'completed', role: 'seller', acceptanceCriteria: [], timeline: [], messages: [] },
-    { id: 'DEAL002', title: 'Brand Identity Design', party: 'Creative LLC', date: '2023-10-22', deadline: '2023-11-30', amount: 3500, status: 'completed', role: 'buyer', acceptanceCriteria: [], timeline: [], messages: [] },
+    { id: 'DEAL002', title: 'Brand Identity Design', party: 'Creative LLC', date: '2023-10-22', deadline: '2023-11-30', amount: 3500, status: 'completed', role: 'buyer', acceptanceCriteria: [], timeline: [], messages: [], imageUrl: 'https://placehold.co/600x400.png' },
     { 
       id: 'DEAL003', 
       title: 'Mobile App UI/UX', 

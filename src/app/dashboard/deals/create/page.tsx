@@ -27,12 +27,15 @@ import {
   Phone,
   FileText,
   UserCheck,
+  UploadCloud,
+  Image as ImageIcon,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 const totalSteps = 5;
 
@@ -45,6 +48,7 @@ export default function CreateDealPage() {
   const [step, setStep] = useState(1);
   const [role, setRole] = useState<'buyer' | 'seller' | null>(null);
   const [dealTitle, setDealTitle] = useState('');
+  const [dealImage, setDealImage] = useState<string | null>(null);
   const [acceptanceCriteria, setAcceptanceCriteria] = useState<Criterion[]>([
     { id: 1, text: 'Product delivered as described' },
     { id: 2, text: 'Service completed on time' },
@@ -85,6 +89,17 @@ export default function CreateDealPage() {
   const handleRemoveCriterion = (idToRemove: number) => {
     setAcceptanceCriteria(acceptanceCriteria.filter((c) => c.id !== idToRemove));
   };
+  
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setDealImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const getStepIcon = (currentStep: number) => {
     switch (currentStep) {
@@ -122,7 +137,7 @@ export default function CreateDealPage() {
               </CardTitle>
               <CardDescription>
                 {step === 1 && 'Are you the buyer or the seller in this deal?'}
-                {step === 2 && 'Give your deal a clear title.'}
+                {step === 2 && 'Give your deal a clear title and define the terms.'}
                 {step === 3 && `Who are you making this deal with?`}
                 {step === 4 && 'How much is the deal for?'}
                 {step === 5 && 'Check the details below before creating the deal.'}
@@ -175,6 +190,29 @@ export default function CreateDealPage() {
                   value={dealTitle}
                   onChange={(e) => setDealTitle(e.target.value)}
                 />
+              </div>
+
+              <div className="space-y-2">
+                  <Label>Deal Image (Optional)</Label>
+                  {dealImage ? (
+                    <div className="relative group">
+                       <Image src={dealImage} alt="Deal preview" width={200} height={200} className="rounded-md object-cover w-full h-48" />
+                       <Button variant="destructive" size="icon" className="absolute top-2 right-2 h-7 w-7 opacity-0 group-hover:opacity-100" onClick={() => setDealImage(null)}>
+                           <X className="h-4 w-4" />
+                       </Button>
+                    </div>
+                  ) : (
+                    <Label htmlFor="deal-image-upload" className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted">
+                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                            <UploadCloud className="w-8 h-8 mb-2 text-muted-foreground" />
+                            <p className="mb-2 text-sm text-muted-foreground">
+                                <span className="font-semibold">Click to upload</span> or drag and drop
+                            </p>
+                            <p className="text-xs text-muted-foreground">PNG, JPG or GIF (MAX. 800x400px)</p>
+                        </div>
+                        <Input id="deal-image-upload" type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
+                    </Label>
+                  )}
               </div>
 
               <div className="space-y-2">
@@ -257,6 +295,12 @@ export default function CreateDealPage() {
             <div className="space-y-6">
                 <div className="space-y-4 rounded-lg border p-4">
                     <h3 className="font-semibold text-lg">{dealTitle || 'Untitled Deal'}</h3>
+                    {dealImage && (
+                        <div className="flex items-center gap-2">
+                            <ImageIcon className="h-4 w-4 text-muted-foreground"/>
+                            <span>Image has been attached</span>
+                        </div>
+                    )}
                     <div className="grid gap-2 text-sm">
                         <div className="flex items-center gap-2">
                             <Banknote className="h-4 w-4 text-muted-foreground" />

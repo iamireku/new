@@ -46,6 +46,7 @@ import Link from 'next/link';
 import { add, isAfter } from 'date-fns';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { getDealById } from '@/lib/data';
+import Image from 'next/image';
 
 
 const getStatusInfo = (status: string) => {
@@ -168,6 +169,20 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
+            {deal.imageUrl && (
+            <Card>
+                <CardContent className="p-0">
+                    <Image
+                        src={deal.imageUrl}
+                        alt={deal.title}
+                        width={800}
+                        height={400}
+                        className="w-full h-auto object-cover rounded-t-lg"
+                        data-ai-hint="product image"
+                    />
+                </CardContent>
+            </Card>
+            )}
           <Card>
             <CardHeader>
               <CardTitle>Deal Overview</CardTitle>
