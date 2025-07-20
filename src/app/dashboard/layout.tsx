@@ -17,24 +17,13 @@ import {
   Handshake,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { dealsData } from '@/lib/data';
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { href: '/dashboard/deals', icon: Handshake, label: 'Deals' },
   { href: '/dashboard/wallet', icon: Wallet, label: 'Wallet' },
   { href: '/dashboard/profile', icon: User, label: 'Profile' },
-];
-
-// Mock data to simulate fetching deals that need attention.
-// In a real app, this would be fetched from a server.
-const dealsData = [
-    { id: 'DEAL001', title: 'E-commerce Platform Development', party: 'ClientCorp', date: '2023-10-26', amount: 15000, status: 'completed', role: 'seller' },
-    { id: 'DEAL002', title: 'Brand Identity Design', party: 'Creative LLC', date: '2023-10-22', amount: 3500, status: 'completed', role: 'buyer' },
-    { id: 'DEAL003', title: 'Mobile App UI/UX', party: 'Appify Inc.', date: '2023-11-05', amount: 8000, status: 'in_escrow', role: 'seller' },
-    { id: 'DEAL004', title: 'SEO & Content Strategy', party: 'Growth Co.', date: '2023-11-10', amount: 2500, status: 'funding', role: 'buyer' },
-    { id: 'DEAL005', title: 'API Integration Services', party: 'ConnectAll', date: '2023-11-12', amount: 6000, status: 'dispute', role: 'seller' },
-    { id: 'DEAL006', title: 'Q4 Marketing Campaign', party: 'AdVantage', date: '2023-11-15', amount: 12000, status: 'in_escrow', role: 'buyer' },
-    { id: 'DEAL007', title: 'Cloud Migration', party: 'Serverless Solutions', date: '2023-11-20', amount: 25000, status: 'cancelled', role: 'seller' },
 ];
 
 export default function DashboardLayout({

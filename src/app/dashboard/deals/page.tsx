@@ -31,52 +31,19 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { PlusCircle, Search, ListFilter, ChevronDown, Building, Phone } from 'lucide-react';
+import { PlusCircle, Search, ListFilter, ChevronDown, Building, Phone, Handshake } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/hooks/use-toast';
+import { dealsData, savedPaymentMethods, statusOptions, roleOptions, PaymentMethod } from '@/lib/data';
 
-const dealsData = [
-    { id: 'DEAL001', title: 'E-commerce Platform Development', party: 'ClientCorp', date: '2023-10-26', amount: 15000, status: 'completed', role: 'seller' },
-    { id: 'DEAL002', title: 'Brand Identity Design', party: 'Creative LLC', date: '2023-10-22', amount: 3500, status: 'completed', role: 'buyer' },
-    { id: 'DEAL003', title: 'Mobile App UI/UX', party: 'Appify Inc.', date: '2023-11-05', amount: 8000, status: 'in_escrow', role: 'seller' },
-    { id: 'DEAL004', title: 'SEO & Content Strategy', party: 'Growth Co.', date: '2023-11-10', amount: 2500, status: 'funding', role: 'buyer' },
-    { id: 'DEAL005', title: 'API Integration Services', party: 'ConnectAll', date: '2023-11-12', amount: 6000, status: 'dispute', role: 'seller' },
-    { id: 'DEAL006', title: 'Q4 Marketing Campaign', party: 'AdVantage', date: '2023-11-15', amount: 12000, status: 'in_escrow', role: 'buyer' },
-    { id: 'DEAL007', title: 'Cloud Migration', party: 'Serverless Solutions', date: '2023-11-20', amount: 25000, status: 'cancelled', role: 'seller' },
-];
 
 const getStatusText = (status: string) => {
     if (status === 'in_escrow') return 'On Hold';
     return status.charAt(0).toUpperCase() + status.slice(1);
 }
-
-const statusOptions = ['in_escrow', 'funding', 'completed', 'dispute', 'cancelled'];
-const roleOptions = ['all', 'seller', 'buyer'];
-
-type PaymentMethodType = 'bank' | 'mobile_money';
-type MobileMoneyProvider = 'mtn' | 'telecel' | 'airteltigo';
-
-interface PaymentMethod {
-  id: string;
-  type: PaymentMethodType;
-  details: {
-    bankName?: string;
-    accountNumber?: string;
-    accountName?: string;
-    provider?: MobileMoneyProvider;
-    phoneNumber?: string;
-    phoneName?: string;
-  };
-}
-
-const savedPaymentMethods: PaymentMethod[] = [
-    { id: 'pm_1', type: 'mobile_money', details: { provider: 'mtn', phoneNumber: '024 123 4567', phoneName: 'User Name' } },
-    { id: 'pm_2', type: 'bank', details: { bankName: 'Fidelity Bank', accountNumber: '**** **** **** 1234', accountName: 'User Name' } },
-];
-
 
 export default function DealsPage() {
   const router = useRouter();
@@ -282,7 +249,11 @@ export default function DealsPage() {
                 )) : (
                   <TableRow>
                     <TableCell colSpan={5} className="h-24 text-center">
-                      No deals found.
+                        <div className="flex flex-col items-center gap-2">
+                            <Handshake className="h-10 w-10 text-muted-foreground"/>
+                            <p className="font-semibold">No deals found.</p>
+                            <p className="text-muted-foreground text-sm">Try adjusting your search or filter.</p>
+                        </div>
                     </TableCell>
                   </TableRow>
                 )}

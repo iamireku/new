@@ -23,53 +23,13 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { avatars, industries, PaymentMethod, MobileMoneyProvider, PaymentMethodType } from '@/lib/data';
 
-const avatars = [
-  { src: 'https://placehold.co/100x100.png', hint: 'abstract shape', alt: 'Avatar A' },
-  { src: 'https://placehold.co/100x100.png', hint: 'abstract pattern', alt: 'Avatar B' },
-  { src: 'https://placehold.co/100x100.png', hint: 'geometric design', alt: 'Avatar C' },
-  { src: 'https://placehold.co/100x100.png', hint: 'colorful gradient', alt: 'Avatar D' },
-  { src: 'https://placehold.co/100x100.png', hint: 'minimalist logo', alt: 'Avatar E' },
-  { src: 'https://placehold.co/100x100.png', hint: 'abstract art', alt: 'Avatar F' },
-];
-
-type PaymentMethodType = 'bank' | 'mobile_money';
-type MobileMoneyProvider = 'mtn' | 'telecel' | 'airteltigo';
-
-interface PaymentMethod {
-  id: string;
-  type: PaymentMethodType;
-  details: {
-    bankName?: string;
-    accountNumber?: string;
-    accountName?: string;
-    provider?: MobileMoneyProvider;
-    phoneNumber?: string;
-    phoneName?: string;
-  };
-}
 
 const initialPaymentMethods: PaymentMethod[] = [
     { id: 'pm_1', type: 'mobile_money', details: { provider: 'mtn', phoneNumber: '024 123 4567', phoneName: 'User Name' } },
     { id: 'pm_2', type: 'bank', details: { bankName: 'Fidelity Bank', accountNumber: '**** **** **** 1234', accountName: 'User Name' } },
 ];
-
-const industries = [
-    "Agriculture",
-    "Financial Technology (FinTech)",
-    "E-commerce & Retail",
-    "Real Estate & Construction",
-    "Healthcare & Pharmaceuticals",
-    "Education",
-    "Technology & IT Services",
-    "Tourism & Hospitality",
-    "Media & Entertainment",
-    "Manufacturing",
-    "Energy & Mining",
-    "Transportation & Logistics",
-    "Other",
-];
-
 
 export default function ProfilePage() {
   const [name, setName] = useState('User');

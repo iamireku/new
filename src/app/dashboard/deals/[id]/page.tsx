@@ -45,36 +45,8 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { add, isAfter } from 'date-fns';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { getDealById } from '@/lib/data';
 
-
-const deal = {
-  id: 'DEAL003',
-  title: 'Mobile App UI/UX',
-  party: 'Appify Inc.',
-  date: '2023-11-05',
-  deadline: '2023-11-30',
-  amount: 8000,
-  status: 'in_escrow',
-  role: 'seller', // 'buyer' or 'seller'
-  acceptanceCriteria: [
-    { id: 1, text: 'Final designs delivered in Figma', completed: true },
-    { id: 2, text: 'All assets exported and shared', completed: true },
-    { id: 3, text: 'Prototype link provided for review', completed: false },
-  ],
-  timeline: [
-    { date: '2023-11-05', event: 'Deal created by You (Seller)', icon: FileText },
-    { date: '2023-11-06', event: 'Appify Inc. accepted the deal', icon: UserCheckIcon },
-    { date: '2023-11-07', event: 'Buyer funded the deal. Money is on hold.', icon: ShieldCheck },
-  ],
-  messages: [
-    {
-      sender: 'Appify Inc.',
-      message: 'Just checking on the status of the prototype. Any updates?',
-      date: '2023-11-14',
-    },
-    { sender: 'You', message: 'Hey! Yes, I am just finishing up the final screens. Should be ready for review tomorrow.', date: '2023-11-14' },
-  ],
-};
 
 const getStatusInfo = (status: string) => {
     switch (status) {
@@ -113,12 +85,27 @@ const getStatusInfo = (status: string) => {
     }
 };
 
-const statusInfo = getStatusInfo(deal.status);
-
 type Period = 'hours' | 'days' | 'weeks';
 
 export default function DealDetailsPage({ params: paramsPromise }: { params: { id: string } }) {
   const params = use(paramsPromise);
+  const deal = getDealById(params.id);
+
+  if (!deal) {
+    return (
+        <div className="flex items-center justify-center h-full">
+            <Card className="w-full max-w-md p-8 text-center">
+                <CardTitle className="text-2xl">Deal Not Found</CardTitle>
+                <CardDescription>The deal you are looking for does not exist or has been removed.</CardDescription>
+                <Button asChild className="mt-4">
+                    <Link href="/dashboard/deals">Back to Deals</Link>
+                </Button>
+            </Card>
+        </div>
+    );
+  }
+
+  const statusInfo = getStatusInfo(deal.status);
   const reversedTimeline = [...deal.timeline].reverse();
   const { toast } = useToast();
   const [remindersEnabled, setRemindersEnabled] = useState(false);

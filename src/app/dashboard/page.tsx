@@ -27,46 +27,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { recentTransactions, leaderboard, currentUser, savedPaymentMethods, PaymentMethod } from '@/lib/data';
 
-const recentTransactions = [
-  { id: 'T001', description: 'Website Design', amount: 2500, type: 'incoming', status: 'completed' },
-  { id: 'T002', description: 'Marketing Services', amount: -1200, type: 'outgoing', status: 'pending' },
-  { id: 'T003', description: 'Logo Design', amount: 750, type: 'incoming', status: 'completed' },
-  { id: 'T004', description: 'Software Subscription', amount: -99, type: 'outgoing', status: 'completed' },
-  { id: 'T005', description: 'Consulting Fee', amount: 5000, type: 'incoming', status: 'in_escrow' },
-];
-
-const leaderboard = [
-    { name: 'Alex Johnson', referrals: 25, avatar: 'https://placehold.co/40x40.png', hint: 'man face', rank: 1 },
-    { name: 'Maria Garcia', referrals: 21, avatar: 'https://placehold.co/40x40.png', hint: 'woman face', rank: 2 },
-    { name: 'David Smith', referrals: 18, avatar: 'https://placehold.co/40x40.png', hint: 'person glasses', rank: 3 },
-    { name: 'You', referrals: 17, avatar: 'https://placehold.co/100x100.png', hint: 'person portrait', rank: 4 },
-    { name: 'Sophia Wang', referrals: 15, avatar: 'https://placehold.co/40x40.png', hint: 'woman smiling', rank: 5 },
-    { name: 'Michael Chen', referrals: 12, avatar: 'https://placehold.co/40x40.png', hint: 'man smiling', rank: 6 },
-];
-
-const currentUser = { name: 'You', referrals: 17, referralCode: 'BETA-USER-123' };
-
-type PaymentMethodType = 'bank' | 'mobile_money';
-type MobileMoneyProvider = 'mtn' | 'telecel' | 'airteltigo';
-
-interface PaymentMethod {
-  id: string;
-  type: PaymentMethodType;
-  details: {
-    bankName?: string;
-    accountNumber?: string;
-    accountName?: string;
-    provider?: MobileMoneyProvider;
-    phoneNumber?: string;
-    phoneName?: string;
-  };
-}
-
-const savedPaymentMethods: PaymentMethod[] = [
-    { id: 'pm_1', type: 'mobile_money', details: { provider: 'mtn', phoneNumber: '024 123 4567', phoneName: 'User Name' } },
-    { id: 'pm_2', type: 'bank', details: { bankName: 'Fidelity Bank', accountNumber: '**** **** **** 1234', accountName: 'User Name' } },
-];
 
 export default function DashboardPage() {
     const { toast } = useToast();

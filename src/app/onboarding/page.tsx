@@ -13,28 +13,10 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { cn } from '@/lib/utils';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { industries, PaymentMethodType, MobileMoneyProvider } from '@/lib/data';
+
 
 const totalSteps = 5;
-
-type PaymentMethodType = 'bank' | 'mobile_money';
-type MobileMoneyProvider = 'mtn' | 'telecel' | 'airteltigo';
-
-const industries = [
-    "Agriculture",
-    "Financial Technology (FinTech)",
-    "E-commerce & Retail",
-    "Real Estate & Construction",
-    "Healthcare & Pharmaceuticals",
-    "Education",
-    "Technology & IT Services",
-    "Tourism & Hospitality",
-    "Media & Entertainment",
-    "Manufacturing",
-    "Energy & Mining",
-    "Transportation & Logistics",
-    "Other",
-];
-
 
 export default function OnboardingPage() {
   const [step, setStep] = useState(1);
