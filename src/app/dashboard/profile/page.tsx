@@ -357,14 +357,14 @@ export default function ProfilePage() {
                 <CardContent>
                     <div className="space-y-4">
                         {paymentMethods.map(method => (
-                             <div key={method.id} className="flex items-center justify-between p-4 border rounded-lg">
-                                <div className="flex items-center gap-4">
-                                    {method.type === 'bank' ? <Building className="h-8 w-8 text-muted-foreground" /> : <Phone className="h-8 w-8 text-muted-foreground" />}
-                                    <div>
-                                        <p className="font-semibold">
+                             <div key={method.id} className="flex items-center justify-between p-4 border rounded-lg gap-4">
+                                <div className="flex items-center gap-4 flex-1 min-w-0">
+                                    {method.type === 'bank' ? <Building className="h-8 w-8 text-muted-foreground flex-shrink-0" /> : <Phone className="h-8 w-8 text-muted-foreground flex-shrink-0" />}
+                                    <div className="flex-1 min-w-0">
+                                        <p className="font-semibold truncate">
                                             {method.type === 'bank' ? method.details.bankName : `Mobile Money (${method.details.provider?.toUpperCase()})`}
                                         </p>
-                                        <p className="text-sm text-muted-foreground">
+                                        <p className="text-sm text-muted-foreground truncate">
                                             {method.type === 'bank' ? method.details.accountNumber : method.details.phoneNumber}
                                         </p>
                                     </div>
@@ -398,7 +398,7 @@ export default function ProfilePage() {
             <CardContent className="space-y-4">
                {!isReferralCustomized && (
                 <div className="flex items-start gap-3 rounded-lg border border-destructive/50 bg-destructive/5 p-3 text-sm text-destructive">
-                    <AlertTriangle className="h-5 w-5 mt-0.5" />
+                    <AlertTriangle className="h-5 w-5 mt-0.5 flex-shrink-0" />
                     <div>
                         <p className="font-semibold">Warning: This action cannot be undone.</p>
                         <p>Changing your code means you will no longer be credited for deals associated with your old code.</p>
@@ -536,3 +536,4 @@ export default function ProfilePage() {
   );
 }
 
+    

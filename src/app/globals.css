@@ -66,3 +66,12 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .font-headline {
+    font-family: var(--font-headline);
+    font-weight: 700;
+  }
+}
+
+    

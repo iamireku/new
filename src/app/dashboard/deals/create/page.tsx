@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -141,7 +142,7 @@ export default function CreateDealPage() {
                 <div className="flex items-center gap-4">
                     {getStepIcon(step)}
                     <div className="flex-1">
-                        <CardTitle className="font-headline">
+                        <CardTitle>
                             {step === 1 && 'Your Role'}
                             {step === 2 && (role === 'buyer' ? "What are you buying?" : "What are you selling?")}
                             {step === 3 && `The Other Person (${getPronoun()})`}
@@ -300,13 +301,17 @@ export default function CreateDealPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="party-email">Other Person's Email</Label>
-                <Input
-                  id="party-email"
-                  type="email"
-                  placeholder="friend@example.com"
-                  value={partyEmail}
-                  onChange={(e) => setPartyEmail(e.target.value)}
-                />
+                <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="party-email"
+                      type="email"
+                      placeholder="friend@example.com"
+                      className="pl-9"
+                      value={partyEmail}
+                      onChange={(e) => setPartyEmail(e.target.value)}
+                    />
+                </div>
               </div>
                <div className="my-4 flex items-center">
                   <div className="flex-grow border-t border-muted" />
@@ -315,13 +320,17 @@ export default function CreateDealPage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="party-phone">Other Person's Phone Number</Label>
-                <Input
-                  id="party-phone"
-                  type="tel"
-                  placeholder="+233 12 345 6789"
-                  value={partyPhone}
-                  onChange={(e) => setPartyPhone(e.target.value)}
-                />
+                <div className="relative">
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="party-phone"
+                      type="tel"
+                      placeholder="+233 12 345 6789"
+                      className="pl-9"
+                      value={partyPhone}
+                      onChange={(e) => setPartyPhone(e.target.value)}
+                    />
+                </div>
               </div>
                <p className="text-xs text-muted-foreground pt-2">If the person is not on Betweena, we will send an invitation to them to join the deal.</p>
             </form>
@@ -415,3 +424,5 @@ export default function CreateDealPage() {
     </div>
   );
 }
+
+    

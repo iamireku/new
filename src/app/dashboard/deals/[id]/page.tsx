@@ -263,11 +263,11 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
                 </div>
               ))}
             </CardContent>
-             <CardFooter className="border-t pt-4 flex flex-col sm:flex-row gap-2">
+             <CardFooter className="border-t pt-4 flex flex-wrap gap-2">
                 {deal.role === 'buyer' && deal.status === 'in_escrow' && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button className="w-full sm:w-auto"><CheckCircle className="mr-2"/>Release Money</Button>
+                      <Button><CheckCircle className="mr-2"/>Release Money</Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
@@ -286,7 +286,7 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
                 {deal.role === 'seller' && deal.status === 'in_escrow' && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button className="w-full sm:w-auto"><Truck className="mr-2"/>Mark as Delivered/Completed</Button>
+                      <Button><Truck className="mr-2"/>Mark as Delivered/Completed</Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
@@ -305,7 +305,7 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
                 {deal.status === 'funding' && deal.role === 'buyer' && (
                   <Dialog open={isAddFundsDialogOpen} onOpenChange={setIsAddFundsDialogOpen}>
                       <DialogTrigger asChild>
-                          <Button className="w-full sm:w-auto"><Banknote className="mr-2"/>Fund Deal</Button>
+                          <Button><Banknote className="mr-2"/>Fund Deal</Button>
                       </DialogTrigger>
                       <DialogContent>
                           <DialogHeader>
@@ -360,7 +360,7 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
                     <TooltipProvider>
                         <Tooltip>
                             <TooltipTrigger asChild>
-                                <Button variant="outline" className="w-full sm:w-auto" disabled>
+                                <Button variant="outline" disabled>
                                     <FilePenLine className="mr-2"/>Amend Deal
                                 </Button>
                             </TooltipTrigger>
@@ -373,7 +373,7 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
                  {!isDealInactive && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button variant="outline" className="w-full sm:w-auto">
+                      <Button variant="outline">
                           <AlertTriangle className="mr-2"/>Raise a Dispute
                       </Button>
                     </AlertDialogTrigger>
@@ -502,3 +502,5 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
     </div>
   );
 }
+
+    
