@@ -170,8 +170,8 @@ export default function DashboardPage() {
       
       <Card>
         <CardHeader>
-          <CardTitle>Recent Money Moves</CardTitle>
-          <CardDescription>Your latest account activity.</CardDescription>
+          <CardTitle>Recent Transactions</CardTitle>
+          <CardDescription>Your latest wallet transactions.</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
