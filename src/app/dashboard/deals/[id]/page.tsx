@@ -192,15 +192,18 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
         <div className="space-y-6 lg:col-span-2">
             {deal.imageUrl && (
             <Card>
-                <CardContent className="p-0">
+                <CardContent className="p-0 relative">
                     <Image
                         src={deal.imageUrl}
                         alt={deal.title}
                         width={800}
                         height={400}
-                        className="w-full h-auto object-cover rounded-t-lg"
+                        className={cn("w-full h-auto object-cover rounded-t-lg", { "opacity-50": isDealInactive })}
                         data-ai-hint="product image"
                     />
+                     {isDealInactive && (
+                        <div className="absolute inset-0 bg-black/20 rounded-t-lg" />
+                    )}
                 </CardContent>
             </Card>
             )}
@@ -260,13 +263,13 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
                 {deal.role === 'buyer' && deal.status === 'in_review' && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button><CheckCircle className="mr-2"/>Release Money</Button>
+                      <Button><CheckCircle className="mr-2"/>Accept & Release Money</Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
                         <AlertDialogTitle>Are you sure you want to release the money?</AlertDialogTitle>
                         <AlertDialogDescription>
-                          This action cannot be undone. The money will be sent to the seller. Make sure all acceptance criteria have been met.
+                          This action cannot be undone. The funds will be sent to the seller. Please ensure all acceptance criteria have been met to your satisfaction.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -279,13 +282,13 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
                 {deal.role === 'seller' && deal.status === 'inHolding' && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button><Truck className="mr-2"/>Mark as Delivered</Button>
+                      <Button><Truck className="mr-2"/>I Have Delivered</Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Mark as Delivered?</AlertDialogTitle>
+                        <AlertDialogTitle>Confirm Delivery?</AlertDialogTitle>
                         <AlertDialogDescription>
-                          This will notify the buyer that you have completed your side of the deal. They will then be able to review and release the money.
+                          This will notify the buyer that you have completed your side of the deal. The deal will move to the "In Review" stage, and the buyer will be prompted to release the funds.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
