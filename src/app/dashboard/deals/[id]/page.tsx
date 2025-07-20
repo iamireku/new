@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, use } from 'react';
 import {
   Card,
   CardContent,
@@ -117,7 +117,8 @@ const statusInfo = getStatusInfo(deal.status);
 
 type Period = 'hours' | 'days' | 'weeks';
 
-export default function DealDetailsPage({ params }: { params: { id: string } }) {
+export default function DealDetailsPage({ params: paramsPromise }: { params: { id: string } }) {
+  const params = use(paramsPromise);
   const reversedTimeline = [...deal.timeline].reverse();
   const { toast } = useToast();
   const [remindersEnabled, setRemindersEnabled] = useState(false);
