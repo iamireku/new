@@ -524,6 +524,10 @@ export default function ProfilePage() {
                   <Label htmlFor="new-password">New Password</Label>
                   <Input id="new-password" type="password" />
                 </div>
+                <div className="space-y-2">
+                  <Label htmlFor="confirm-new-password">Confirm New Password</Label>
+                  <Input id="confirm-new-password" type="password" />
+                </div>
               </CardContent>
               <CardFooter>
                 <Button>Change Password</Button>
