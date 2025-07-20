@@ -23,6 +23,9 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(1);
   const [newPaymentType, setNewPaymentType] = useState<PaymentMethodType>('mobile_money');
   const [momoProvider, setMomoProvider] = useState<MobileMoneyProvider>('mtn');
+  const [momoNumber, setMomoNumber] = useState('');
+  const [momoName, setMomoName] = useState('');
+  const [isFetchingName, setIsFetchingName] = useState(false);
   const [selectedIndustry, setSelectedIndustry] = useState('');
   const [customIndustry, setCustomIndustry] = useState('');
   const router = useRouter();
@@ -35,6 +38,18 @@ export default function OnboardingPage() {
   const handleFinish = () => {
     router.push('/dashboard');
   };
+  
+  const handleFetchName = () => {
+    if (momoNumber.length >= 9) { // Simple validation for phone number length
+      setIsFetchingName(true);
+      setMomoName('');
+      setTimeout(() => {
+        setMomoName('User Name'); // Simulate fetched name
+        setIsFetchingName(false);
+      }, 1500); // Simulate network delay
+    }
+  };
+
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-secondary p-4">
@@ -153,11 +168,25 @@ export default function OnboardingPage() {
                           </RadioGroup>
                           <div className="space-y-2">
                               <Label htmlFor="momo-number">Phone Number</Label>
-                              <Input id="momo-number" placeholder="024 123 4567" />
+                              <Input 
+                                id="momo-number" 
+                                placeholder="024 123 4567" 
+                                value={momoNumber}
+                                onChange={(e) => setMomoNumber(e.target.value)}
+                                onBlur={handleFetchName}
+                              />
                           </div>
                            <div className="space-y-2">
                               <Label htmlFor="momo-number-confirm">Confirm Phone Number</Label>
                               <Input id="momo-number-confirm" placeholder="024 123 4567" />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="momo-name">Registered Name</Label>
+                            <Input 
+                                id="momo-name" 
+                                value={isFetchingName ? 'Verifying...' : momoName} 
+                                disabled 
+                            />
                           </div>
                      </div>
                  )}
@@ -174,6 +203,10 @@ export default function OnboardingPage() {
                            <div className="space-y-2">
                               <Label htmlFor="account-number-confirm">Confirm Account Number</Label>
                               <Input id="account-number-confirm" placeholder="1234567890123" />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="account-name">Account Name</Label>
+                            <Input id="account-name" placeholder="John Doe" />
                           </div>
                      </div>
                  )}

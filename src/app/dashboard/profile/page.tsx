@@ -1,7 +1,7 @@
 // /src/app/dashboard/profile/page.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTheme } from "next-themes"
 import { Button } from '@/components/ui/button';
 import {
@@ -52,6 +52,9 @@ export default function ProfilePage() {
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>(initialPaymentMethods);
   const [newPaymentType, setNewPaymentType] = useState<PaymentMethodType>('mobile_money');
   const [momoProvider, setMomoProvider] = useState<MobileMoneyProvider>('mtn');
+  const [momoNumber, setMomoNumber] = useState('');
+  const [momoName, setMomoName] = useState('');
+  const [isFetchingName, setIsFetchingName] = useState(false);
 
 
   const { toast } = useToast();
@@ -90,6 +93,18 @@ export default function ProfilePage() {
           description: 'Your new payment method has been saved successfully.'
       });
   }
+  
+  const handleFetchName = () => {
+    if (momoNumber.length >= 9) { // Simple validation for phone number length
+      setIsFetchingName(true);
+      setMomoName('');
+      setTimeout(() => {
+        setMomoName('User Name'); // Simulate fetched name
+        setIsFetchingName(false);
+      }, 1500); // Simulate network delay
+    }
+  };
+
 
   const referralLink = `https://betweena.app/signup?ref=${referralCode}`;
 
@@ -322,7 +337,13 @@ export default function ProfilePage() {
                                         </RadioGroup>
                                         <div className="space-y-2">
                                             <Label htmlFor="momo-number">Phone Number</Label>
-                                            <Input id="momo-number" placeholder="024 123 4567" />
+                                            <Input 
+                                                id="momo-number" 
+                                                placeholder="024 123 4567" 
+                                                value={momoNumber}
+                                                onChange={(e) => setMomoNumber(e.target.value)}
+                                                onBlur={handleFetchName}
+                                            />
                                         </div>
                                          <div className="space-y-2">
                                             <Label htmlFor="momo-number-confirm">Confirm Phone Number</Label>
@@ -330,7 +351,11 @@ export default function ProfilePage() {
                                         </div>
                                          <div className="space-y-2">
                                             <Label htmlFor="momo-name">Registered Name</Label>
-                                            <Input id="momo-name" placeholder="John Doe" />
+                                            <Input 
+                                                id="momo-name" 
+                                                value={isFetchingName ? 'Verifying...' : momoName} 
+                                                disabled 
+                                            />
                                         </div>
                                    </div>
                                )}
