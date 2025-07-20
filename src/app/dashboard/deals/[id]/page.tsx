@@ -43,6 +43,7 @@ import {
   PlusCircle,
   Building,
   Phone,
+  FilePenLine,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -52,6 +53,7 @@ import { getDealById, savedPaymentMethods } from '@/lib/data';
 import Image from 'next/image';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 
 const getStatusInfo = (status: string) => {
@@ -133,6 +135,8 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
   const reversedTimeline = [...deal.timeline].reverse();
 
   const isDealInactive = deal.status === 'completed' || deal.status === 'cancelled';
+  const canAmendDeal = deal.status === 'in_escrow' || deal.status === 'funding';
+
 
   const isReminderInPast = useMemo(() => {
     if (!deal.deadline || !remindersEnabled || reminderFigure <= 0) return false;
@@ -350,10 +354,25 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
                       </DialogContent>
                   </Dialog>
                 )}
-                 {deal.status !== 'completed' && deal.status !== 'cancelled' && (
+                 <div className="flex-grow" />
+                 {canAmendDeal && (
+                    <TooltipProvider>
+                        <Tooltip>
+                            <TooltipTrigger asChild>
+                                <Button variant="outline" className="w-full sm:w-auto" disabled>
+                                    <FilePenLine className="mr-2"/>Amend Deal
+                                </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>This feature is coming soon!</p>
+                            </TooltipContent>
+                        </Tooltip>
+                    </TooltipProvider>
+                 )}
+                 {!isDealInactive && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button variant="outline" className="w-full sm:w-auto sm:ml-auto">
+                      <Button variant="outline" className="w-full sm:w-auto">
                           <AlertTriangle className="mr-2"/>Raise a Dispute
                       </Button>
                     </AlertDialogTrigger>
@@ -482,3 +501,5 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
     </div>
   );
 }
+
+    
