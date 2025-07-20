@@ -230,7 +230,9 @@ export default function DashboardPage() {
                     </div>
                     <div className="flex-1">
                         <p className="font-semibold">{tx.description}</p>
-                        <p className="text-sm text-muted-foreground capitalize">{tx.type}</p>
+                        <p className="text-sm text-muted-foreground">
+                            {tx.type === 'incoming' ? 'From' : 'To'}: {tx.party}
+                        </p>
                     </div>
                     <div className="text-right">
                         <p className={cn("font-mono font-semibold", tx.amount > 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>

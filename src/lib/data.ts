@@ -43,6 +43,7 @@ export type TransactionStatus = 'completed' | 'pending' | 'in_escrow';
 export interface Transaction {
   id: string;
   description: string;
+  party: string;
   amount: number;
   type: TransactionType;
   status: TransactionStatus;
@@ -118,11 +119,11 @@ export const getDealById = (id: string): Deal | undefined => {
 }
 
 export const recentTransactions: Transaction[] = [
-  { id: 'T001', description: 'Website Design', amount: 2500, type: 'incoming', status: 'completed' },
-  { id: 'T002', description: 'Marketing Services', amount: -1200, type: 'outgoing', status: 'pending' },
-  { id: 'T003', description: 'Logo Design', amount: 750, type: 'incoming', status: 'completed' },
-  { id: 'T004', description: 'Software Subscription', amount: -99, type: 'outgoing', status: 'completed' },
-  { id: 'T005', description: 'Consulting Fee', amount: 5000, type: 'incoming', status: 'in_escrow' },
+  { id: 'T001', description: 'Website Design', party: 'ClientCorp', amount: 2500, type: 'incoming', status: 'completed' },
+  { id: 'T002', description: 'Marketing Services', party: 'AdVantage', amount: -1200, type: 'outgoing', status: 'pending' },
+  { id: 'T003', description: 'Logo Design', party: 'Creative LLC', amount: 750, type: 'incoming', status: 'completed' },
+  { id: 'T004', description: 'Software Subscription', party: 'SaaS Inc.', amount: -99, type: 'outgoing', status: 'completed' },
+  { id: 'T005', description: 'Consulting Fee', party: 'Appify Inc.', amount: 5000, type: 'incoming', status: 'in_escrow' },
 ];
 
 export const leaderboard: LeaderboardUser[] = [
