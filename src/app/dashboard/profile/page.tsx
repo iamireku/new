@@ -21,6 +21,7 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
 
 const avatars = [
   { src: 'https://placehold.co/100x100.png', hint: 'abstract shape', alt: 'Avatar A' },
@@ -57,6 +58,8 @@ export default function ProfilePage() {
   const [name, setName] = useState('User');
   const [businessName, setBusinessName] = useState('Acme Inc.');
   const [businessRole, setBusinessRole] = useState('Founder');
+  const [industry, setIndustry] = useState('Technology');
+  const [mainProducts, setMainProducts] = useState('Web Development, UI/UX Design, SEO Services');
   const [referralCode, setReferralCode] = useState('BETA-USER-123');
   const [isReferralCustomized, setIsReferralCustomized] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -216,6 +219,14 @@ export default function ProfilePage() {
               <div className="space-y-2">
                 <Label htmlFor="business-email">Business Email</Label>
                 <Input id="business-email" type="email" defaultValue="contact@acme.com" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="industry">Industry</Label>
+                <Input id="industry" value={industry} onChange={(e) => setIndustry(e.target.value)} placeholder="e.g. Technology, Design, Marketing" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="main-products">Main Products/Services</Label>
+                <Textarea id="main-products" value={mainProducts} onChange={(e) => setMainProducts(e.target.value)} placeholder="e.g. Web Development, UI/UX Design, SEO Services" />
               </div>
             </CardContent>
             <CardFooter>

@@ -11,6 +11,7 @@ import { AppLogo } from '@/components/AppLogo';
 import { CheckCircle, Building, Phone } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { cn } from '@/lib/utils';
+import { Textarea } from '@/components/ui/textarea';
 
 const totalSteps = 5;
 
@@ -82,6 +83,14 @@ export default function OnboardingPage() {
               <div className="space-y-2">
                 <Label htmlFor="role">Your Role</Label>
                 <Input id="role" placeholder="Founder, CEO, etc." />
+              </div>
+               <div className="space-y-2">
+                <Label htmlFor="industry">Industry</Label>
+                <Input id="industry" placeholder="e.g. Technology, Design, Marketing" />
+              </div>
+               <div className="space-y-2">
+                <Label htmlFor="products">Main Products/Services</Label>
+                <Textarea id="products" placeholder="e.g. Web Development, UI/UX Design, SEO Services" />
               </div>
             </form>
           )}
