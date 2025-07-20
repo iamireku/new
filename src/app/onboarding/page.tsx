@@ -167,6 +167,10 @@ export default function OnboardingPage() {
                               <Label htmlFor="account-number">Account Number</Label>
                               <Input id="account-number" placeholder="1234567890123" />
                           </div>
+                           <div className="space-y-2">
+                              <Label htmlFor="account-number-confirm">Confirm Account Number</Label>
+                              <Input id="account-number-confirm" placeholder="1234567890123" />
+                          </div>
                      </div>
                  )}
               </div>
