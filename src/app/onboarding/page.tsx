@@ -42,9 +42,9 @@ export default function OnboardingPage() {
           <Progress value={progress} className="mb-4" />
           <CardTitle className="text-center font-headline">
             {step === 1 && 'Welcome to Betweena!'}
-            {step === 2 && 'About You'}
-            {step === 3 && 'Your Business'}
-            {step === 4 && 'Payment Setup'}
+            {step === 2 && 'About You (Optional)'}
+            {step === 3 && 'Your Business (Optional)'}
+            {step === 4 && 'Payment Setup (Optional)'}
             {step === 5 && 'All Set!'}
           </CardTitle>
           <CardDescription className="text-center">
@@ -145,23 +145,31 @@ export default function OnboardingPage() {
             </div>
           )}
         </CardContent>
-        <CardFooter className="flex justify-between">
-          {step > 1 && step < totalSteps && (
-            <Button variant="outline" onClick={prevStep}>
-              Previous
-            </Button>
-          )}
-          {step === 1 && <div />}
-          {step < totalSteps && (
-            <Button onClick={nextStep}>
-              {step === totalSteps - 1 ? 'Skip & Finish' : 'Next'}
-            </Button>
-          )}
-          {step === totalSteps && (
-            <Button className="w-full" onClick={handleFinish}>
-              Go to Dashboard
-            </Button>
-          )}
+        <CardFooter className="flex justify-between items-center">
+          <div>
+            {step > 1 && step < totalSteps && (
+              <Button variant="outline" onClick={prevStep}>
+                Previous
+              </Button>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+             {(step === 2 || step === 3) && (
+                <Button variant="outline" onClick={nextStep}>
+                    Skip for now
+                </Button>
+             )}
+            {step < totalSteps && (
+              <Button onClick={nextStep}>
+                {step === totalSteps - 1 ? 'Skip & Finish' : 'Next'}
+              </Button>
+            )}
+            {step === totalSteps && (
+              <Button className="w-full" onClick={handleFinish}>
+                Go to Dashboard
+              </Button>
+            )}
+          </div>
         </CardFooter>
       </Card>
     </div>
