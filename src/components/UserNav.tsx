@@ -18,6 +18,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
+  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { LogOut, User, Settings, CreditCard, Sun, Moon, Monitor } from 'lucide-react';
 import React from 'react';
