@@ -325,6 +325,10 @@ export default function ProfilePage() {
                                             <Input id="momo-number" placeholder="024 123 4567" />
                                         </div>
                                          <div className="space-y-2">
+                                            <Label htmlFor="momo-number-confirm">Confirm Phone Number</Label>
+                                            <Input id="momo-number-confirm" placeholder="024 123 4567" />
+                                        </div>
+                                         <div className="space-y-2">
                                             <Label htmlFor="momo-name">Registered Name</Label>
                                             <Input id="momo-name" placeholder="John Doe" />
                                         </div>
