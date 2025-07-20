@@ -30,6 +30,7 @@ import {
   UploadCloud,
   ImageIcon,
   AtSign,
+  Sparkles,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -37,6 +38,8 @@ import { Separator } from '@/components/ui/separator';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
 
 const totalSteps = 5;
 
@@ -102,6 +105,13 @@ export default function CreateDealPage() {
       reader.readAsDataURL(file);
     }
   };
+  
+  const handleSmartStart = () => {
+     toast({
+        title: 'Coming Soon!',
+        description: 'The AI assistant is not yet connected. This is a placeholder for now.',
+     });
+  }
 
   const getStepIcon = (currentStep: number) => {
     switch (currentStep) {
@@ -127,25 +137,47 @@ export default function CreateDealPage() {
       <Card className="w-full max-w-2xl">
         <CardHeader>
           <Progress value={progress} className="mb-4" />
-          <div className="flex items-center justify-center gap-4">
-            {getStepIcon(step)}
-            <div className="flex-1">
-              <CardTitle className="font-headline">
-                {step === 1 && 'Your Role'}
-                {step === 2 && (role === 'buyer' ? "What are you buying?" : "What are you selling?")}
-                {step === 3 && `The Other Person (${getPronoun()})`}
-                {step === 4 && 'Amount and Terms'}
-                {step === 5 && 'Review Your Deal'}
-              </CardTitle>
-              <CardDescription>
-                {step === 1 && 'Are you the buyer or the seller in this deal?'}
-                {step === 2 && 'Give your deal a clear title and define the terms.'}
-                {step === 3 && `Who are you making this deal with?`}
-                {step === 4 && 'How much is the deal for?'}
-                {step === 5 && 'Check the details below before creating the deal.'}
-              </CardDescription>
+           <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center gap-4">
+                    {getStepIcon(step)}
+                    <div className="flex-1">
+                        <CardTitle className="font-headline">
+                            {step === 1 && 'Your Role'}
+                            {step === 2 && (role === 'buyer' ? "What are you buying?" : "What are you selling?")}
+                            {step === 3 && `The Other Person (${getPronoun()})`}
+                            {step === 4 && 'Amount and Terms'}
+                            {step === 5 && 'Review Your Deal'}
+                        </CardTitle>
+                        <CardDescription>
+                            {step === 1 && 'Are you the buyer or the seller in this deal?'}
+                            {step === 2 && 'Give your deal a clear title and define the terms.'}
+                            {step === 3 && `Who are you making this deal with?`}
+                            {step === 4 && 'How much is the deal for?'}
+                            {step === 5 && 'Check the details below before creating the deal.'}
+                        </CardDescription>
+                    </div>
+                </div>
+                 <Dialog>
+                    <DialogTrigger asChild>
+                        <Button variant="outline"><Sparkles className="mr-2"/> Smart Start</Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle className="flex items-center gap-2"><Sparkles /> Smart Start</DialogTitle>
+                            <DialogDescription>
+                                Describe your deal in plain English. Our AI will fill out the form for you.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <Textarea 
+                            placeholder="e.g., I'm selling a custom logo design for StartupX for GHS 1500 to Clara at clara@example.com. The final files should be in PNG and SVG format."
+                            rows={5}
+                        />
+                        <CardFooter>
+                            <Button className="w-full" onClick={handleSmartStart}>Generate Deal</Button>
+                        </CardFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
-          </div>
         </CardHeader>
         <CardContent className="min-h-[250px]">
           {step === 1 && (
