@@ -22,6 +22,7 @@ import { cn } from '@/lib/utils';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const avatars = [
   { src: 'https://placehold.co/100x100.png', hint: 'abstract shape', alt: 'Avatar A' },
@@ -53,12 +54,29 @@ const initialPaymentMethods: PaymentMethod[] = [
     { id: 'pm_2', type: 'bank', details: { bankName: 'Fidelity Bank', accountNumber: '**** **** **** 1234', accountName: 'User Name' } },
 ];
 
+const industries = [
+    "Agriculture",
+    "Financial Technology (FinTech)",
+    "E-commerce & Retail",
+    "Real Estate & Construction",
+    "Healthcare & Pharmaceuticals",
+    "Education",
+    "Technology & IT Services",
+    "Tourism & Hospitality",
+    "Media & Entertainment",
+    "Manufacturing",
+    "Energy & Mining",
+    "Transportation & Logistics",
+    "Other",
+];
+
 
 export default function ProfilePage() {
   const [name, setName] = useState('User');
   const [businessName, setBusinessName] = useState('Acme Inc.');
   const [businessRole, setBusinessRole] = useState('Founder');
-  const [industry, setIndustry] = useState('Technology');
+  const [selectedIndustry, setSelectedIndustry] = useState('Technology & IT Services');
+  const [customIndustry, setCustomIndustry] = useState('');
   const [mainProducts, setMainProducts] = useState('Web Development, UI/UX Design, SEO Services');
   const [referralCode, setReferralCode] = useState('BETA-USER-123');
   const [isReferralCustomized, setIsReferralCustomized] = useState(false);
@@ -222,8 +240,28 @@ export default function ProfilePage() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="industry">Industry</Label>
-                <Input id="industry" value={industry} onChange={(e) => setIndustry(e.target.value)} placeholder="e.g. Technology, Design, Marketing" />
+                 <Select value={selectedIndustry} onValueChange={setSelectedIndustry}>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Select an industry" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {industries.map(industry => (
+                            <SelectItem key={industry} value={industry}>{industry}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
               </div>
+              {selectedIndustry === 'Other' && (
+                <div className="space-y-2">
+                    <Label htmlFor="custom-industry">Your Industry</Label>
+                    <Input 
+                        id="custom-industry" 
+                        value={customIndustry} 
+                        onChange={(e) => setCustomIndustry(e.target.value)} 
+                        placeholder="e.g., Renewable Energy"
+                    />
+                </div>
+              )}
               <div className="space-y-2">
                 <Label htmlFor="main-products">Main Products/Services</Label>
                 <Textarea id="main-products" value={mainProducts} onChange={(e) => setMainProducts(e.target.value)} placeholder="e.g. Web Development, UI/UX Design, SEO Services" />

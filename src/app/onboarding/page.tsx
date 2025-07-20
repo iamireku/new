@@ -12,16 +12,36 @@ import { CheckCircle, Building, Phone } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { cn } from '@/lib/utils';
 import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const totalSteps = 5;
 
 type PaymentMethodType = 'bank' | 'mobile_money';
 type MobileMoneyProvider = 'mtn' | 'telecel' | 'airteltigo';
 
+const industries = [
+    "Agriculture",
+    "Financial Technology (FinTech)",
+    "E-commerce & Retail",
+    "Real Estate & Construction",
+    "Healthcare & Pharmaceuticals",
+    "Education",
+    "Technology & IT Services",
+    "Tourism & Hospitality",
+    "Media & Entertainment",
+    "Manufacturing",
+    "Energy & Mining",
+    "Transportation & Logistics",
+    "Other",
+];
+
+
 export default function OnboardingPage() {
   const [step, setStep] = useState(1);
   const [newPaymentType, setNewPaymentType] = useState<PaymentMethodType>('mobile_money');
   const [momoProvider, setMomoProvider] = useState<MobileMoneyProvider>('mtn');
+  const [selectedIndustry, setSelectedIndustry] = useState('');
+  const [customIndustry, setCustomIndustry] = useState('');
   const router = useRouter();
 
   const nextStep = () => setStep((prev) => (prev < totalSteps ? prev + 1 : prev));
@@ -86,8 +106,28 @@ export default function OnboardingPage() {
               </div>
                <div className="space-y-2">
                 <Label htmlFor="industry">Industry</Label>
-                <Input id="industry" placeholder="e.g. Technology, Design, Marketing" />
+                <Select value={selectedIndustry} onValueChange={setSelectedIndustry}>
+                    <SelectTrigger>
+                        <SelectValue placeholder="Select an industry" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {industries.map(industry => (
+                            <SelectItem key={industry} value={industry}>{industry}</SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
               </div>
+              {selectedIndustry === 'Other' && (
+                <div className="space-y-2">
+                    <Label htmlFor="custom-industry">Your Industry</Label>
+                    <Input 
+                        id="custom-industry" 
+                        value={customIndustry} 
+                        onChange={(e) => setCustomIndustry(e.target.value)} 
+                        placeholder="e.g., Renewable Energy"
+                    />
+                </div>
+              )}
                <div className="space-y-2">
                 <Label htmlFor="products">Main Products/Services</Label>
                 <Textarea id="products" placeholder="e.g. Web Development, UI/UX Design, SEO Services" />
