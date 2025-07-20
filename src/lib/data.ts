@@ -88,7 +88,7 @@ export const dealsData: Deal[] = [
       title: 'Mobile App UI/UX', 
       party: 'Appify Inc.', 
       date: '2023-11-05', 
-      deadline: '2023-11-30',
+      deadline: '2023-12-30',
       amount: 8000, 
       status: 'in_escrow', 
       role: 'seller',

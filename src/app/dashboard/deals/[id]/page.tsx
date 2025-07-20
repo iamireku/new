@@ -160,7 +160,7 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
                 <p className="text-muted-foreground">Deal ID: {params.id}</p>
             </div>
             <div className="flex items-center gap-2">
-                <Badge variant="secondary" className={cn("text-base", statusInfo.color)}>
+                <Badge variant="secondary" className={cn("text-base gap-2", statusInfo.color)}>
                     {statusInfo.icon}
                     <span>{statusInfo.text}</span>
                 </Badge>
