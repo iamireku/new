@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -7,6 +8,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -31,7 +33,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { PlusCircle, Search, ListFilter, ChevronDown, Building, Phone, Handshake } from 'lucide-react';
+import { PlusCircle, Search, ListFilter, ChevronDown, Building, Phone, Handshake, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
@@ -45,12 +47,15 @@ const getStatusText = (status: string) => {
     return status.charAt(0).toUpperCase() + status.slice(1);
 }
 
+const DEALS_PER_PAGE = 5;
+
 export default function DealsPage() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilters, setStatusFilters] = useState<string[]>([]);
   const [roleFilter, setRoleFilter] = useState('all');
-  
+  const [visibleDealsCount, setVisibleDealsCount] = useState(DEALS_PER_PAGE);
+
   const [isAddFundsDialogOpen, setIsAddFundsDialogOpen] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(savedPaymentMethods[0]?.id || '');
   const { toast } = useToast();
@@ -82,6 +87,8 @@ export default function DealsPage() {
     const matchesRole = roleFilter === 'all' || tx.role === roleFilter;
     return matchesSearch && matchesStatus && matchesRole;
   });
+
+  const dealsToShow = filteredDeals.slice(0, visibleDealsCount);
   
   return (
     <div className="space-y-6">
@@ -218,7 +225,7 @@ export default function DealsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredDeals.length > 0 ? filteredDeals.map((tx) => (
+                {dealsToShow.length > 0 ? dealsToShow.map((tx) => (
                   <TableRow 
                       key={tx.id} 
                       onClick={() => handleRowClick(tx.id)}
@@ -261,6 +268,17 @@ export default function DealsPage() {
             </Table>
           </div>
         </CardContent>
+         {filteredDeals.length > visibleDealsCount && (
+            <CardFooter className="justify-center border-t pt-4">
+                <Button 
+                    variant="outline" 
+                    onClick={() => setVisibleDealsCount(prev => prev + DEALS_PER_PAGE)}
+                >
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Load More
+                </Button>
+            </CardFooter>
+        )}
       </Card>
     </div>
   );
