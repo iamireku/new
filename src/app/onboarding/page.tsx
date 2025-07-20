@@ -1,3 +1,4 @@
+
 // /src/app/onboarding/page.tsx
 'use client';
 
@@ -86,6 +87,10 @@ export default function OnboardingPage() {
               <div className="space-y-2">
                 <Label htmlFor="role">Your Role</Label>
                 <Input id="role" placeholder="Founder, CEO, etc." />
+              </div>
+               <div className="space-y-2">
+                <Label htmlFor="business-email">Business Email</Label>
+                <Input id="business-email" type="email" placeholder="contact@acme.com" />
               </div>
                <div className="space-y-2">
                 <Label htmlFor="industry">Industry</Label>
