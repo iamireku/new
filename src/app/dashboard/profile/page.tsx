@@ -306,18 +306,18 @@ export default function ProfilePage() {
                                </RadioGroup>
                                {newPaymentType === 'mobile_money' && (
                                    <div className="space-y-4 p-4 border rounded-md">
-                                        <RadioGroup value={momoProvider} onValueChange={(val: any) => setMomoProvider(val)} className="flex gap-4">
-                                            <Label htmlFor="mtn" className="flex items-center gap-2 cursor-pointer">
-                                                <RadioGroupItem value="mtn" id="mtn" />
-                                                MTN
+                                        <RadioGroup value={momoProvider} onValueChange={(val: any) => setMomoProvider(val)} className="grid grid-cols-3 gap-2">
+                                            <Label htmlFor="mtn" className="flex items-center justify-center gap-2 cursor-pointer rounded-md border p-2 hover:bg-accent hover:text-accent-foreground has-[:checked]:border-primary">
+                                                <RadioGroupItem value="mtn" id="mtn" className="sr-only"/>
+                                                <div className="h-6 w-10 rounded-sm bg-yellow-400 flex items-center justify-center text-white font-bold text-xs">MTN</div>
                                             </Label>
-                                            <Label htmlFor="telecel" className="flex items-center gap-2 cursor-pointer">
-                                                <RadioGroupItem value="telecel" id="telecel" />
-                                                Telecel
+                                            <Label htmlFor="telecel" className="flex items-center justify-center gap-2 cursor-pointer rounded-md border p-2 hover:bg-accent hover:text-accent-foreground has-[:checked]:border-primary">
+                                                <RadioGroupItem value="telecel" id="telecel" className="sr-only"/>
+                                                <div className="h-6 w-10 rounded-sm bg-red-600 flex items-center justify-center text-white font-bold text-xs">TCL</div>
                                             </Label>
-                                             <Label htmlFor="airteltigo" className="flex items-center gap-2 cursor-pointer">
-                                                <RadioGroupItem value="airteltigo" id="airteltigo" />
-                                                AirtelTigo
+                                             <Label htmlFor="airteltigo" className="flex items-center justify-center gap-2 cursor-pointer rounded-md border p-2 hover:bg-accent hover:text-accent-foreground has-[:checked]:border-primary">
+                                                <RadioGroupItem value="airteltigo" id="airteltigo" className="sr-only"/>
+                                                <div className="h-6 w-10 rounded-sm bg-blue-800 flex items-center justify-center text-white font-bold text-xs">A&T</div>
                                             </Label>
                                         </RadioGroup>
                                         <div className="space-y-2">
