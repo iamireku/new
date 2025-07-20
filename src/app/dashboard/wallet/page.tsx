@@ -12,7 +12,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { PlusCircle, ArrowUpRight, ArrowDownLeft, Building, Phone } from 'lucide-react';
+import { PlusCircle, ArrowUpRight, ArrowDownLeft, Building, Phone, ChevronDown } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -21,6 +21,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 import { walletTransactions, savedPaymentMethods, PaymentMethod } from '@/lib/data';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 export default function WalletPage() {
     const [isWithdrawDialogOpen, setIsWithdrawDialogOpen] = useState(false);
@@ -113,7 +114,9 @@ export default function WalletPage() {
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Withdraw Funds</DialogTitle>
-                        <DialogDescription>Select a payment method and add amount to receive your funds</DialogDescription>
+                        <DialogDescription>
+                          Select a payment method and add amount to receive your funds
+                        </DialogDescription>
                     </DialogHeader>
                     <div className="py-4 space-y-4">
                         <div className="space-y-2">
@@ -187,33 +190,46 @@ export default function WalletPage() {
         <CardContent>
            <div className="space-y-4">
             {walletTransactions.map((tx) => (
-              <Card key={tx.id}>
-                <CardContent className="flex items-center justify-between p-4">
-                  <div className="flex items-center gap-4">
-                    {tx.amount > 0 ? (
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/50">
-                        <ArrowDownLeft className="h-5 w-5 text-green-500" />
+              <Collapsible key={tx.id} asChild>
+                <Card>
+                  <CollapsibleTrigger asChild>
+                    <button className="flex w-full items-center justify-between p-4 group">
+                      <div className="flex items-center gap-4 text-left">
+                        {tx.amount > 0 ? (
+                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/50">
+                            <ArrowDownLeft className="h-5 w-5 text-green-500" />
+                          </div>
+                        ) : (
+                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/50">
+                            <ArrowUpRight className="h-5 w-5 text-red-500" />
+                          </div>
+                        )}
+                        <div>
+                          <p className="font-semibold">{tx.type}</p>
+                          <p className="text-sm text-muted-foreground">{tx.date}</p>
+                        </div>
                       </div>
-                    ) : (
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/50">
-                        <ArrowUpRight className="h-5 w-5 text-red-500" />
+                      <div className="flex items-center gap-4">
+                        <div className="text-right">
+                          <p className={cn("font-mono font-semibold", tx.amount > 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>
+                            {tx.amount > 0 ? '+' : '-'}GHS {Math.abs(tx.amount).toLocaleString()}
+                          </p>
+                          <Badge variant={tx.status === 'Completed' ? 'default' : 'secondary'} className={cn("mt-1", {'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': tx.status === 'Completed', 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200': tx.status !== 'Completed'})}>
+                              {tx.status}
+                          </Badge>
+                        </div>
+                        <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
                       </div>
-                    )}
-                    <div>
-                      <p className="font-semibold">{tx.type}</p>
-                      <p className="text-sm text-muted-foreground">{tx.date}</p>
+                    </button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <div className="px-4 pb-4 space-y-2">
+                        <Separator/>
+                        <p className="text-sm text-muted-foreground pt-2">{tx.description}</p>
                     </div>
-                  </div>
-                  <div className="text-right">
-                    <p className={cn("font-mono font-semibold", tx.amount > 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>
-                      {tx.amount > 0 ? '+' : '-'}GHS {Math.abs(tx.amount).toLocaleString()}
-                    </p>
-                     <Badge variant={tx.status === 'Completed' ? 'default' : 'secondary'} className={cn("mt-1", {'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': tx.status === 'Completed', 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200': tx.status !== 'Completed'})}>
-                        {tx.status}
-                      </Badge>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CollapsibleContent>
+                </Card>
+              </Collapsible>
             ))}
           </div>
         </CardContent>
