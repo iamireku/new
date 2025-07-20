@@ -1,3 +1,4 @@
+<!-- /UI_UX_GUIDE.md -->
 # Betweena: UI/UX Design Guide
 
 This document serves as the single source of truth for the user interface (UI) and user experience (UX) design of the Betweena application. Its purpose is to ensure consistency, quality, and a shared understanding of our design philosophy as the platform evolves.

@@ -1,4 +1,4 @@
-
+// /src/app/dashboard/deals/create/page.tsx
 'use client';
 
 import { useState } from 'react';
@@ -424,5 +424,3 @@ export default function CreateDealPage() {
     </div>
   );
 }
-
-    

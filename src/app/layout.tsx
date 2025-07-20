@@ -1,4 +1,4 @@
-
+// /src/app/layout.tsx
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Toaster } from '@/components/ui/toaster';
@@ -44,5 +44,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-    

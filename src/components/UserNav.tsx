@@ -1,3 +1,4 @@
+// /src/components/UserNav.tsx
 'use client';
 
 import Link from 'next/link';
@@ -15,7 +16,6 @@ import {
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
 } from '@/components/ui/dropdown-menu';

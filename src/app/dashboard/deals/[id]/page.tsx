@@ -1,4 +1,4 @@
-
+// /src/app/dashboard/deals/[id]/page.tsx
 'use client';
 
 import { useState, useMemo, useEffect, use } from 'react';
@@ -502,5 +502,3 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
     </div>
   );
 }
-
-    
