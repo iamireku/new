@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -147,10 +148,10 @@ export default function DashboardPage() {
                           )}
                       </div>
                   </div>
-                  <DialogFooter>
+                  <CardFooter>
                       <Button variant="outline" onClick={() => setIsAddFundsDialogOpen(false)}>Cancel</Button>
                       <Button onClick={handleAddFunds} disabled={savedPaymentMethods.length === 0}>Confirm Deposit</Button>
-                  </DialogFooter>
+                  </CardFooter>
               </DialogContent>
           </Dialog>
         </div>

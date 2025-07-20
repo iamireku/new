@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo, useEffect, use } from 'react';
@@ -347,10 +348,10 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
                                   )}
                               </div>
                           </div>
-                          <AlertDialogFooter>
+                          <CardFooter>
                               <Button variant="outline" onClick={() => setIsAddFundsDialogOpen(false)}>Cancel</Button>
                               <Button onClick={handleAddFunds} disabled={savedPaymentMethods.length === 0}>Confirm Deposit</Button>
-                          </AlertDialogFooter>
+                          </CardFooter>
                       </DialogContent>
                   </Dialog>
                 )}
@@ -501,5 +502,3 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
     </div>
   );
 }
-
-    
