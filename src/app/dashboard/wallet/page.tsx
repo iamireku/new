@@ -26,6 +26,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { Separator } from '@/components/ui/separator';
 
 const walletTransactions = [
   { id: 'WTX001', type: 'Deposit', date: '2023-11-28', amount: 1000, status: 'Completed' },
@@ -161,44 +162,36 @@ export default function WalletPage() {
           <CardDescription>A record of your money movements.</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Transaction ID</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead className="text-center">Status</TableHead>
-                  <TableHead className="text-right">Amount</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {walletTransactions.map((tx) => (
-                  <TableRow key={tx.id}>
-                    <TableCell className="font-mono text-xs">{tx.id}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2 font-medium">
-                        {tx.amount > 0 ? (
-                          <ArrowDownLeft className="h-4 w-4 text-green-500" />
-                        ) : (
-                          <ArrowUpRight className="h-4 w-4 text-red-500" />
-                        )}
-                        {tx.type}
+           <div className="space-y-4">
+            {walletTransactions.map((tx) => (
+              <Card key={tx.id}>
+                <CardContent className="flex items-center justify-between p-4">
+                  <div className="flex items-center gap-4">
+                    {tx.amount > 0 ? (
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/50">
+                        <ArrowDownLeft className="h-5 w-5 text-green-500" />
                       </div>
-                    </TableCell>
-                    <TableCell className="text-muted-foreground">{tx.date}</TableCell>
-                    <TableCell className="text-center">
-                      <Badge variant={tx.status === 'Completed' ? 'default' : 'secondary'} className={tx.status === 'Completed' ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'}>
+                    ) : (
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/50">
+                        <ArrowUpRight className="h-5 w-5 text-red-500" />
+                      </div>
+                    )}
+                    <div>
+                      <p className="font-semibold">{tx.type}</p>
+                      <p className="text-sm text-muted-foreground">{tx.date}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className={cn("font-mono font-semibold", tx.amount > 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>
+                      {tx.amount > 0 ? '+' : '-'}GHS {Math.abs(tx.amount).toLocaleString()}
+                    </p>
+                     <Badge variant={tx.status === 'Completed' ? 'default' : 'secondary'} className={cn("mt-1", {'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': tx.status === 'Completed', 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200': tx.status !== 'Completed'})}>
                         {tx.status}
                       </Badge>
-                    </TableCell>
-                    <TableCell className={`text-right font-mono ${tx.amount > 0 ? 'text-green-500' : 'text-red-500'}`}>
-                      {tx.amount > 0 ? '+' : ''}GHS {Math.abs(tx.amount).toLocaleString()}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </CardContent>
       </Card>
