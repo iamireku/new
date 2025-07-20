@@ -28,7 +28,7 @@ import {
   FileText,
   UserCheck,
   UploadCloud,
-  Image as ImageIcon,
+  ImageIcon,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -70,7 +70,7 @@ export default function CreateDealPage() {
 
   const handleFinish = () => {
     toast({
-      title: 'Deal Created!',
+      title: 'Invitation Sent!',
       description: 'Your new deal has been sent to the other party.',
     });
     router.push('/dashboard/deals');
@@ -351,7 +351,7 @@ export default function CreateDealPage() {
           {step === totalSteps && (
             <Button className="w-full" onClick={handleFinish}>
               <CheckCircle className="mr-2" />
-              Create & Send Deal
+              Create & Send Invitation
             </Button>
           )}
         </CardFooter>
