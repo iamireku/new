@@ -28,6 +28,9 @@ export default function OnboardingPage() {
   const [isFetchingName, setIsFetchingName] = useState(false);
   const [selectedIndustry, setSelectedIndustry] = useState('');
   const [customIndustry, setCustomIndustry] = useState('');
+  const [bankAccountNumber, setBankAccountNumber] = useState('');
+  const [bankAccountName, setBankAccountName] = useState('');
+  const [isFetchingBankName, setIsFetchingBankName] = useState(false);
   const router = useRouter();
 
   const nextStep = () => setStep((prev) => (prev < totalSteps ? prev + 1 : prev));
@@ -46,6 +49,17 @@ export default function OnboardingPage() {
       setTimeout(() => {
         setMomoName('User Name'); // Simulate fetched name
         setIsFetchingName(false);
+      }, 1500); // Simulate network delay
+    }
+  };
+
+  const handleFetchBankName = () => {
+    if (bankAccountNumber.length > 5) { // Simple validation
+      setIsFetchingBankName(true);
+      setBankAccountName('');
+      setTimeout(() => {
+        setBankAccountName('User Name'); // Simulate fetched name
+        setIsFetchingBankName(false);
       }, 1500); // Simulate network delay
     }
   };
@@ -198,7 +212,13 @@ export default function OnboardingPage() {
                           </div>
                            <div className="space-y-2">
                               <Label htmlFor="account-number">Account Number</Label>
-                              <Input id="account-number" placeholder="1234567890123" />
+                              <Input 
+                                id="account-number" 
+                                placeholder="1234567890123" 
+                                value={bankAccountNumber}
+                                onChange={(e) => setBankAccountNumber(e.target.value)}
+                                onBlur={handleFetchBankName}
+                              />
                           </div>
                            <div className="space-y-2">
                               <Label htmlFor="account-number-confirm">Confirm Account Number</Label>
@@ -206,7 +226,11 @@ export default function OnboardingPage() {
                           </div>
                           <div className="space-y-2">
                             <Label htmlFor="account-name">Account Name</Label>
-                            <Input id="account-name" placeholder="John Doe" />
+                            <Input 
+                                id="account-name" 
+                                value={isFetchingBankName ? 'Verifying...' : bankAccountName} 
+                                disabled
+                            />
                           </div>
                      </div>
                  )}
