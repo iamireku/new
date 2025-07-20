@@ -32,8 +32,8 @@ export default function LandingPage() {
             <Button size="lg" asChild>
               <Link href="/signup">Create a Free Account</Link>
             </Button>
-            <Button size="lg" variant="secondary">
-              Learn More
+            <Button size="lg" variant="secondary" asChild>
+              <Link href="/learn-more">Learn More</Link>
             </Button>
           </div>
         </section>
