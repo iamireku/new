@@ -6,20 +6,13 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Wallet, Landmark, Users, ArrowUpRight, ArrowDownLeft, Copy, Share2, Check, PlusCircle, Building, Phone } from 'lucide-react';
+import { Wallet, Landmark, Users, ArrowUpRight, ArrowDownLeft, Copy, Share2, Check, PlusCircle, Building, Phone, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -29,12 +22,14 @@ import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { recentTransactions, leaderboard, currentUser, savedPaymentMethods, PaymentMethod } from '@/lib/data';
 
+const TRANSACTIONS_PER_PAGE = 5;
 
 export default function DashboardPage() {
     const { toast } = useToast();
     const [copied, setCopied] = useState(false);
     const [isAddFundsDialogOpen, setIsAddFundsDialogOpen] = useState(false);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(savedPaymentMethods[0]?.id || '');
+    const [visibleTransactionsCount, setVisibleTransactionsCount] = useState(TRANSACTIONS_PER_PAGE);
 
     const referralLink = `https://betweena.app/signup?ref=${currentUser.referralCode}`;
 
@@ -89,6 +84,8 @@ export default function DashboardPage() {
         if (status === 'in_escrow') return 'On Hold';
         return status.replace('_', ' ');
     }
+
+    const transactionsToShow = recentTransactions.slice(0, visibleTransactionsCount);
 
 
   return (
@@ -220,50 +217,47 @@ export default function DashboardPage() {
           <CardTitle>Recent Transactions</CardTitle>
           <CardDescription>Your latest wallet transactions.</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Details</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead className="text-right">Amount</TableHead>
-                  <TableHead className="text-center">Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {recentTransactions.map((tx) => (
-                  <TableRow key={tx.id}>
-                    <TableCell className="font-medium">{tx.description}</TableCell>
-                     <TableCell>
-                      <div className="flex items-center gap-2">
-                       {tx.type === 'incoming' ? 
-                         <ArrowDownLeft className="h-4 w-4 text-green-500" /> : 
-                         <ArrowUpRight className="h-4 w-4 text-red-500" />
-                       }
-                        <span className="capitalize">{tx.type}</span>
-                      </div>
-                    </TableCell>
-                    <TableCell className={`text-right font-mono ${tx.amount > 0 ? 'text-green-500' : 'text-red-500'}`}>
-                      {tx.amount > 0 ? '+' : ''}GHS {Math.abs(tx.amount).toFixed(2)}
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <Badge variant={tx.status === 'completed' ? 'default' : 'secondary'} className={
-                          cn({
-                              'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': tx.status === 'completed',
-                              'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200': tx.status === 'pending',
-                              'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': tx.status === 'in_escrow'
-                          })
-                      }>
-                          {getStatusText(tx.status)}
-                      </Badge>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
+        <CardContent className="space-y-4">
+            {transactionsToShow.map((tx) => (
+                <div key={tx.id} className="flex items-center gap-4 p-3 border rounded-lg">
+                    <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
+                        tx.type === 'incoming' ? 'bg-green-100 dark:bg-green-900/50' : 'bg-red-100 dark:bg-red-900/50'
+                    )}>
+                        {tx.type === 'incoming' ? 
+                            <ArrowDownLeft className="h-5 w-5 text-green-500" /> : 
+                            <ArrowUpRight className="h-5 w-5 text-red-500" />
+                        }
+                    </div>
+                    <div className="flex-1">
+                        <p className="font-semibold">{tx.description}</p>
+                        <p className="text-sm text-muted-foreground capitalize">{tx.type}</p>
+                    </div>
+                    <div className="text-right">
+                        <p className={cn("font-mono font-semibold", tx.amount > 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>
+                            {tx.amount > 0 ? '+' : ''}GHS {Math.abs(tx.amount).toFixed(2)}
+                        </p>
+                        <Badge variant={tx.status === 'completed' ? 'default' : 'secondary'} className={cn("mt-1", {
+                            'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': tx.status === 'completed',
+                            'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200': tx.status === 'pending',
+                            'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': tx.status === 'in_escrow'
+                        })}>
+                            {getStatusText(tx.status)}
+                        </Badge>
+                    </div>
+                </div>
+            ))}
         </CardContent>
+        {recentTransactions.length > visibleTransactionsCount && (
+            <CardFooter className="justify-center border-t pt-4">
+                <Button 
+                    variant="outline" 
+                    onClick={() => setVisibleTransactionsCount(prev => prev + TRANSACTIONS_PER_PAGE)}
+                >
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Load More
+                </Button>
+            </CardFooter>
+        )}
       </Card>
     </div>
   );
