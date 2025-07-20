@@ -313,11 +313,11 @@ export default function ProfilePage() {
                                             </Label>
                                             <Label htmlFor="telecel" className="flex items-center justify-center gap-2 cursor-pointer rounded-md border p-2 hover:bg-accent hover:text-accent-foreground has-[:checked]:border-primary">
                                                 <RadioGroupItem value="telecel" id="telecel" className="sr-only"/>
-                                                <div className="h-6 w-10 rounded-sm bg-red-600 flex items-center justify-center text-white font-bold text-xs">TCL</div>
+                                                <div className="h-6 w-10 rounded-sm bg-red-600 flex items-center justify-center text-white font-bold text-xs">Telecel</div>
                                             </Label>
                                              <Label htmlFor="airteltigo" className="flex items-center justify-center gap-2 cursor-pointer rounded-md border p-2 hover:bg-accent hover:text-accent-foreground has-[:checked]:border-primary">
                                                 <RadioGroupItem value="airteltigo" id="airteltigo" className="sr-only"/>
-                                                <div className="h-6 w-10 rounded-sm bg-blue-800 flex items-center justify-center text-white font-bold text-xs">A&T</div>
+                                                <div className="h-6 w-10 rounded-sm bg-blue-800 flex items-center justify-center text-white font-bold text-xs">AirtelTigo</div>
                                             </Label>
                                         </RadioGroup>
                                         <div className="space-y-2">
