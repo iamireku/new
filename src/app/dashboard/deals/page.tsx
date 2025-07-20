@@ -31,8 +31,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { PlusCircle, Search, ListFilter, ChevronDown } from 'lucide-react';
+import { PlusCircle, Search, ListFilter, ChevronDown, Building, Phone } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { useToast } from '@/hooks/use-toast';
 
 const dealsData = [
     { id: 'DEAL001', title: 'E-commerce Platform Development', party: 'ClientCorp', date: '2023-10-26', amount: 15000, status: 'completed', role: 'seller' },
@@ -52,15 +56,48 @@ const getStatusText = (status: string) => {
 const statusOptions = ['in_escrow', 'funding', 'completed', 'dispute', 'cancelled'];
 const roleOptions = ['all', 'seller', 'buyer'];
 
+type PaymentMethodType = 'bank' | 'mobile_money';
+type MobileMoneyProvider = 'mtn' | 'telecel' | 'airteltigo';
+
+interface PaymentMethod {
+  id: string;
+  type: PaymentMethodType;
+  details: {
+    bankName?: string;
+    accountNumber?: string;
+    accountName?: string;
+    provider?: MobileMoneyProvider;
+    phoneNumber?: string;
+    phoneName?: string;
+  };
+}
+
+const savedPaymentMethods: PaymentMethod[] = [
+    { id: 'pm_1', type: 'mobile_money', details: { provider: 'mtn', phoneNumber: '024 123 4567', phoneName: 'User Name' } },
+    { id: 'pm_2', type: 'bank', details: { bankName: 'Fidelity Bank', accountNumber: '**** **** **** 1234', accountName: 'User Name' } },
+];
+
 
 export default function DealsPage() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilters, setStatusFilters] = useState<string[]>([]);
   const [roleFilter, setRoleFilter] = useState('all');
+  
+  const [isAddFundsDialogOpen, setIsAddFundsDialogOpen] = useState(false);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(savedPaymentMethods[0]?.id || '');
+  const { toast } = useToast();
 
   const handleRowClick = (dealId: string) => {
     router.push(`/dashboard/deals/${dealId}`);
+  }
+  
+  const handleAddFunds = () => {
+      setIsAddFundsDialogOpen(false);
+      toast({
+          title: 'Deposit Initialized',
+          description: 'Your request has been received. You will be prompted to confirm the transaction.',
+      });
   }
 
   const handleStatusFilterChange = (status: string) => {
@@ -90,10 +127,60 @@ export default function DealsPage() {
                         Start a New Deal
                     </Link>
                 </Button>
-                 <Button variant="outline">
-                    <PlusCircle className="mr-2 h-4 w-4" />
-                    Add Funds
-                </Button>
+                 <Dialog open={isAddFundsDialogOpen} onOpenChange={setIsAddFundsDialogOpen}>
+                    <DialogTrigger asChild>
+                        <Button variant="outline">
+                            <PlusCircle className="mr-2 h-4 w-4" />
+                            Add Funds
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Add Funds</DialogTitle>
+                            <DialogDescription>
+                                Select a payment method and enter the amount to add to your wallet. You will be prompted to confirm on your device.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="py-4 space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="amount">Amount (GHS)</Label>
+                                <Input id="amount" type="number" placeholder="500.00" />
+                            </div>
+                            <div className="space-y-2">
+                                <Label>Select Payment Method</Label>
+                                {savedPaymentMethods.length > 0 ? (
+                                    <RadioGroup value={selectedPaymentMethod} onValueChange={setSelectedPaymentMethod} className="space-y-2">
+                                        {savedPaymentMethods.map(method => (
+                                            <Label key={method.id} htmlFor={method.id} className={cn('flex items-center gap-4 rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground', selectedPaymentMethod === method.id && 'border-primary')}>
+                                                <RadioGroupItem value={method.id} id={method.id}/>
+                                                {method.type === 'bank' ? <Building className="h-6 w-6 text-muted-foreground" /> : <Phone className="h-6 w-6 text-muted-foreground" />}
+                                                <div className="flex-1">
+                                                    <p className="font-semibold">
+                                                        {method.type === 'bank' ? method.details.bankName : `Mobile Money (${method.details.provider?.toUpperCase()})`}
+                                                    </p>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        {method.type === 'bank' ? method.details.accountNumber : method.details.phoneNumber}
+                                                    </p>
+                                                </div>
+                                            </Label>
+                                        ))}
+                                    </RadioGroup>
+                                ) : (
+                                    <div className="text-center text-muted-foreground py-4 border rounded-md">
+                                        <p>No payment methods found.</p>
+                                        <Button variant="link" asChild>
+                                            <Link href="/dashboard/profile?tab=payments" onClick={() => setIsAddFundsDialogOpen(false)}>Add a Method</Link>
+                                        </Button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        <DialogFooter>
+                            <Button variant="outline" onClick={() => setIsAddFundsDialogOpen(false)}>Cancel</Button>
+                            <Button onClick={handleAddFunds} disabled={savedPaymentMethods.length === 0}>Confirm Deposit</Button>
+                        </DialogFooter>
+                    </DialogContent>
+                </Dialog>
             </div>
         </div>
       
