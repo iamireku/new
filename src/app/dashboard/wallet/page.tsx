@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -112,7 +113,7 @@ export default function WalletPage() {
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Withdraw Funds</DialogTitle>
-                        <DialogDescription>Select a payment method and enter the amount to withdraw.</DialogDescription>
+                        <DialogDescription>Select a payment method and add amount to receive your funds</DialogDescription>
                     </DialogHeader>
                     <div className="py-4 space-y-4">
                         <div className="space-y-2">
