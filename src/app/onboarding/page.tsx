@@ -46,9 +46,9 @@ export default function OnboardingPage() {
           <Progress value={progress} className="mb-4" />
           <CardTitle className="text-center font-headline">
             {step === 1 && 'Welcome to Betweena!'}
-            {step === 2 && 'About You (Optional)'}
-            {step === 3 && 'Your Business (Optional)'}
-            {step === 4 && 'Payment Setup (Optional)'}
+            {step === 2 && 'About You'}
+            {step === 3 && 'Your Business'}
+            {step === 4 && 'Payment Setup'}
             {step === 5 && 'All Set!'}
           </CardTitle>
           <CardDescription className="text-center">
@@ -186,14 +186,14 @@ export default function OnboardingPage() {
             )}
           </div>
           <div className="flex items-center gap-2">
-             {(step === 2 || step === 3) && (
+             {(step === 2 || step === 3 || step === 4) && (
                 <Button variant="outline" onClick={nextStep}>
                     Skip for now
                 </Button>
              )}
             {step < totalSteps && (
               <Button onClick={nextStep}>
-                {step === totalSteps - 1 ? 'Skip & Finish' : 'Next'}
+                {step === totalSteps - 1 ? 'Finish' : 'Next'}
               </Button>
             )}
             {step === totalSteps && (
