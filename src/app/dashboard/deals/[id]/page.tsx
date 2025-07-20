@@ -40,13 +40,18 @@ import {
   AlarmClock,
   Info,
   UserCheck as UserCheckIcon,
+  PlusCircle,
+  Building,
+  Phone,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { add, isAfter } from 'date-fns';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { getDealById } from '@/lib/data';
+import { getDealById, savedPaymentMethods } from '@/lib/data';
 import Image from 'next/image';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 
 const getStatusInfo = (status: string) => {
@@ -91,6 +96,24 @@ type Period = 'hours' | 'days' | 'weeks';
 export default function DealDetailsPage({ params: paramsPromise }: { params: { id: string } }) {
   const params = use(paramsPromise);
   const deal = getDealById(params.id);
+  const { toast } = useToast();
+
+  const [remindersEnabled, setRemindersEnabled] = useState(false);
+  const [reminderFigure, setReminderFigure] = useState(1);
+  const [reminderPeriod, setReminderPeriod] = useState<Period>('days');
+  const [isAddFundsDialogOpen, setIsAddFundsDialogOpen] = useState(false);
+  const [fundAmount, setFundAmount] = useState<number | string>('');
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(savedPaymentMethods[0]?.id || '');
+
+
+  useEffect(() => {
+    if (deal) {
+      document.title = `${deal.title} - Deal Details`;
+      if (deal.status === 'funding') {
+        setFundAmount(deal.amount);
+      }
+    }
+  }, [deal]);
 
   if (!deal) {
     return (
@@ -108,14 +131,6 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
 
   const statusInfo = getStatusInfo(deal.status);
   const reversedTimeline = [...deal.timeline].reverse();
-  const { toast } = useToast();
-  const [remindersEnabled, setRemindersEnabled] = useState(false);
-  const [reminderFigure, setReminderFigure] = useState(1);
-  const [reminderPeriod, setReminderPeriod] = useState<Period>('days');
-
-  useEffect(() => {
-    document.title = `${deal.title} - Deal Details`;
-  }, [deal.title]);
 
   const isDealInactive = deal.status === 'completed' || deal.status === 'cancelled';
 
@@ -145,6 +160,14 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
         description: `You will now receive reminders every ${reminderFigure} ${reminderPeriod}.`,
       });
     }
+  }
+
+  const handleAddFunds = () => {
+      setIsAddFundsDialogOpen(false);
+      toast({
+          title: 'Deposit Initialized',
+          description: 'Your request has been received. You will be prompted to confirm the transaction.',
+      });
   }
 
 
@@ -274,7 +297,59 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
                     </AlertDialogContent>
                   </AlertDialog>
                 )}
-                 {deal.status === 'funding' && deal.role === 'buyer' && <Button className="w-full sm:w-auto"><Banknote className="mr-2" />Fund Deal</Button>}
+                {deal.status === 'funding' && deal.role === 'buyer' && (
+                  <Dialog open={isAddFundsDialogOpen} onOpenChange={setIsAddFundsDialogOpen}>
+                      <DialogTrigger asChild>
+                          <Button className="w-full sm:w-auto"><Banknote className="mr-2"/>Fund Deal</Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                          <DialogHeader>
+                              <DialogTitle>Fund This Deal</DialogTitle>
+                              <DialogDescription>
+                                  Select a payment method and confirm the amount to fund this deal. You will be prompted to confirm on your device.
+                              </DialogDescription>
+                          </DialogHeader>
+                          <div className="py-4 space-y-4">
+                              <div className="space-y-2">
+                                  <Label htmlFor="amount">Amount (GHS)</Label>
+                                  <Input id="amount" type="number" value={fundAmount} readOnly className="font-bold" />
+                              </div>
+                              <div className="space-y-2">
+                                  <Label>Select Payment Method</Label>
+                                  {savedPaymentMethods.length > 0 ? (
+                                      <RadioGroup value={selectedPaymentMethod} onValueChange={setSelectedPaymentMethod} className="space-y-2">
+                                          {savedPaymentMethods.map(method => (
+                                              <Label key={method.id} htmlFor={method.id} className={cn('flex items-center gap-4 rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground', selectedPaymentMethod === method.id && 'border-primary')}>
+                                                  <RadioGroupItem value={method.id} id={method.id}/>
+                                                  {method.type === 'bank' ? <Building className="h-6 w-6 text-muted-foreground" /> : <Phone className="h-6 w-6 text-muted-foreground" />}
+                                                  <div className="flex-1">
+                                                      <p className="font-semibold">
+                                                          {method.type === 'bank' ? method.details.bankName : `Mobile Money (${method.details.provider?.toUpperCase()})`}
+                                                      </p>
+                                                      <p className="text-sm text-muted-foreground">
+                                                          {method.type === 'bank' ? method.details.accountNumber : method.details.phoneNumber}
+                                                      </p>
+                                                  </div>
+                                              </Label>
+                                          ))}
+                                      </RadioGroup>
+                                  ) : (
+                                      <div className="text-center text-muted-foreground py-4 border rounded-md">
+                                          <p>No payment methods found.</p>
+                                          <Button variant="link" asChild>
+                                              <Link href="/dashboard/profile?tab=payments" onClick={() => setIsAddFundsDialogOpen(false)}>Add a Method</Link>
+                                          </Button>
+                                      </div>
+                                  )}
+                              </div>
+                          </div>
+                          <AlertDialogFooter>
+                              <Button variant="outline" onClick={() => setIsAddFundsDialogOpen(false)}>Cancel</Button>
+                              <Button onClick={handleAddFunds} disabled={savedPaymentMethods.length === 0}>Confirm Deposit</Button>
+                          </AlertDialogFooter>
+                      </DialogContent>
+                  </Dialog>
+                )}
                  {deal.status !== 'completed' && deal.status !== 'cancelled' && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
