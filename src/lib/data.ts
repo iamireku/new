@@ -37,6 +37,7 @@ export interface Deal {
   timeline: TimelineEvent[];
   messages: Message[];
   imageUrls?: string[];
+  location?: string;
 }
 
 export type TransactionType = 'incoming' | 'outgoing';
@@ -104,6 +105,7 @@ export let dealsData: Deal[] = [
       amount: 15000, 
       status: 'completed', 
       role: 'seller', 
+      location: 'Accra, Ghana',
       acceptanceCriteria: [
         { id: 1, text: 'Platform deployed to production', completed: true },
         { id: 2, text: 'Admin training completed', completed: true },
@@ -127,6 +129,7 @@ export let dealsData: Deal[] = [
       amount: 3500, 
       status: 'completed', 
       role: 'buyer', 
+      location: 'Kumasi, Ghana',
       acceptanceCriteria: [
         { id: 1, text: 'Logo pack delivered in all formats', completed: true },
         { id: 2, text: 'Brand guidelines document provided', completed: true },
@@ -144,6 +147,7 @@ export let dealsData: Deal[] = [
       amount: 8000, 
       status: 'in_review', 
       role: 'buyer',
+      location: 'Remote',
       acceptanceCriteria: [
         { id: 1, text: 'Final designs delivered in Figma', completed: true },
         { id: 2, text: 'All assets exported and shared', completed: true },
@@ -171,7 +175,7 @@ export const getDealById = (id: string): Deal | undefined => {
     return dealsData.find(deal => deal.id === id);
 }
 
-export const createDeal = (newDealData: {title: string, party: string, amount: number, role: DealRole, imageUrls: string[], deadline: string, acceptanceCriteria: AcceptanceCriterion[]}) => {
+export const createDeal = (newDealData: {title: string, party: string, amount: number, role: DealRole, imageUrls: string[], deadline: string, acceptanceCriteria: AcceptanceCriterion[], location?: string}) => {
     const newDeal: Deal = {
         id: `DEAL${String(dealsData.length + 1).padStart(3, '0')}`,
         title: newDealData.title,
@@ -181,7 +185,7 @@ export const createDeal = (newDealData: {title: string, party: string, amount: n
         amount: newDealData.amount,
         status: 'inHolding', // New deals start as inHolding, assuming they get funded immediately
         role: newDealData.role,
-        acceptanceCriteria: newDealData.acceptanceCriteria,
+        acceptanceCriteria: newDealData.acceptanceCriteria.map(c => ({...c, completed: false})),
         timeline: [
             { date: format(new Date(), 'yyyy-MM-dd'), event: `Deal created by You (${newDealData.role})`, icon: FileText },
             { date: format(new Date(), 'yyyy-MM-dd'), event: `${newDealData.party} accepted & funded the deal`, icon: UserCheck },
@@ -189,6 +193,7 @@ export const createDeal = (newDealData: {title: string, party: string, amount: n
         ],
         messages: [],
         imageUrls: newDealData.imageUrls,
+        location: newDealData.location,
     };
     dealsData.unshift(newDeal); // Add to the beginning of the array
     return newDeal;

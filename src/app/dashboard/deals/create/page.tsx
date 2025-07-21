@@ -34,6 +34,7 @@ import {
   Sparkles,
   CalendarIcon,
   Clock,
+  MapPin,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -68,6 +69,7 @@ export default function CreateDealPage() {
   const [partyPhone, setPartyPhone] = useState('');
   const [dealAmount, setDealAmount] = useState('');
   const [deadline, setDeadline] = useState<Date | undefined>(new Date());
+  const [location, setLocation] = useState('');
 
 
   const router = useRouter();
@@ -88,7 +90,8 @@ export default function CreateDealPage() {
         role: role,
         imageUrls: dealImages,
         deadline: deadline ? formatISO(deadline) : formatISO(new Date()),
-        acceptanceCriteria: acceptanceCriteria.map(c => ({...c, completed: false})),
+        acceptanceCriteria: acceptanceCriteria,
+        location: location,
     });
 
     toast({
@@ -441,9 +444,19 @@ export default function CreateDealPage() {
                         </PopoverContent>
                     </Popover>
               </div>
-               <p className="text-xs text-muted-foreground pt-2">
-                The amount will be held safely by us. The deadline is when the work should be completed.
-              </p>
+               <div className="space-y-2">
+                <Label htmlFor="location">Delivery/Pickup Location</Label>
+                <div className="relative">
+                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="location"
+                      placeholder="e.g., Accra Mall or Digital Address GA-123-4567"
+                      className="pl-9"
+                      value={location}
+                      onChange={(e) => setLocation(e.target.value)}
+                    />
+                </div>
+              </div>
             </form>
           )}
           {step === 5 && (
@@ -468,6 +481,12 @@ export default function CreateDealPage() {
                             <CalendarIcon className="h-4 w-4 text-muted-foreground" />
                             <span>Due by {deadline ? format(deadline, "PPP 'at' h:mm a") : 'N/A'}</span>
                         </div>
+                         {location && (
+                           <div className="flex items-center gap-2">
+                                <MapPin className="h-4 w-4 text-muted-foreground" />
+                                <span>{location}</span>
+                            </div>
+                        )}
                          {(partyId || partyEmail || partyPhone) && <Separator />}
                         {partyId && <div className="flex items-center gap-2">
                             <AtSign className="h-4 w-4 text-muted-foreground" />

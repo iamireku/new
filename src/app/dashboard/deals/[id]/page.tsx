@@ -46,6 +46,7 @@ import {
   Phone,
   FilePenLine,
   Eye,
+  MapPin,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -256,6 +257,15 @@ function DealDetails({ params }: { params: { id: string } }) {
                   <p className="text-lg font-bold">{formattedDeadline}</p>
                 </div>
               </div>
+               {deal.location && (
+                 <div className="flex items-center gap-3 md:col-span-2">
+                    <MapPin className="h-8 w-8 text-muted-foreground" />
+                    <div>
+                        <p className="text-sm text-muted-foreground">Location</p>
+                        <p className="text-lg font-bold">{deal.location}</p>
+                    </div>
+                </div>
+              )}
             </CardContent>
           </Card>
           <Card>
