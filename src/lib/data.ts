@@ -30,6 +30,7 @@ export interface Deal {
   party: string;
   date: string;
   deadline: string;
+  deliveredDate?: string;
   amount: number;
   status: DealStatus;
   role: DealRole;
@@ -157,6 +158,7 @@ export let dealsData: Deal[] = [
       status: 'in_review', 
       role: 'buyer',
       location: 'Remote',
+      deliveredDate: '2023-11-15T10:00:00.000Z',
       acceptanceCriteria: [
         { id: 1, text: 'Final designs delivered in Figma', completed: true },
         { id: 2, text: 'All assets exported and shared', completed: true },

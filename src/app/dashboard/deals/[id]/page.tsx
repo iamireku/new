@@ -49,10 +49,11 @@ import {
   MapPin,
   X,
   Handshake,
+  CircleDollarSign,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import { add, isAfter, format } from 'date-fns';
+import { add, isAfter, format, formatISO, differenceInDays } from 'date-fns';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { getDealById, savedPaymentMethods, Deal, TimelineEvent, DealRole } from '@/lib/data';
 import Image from 'next/image';
@@ -113,6 +114,9 @@ const getStatusInfo = (status: string) => {
 
 type Period = 'hours' | 'days' | 'weeks';
 
+// In a real app, this would be a system setting, e.g., 7 days.
+const BUYER_RESPONSE_PERIOD_DAYS = 7;
+
 function DealDetails({ params }: { params: { id: string } }) {
   const initialDeal = useMemo(() => getDealById(params.id), [params.id]);
   const { toast } = useToast();
@@ -166,8 +170,9 @@ function DealDetails({ params }: { params: { id: string } }) {
   };
 
   const handleMarkAsDelivered = () => {
+    const today = formatISO(new Date());
     handleDealUpdate(
-      { status: 'in_review' },
+      { status: 'in_review', deliveredDate: today },
       { date: format(new Date(), 'PPP'), event: 'You marked as delivered. Buyer is reviewing.' }
     );
     toast({ title: "Deal Marked as Delivered", description: "The buyer has been notified to review and release funds." });
@@ -180,6 +185,15 @@ function DealDetails({ params }: { params: { id: string } }) {
       { date: format(new Date(), 'PPP'), event: 'Funds released. Deal completed.' }
     );
     toast({ title: "Funds Released!", description: "The money has been sent to the seller." });
+  };
+
+  const handleClaimFunds = () => {
+    const updatedCriteria = deal.acceptanceCriteria.map(c => ({ ...c, completed: true }));
+    handleDealUpdate(
+      { status: 'completed', acceptanceCriteria: updatedCriteria },
+      { date: format(new Date(), 'PPP'), event: 'Funds claimed due to buyer non-responsiveness. Deal completed.' }
+    );
+    toast({ title: "Funds Claimed!", description: "The money has been released to your account." });
   };
   
   const handleRaiseDispute = () => {
@@ -211,6 +225,9 @@ function DealDetails({ params }: { params: { id: string } }) {
   const isDealInactive = deal.status === 'completed' || deal.status === 'cancelled';
   const canAmendDeal = deal.status === 'inHolding';
   const isResolutionProposedByOtherParty = deal.status === 'resolution_pending' && deal.resolutionInitiator !== deal.role;
+  
+  const daysSinceDelivery = deal.deliveredDate ? differenceInDays(new Date(), new Date(deal.deliveredDate)) : 0;
+  const canSellerClaimFunds = deal.role === 'seller' && deal.status === 'in_review' && daysSinceDelivery > BUYER_RESPONSE_PERIOD_DAYS;
 
 
   const isReminderInPast = useMemo(() => {
@@ -402,6 +419,29 @@ function DealDetails({ params }: { params: { id: string } }) {
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
+                )}
+
+                {canSellerClaimFunds && (
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button variant="destructive" className="bg-orange-500 hover:bg-orange-600">
+                                <CircleDollarSign className="mr-2 h-4 w-4" />
+                                Claim Funds
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Claim Funds Due to Non-responsiveness?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    The buyer has not responded within the {BUYER_RESPONSE_PERIOD_DAYS}-day review period. You can now claim the funds. This action is final and will complete the deal.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={handleClaimFunds}>Yes, Claim Funds</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 )}
 
                  {deal.status === 'dispute' && (
