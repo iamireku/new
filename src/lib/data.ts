@@ -1,9 +1,9 @@
-// /src/lib/data.ts
-import { FileText, UserCheck, Lock, LucideIcon, Truck, Eye, CheckCircle, AlertTriangle, XCircle, Handshake } from "lucide-react";
+
+import { FileText, UserCheck, Lock, LucideIcon, Truck, Eye, CheckCircle, AlertTriangle, XCircle, Handshake, Send } from "lucide-react";
 import { format, formatISO } from 'date-fns';
 
 // Types
-export type DealStatus = 'completed' | 'inHolding' | 'in_review' | 'delivered' | 'dispute' | 'cancelled' | 'resolution_pending';
+export type DealStatus = 'completed' | 'inHolding' | 'in_review' | 'delivered' | 'dispute' | 'cancelled' | 'resolution_pending' | 'pending';
 export type DealRole = 'buyer' | 'seller';
 
 export interface AcceptanceCriterion {
@@ -99,6 +99,22 @@ export interface PaymentMethod {
 
 // Mock Data
 export let dealsData: Deal[] = [
+    { 
+      id: 'DEAL008',
+      title: 'Hand-crafted Leather Bag',
+      party: 'Artisan Goods',
+      date: formatISO(new Date()),
+      deadline: formatISO(new Date(new Date().setDate(new Date().getDate() + 7))),
+      amount: 450,
+      status: 'pending',
+      role: 'buyer', // The current user is the buyer, waiting to accept.
+      acceptanceCriteria: [{ id: 1, text: 'Bag is new and matches the photo.', completed: false }],
+      timeline: [
+        { date: format(new Date(), 'PPP'), event: 'Deal created by Artisan Goods. Awaiting your acceptance.', icon: Send },
+      ],
+      messages: [],
+      imageUrls: ['https://placehold.co/600x400.png']
+    },
     { 
       id: 'DEAL001', 
       title: 'E-commerce Platform Development', 
@@ -236,13 +252,11 @@ export const createDeal = (newDealData: {title: string, party: string, amount: n
         date: formatISO(new Date()),
         deadline: newDealData.deadline,
         amount: newDealData.amount,
-        status: 'inHolding', // New deals start as inHolding, assuming they get funded immediately
-        role: newDealData.role,
+        status: 'pending', // New deals start as pending
+        role: newDealData.role === 'buyer' ? 'seller' : 'buyer', // The user creating the deal is one role, the party is the other
         acceptanceCriteria: newDealData.acceptanceCriteria.map(c => ({...c, completed: false})),
         timeline: [
-            { date: format(new Date(), 'PPP'), event: `Deal created by You (${newDealData.role})`, icon: FileText },
-            { date: format(new Date(), 'PPP'), event: `${newDealData.party} accepted & funded the deal`, icon: UserCheck },
-            { date: format(new Date(), 'PPP'), event: 'Funds secured in holding.', icon: Lock },
+            { date: format(new Date(), 'PPP'), event: `You created this deal. Awaiting acceptance from ${newDealData.party}.`, icon: Send },
         ],
         messages: [],
         imageUrls: newDealData.imageUrls,
@@ -286,7 +300,7 @@ export const walletTransactions: WalletTransaction[] = [
   { id: 'WTX005', type: 'Withdrawal', date: '2023-11-18', amount: -2000, status: 'Pending', description: 'Withdrawal to Fidelity Bank account ending in 1234.' },
 ];
 
-export const statusOptions = ['inHolding', 'in_review', 'delivered', 'completed', 'dispute', 'cancelled', 'resolution_pending'];
+export const statusOptions = ['pending', 'inHolding', 'in_review', 'delivered', 'completed', 'dispute', 'cancelled', 'resolution_pending'];
 export const roleOptions = ['all', 'seller', 'buyer'];
 
 export const avatars = [

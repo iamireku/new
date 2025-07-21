@@ -1,4 +1,4 @@
-// /src/app/dashboard/deals/page.tsx
+
 'use client';
 
 import { useState } from 'react';
@@ -46,7 +46,7 @@ const getStatusText = (status: string) => {
     switch (status) {
         case 'inHolding': return 'On Hold';
         case 'in_review': return 'In Review';
-        default: return status.charAt(0).toUpperCase() + status.slice(1);
+        default: return status.charAt(0).toUpperCase() + status.slice(1).replace('_', ' ');
     }
 }
 
@@ -234,6 +234,7 @@ export default function DealsPage() {
                       onClick={() => handleRowClick(tx.id)}
                       className={cn(
                           'cursor-pointer',
+                          {'bg-yellow-100/50 dark:bg-yellow-900/20 font-medium': tx.status === 'pending'},
                           {'bg-purple-100/50 dark:bg-purple-900/20 font-medium': tx.status === 'in_review'}, 
                           {'bg-red-100/50 dark:bg-red-900/20 font-medium': tx.status === 'dispute'}
                       )}
@@ -250,6 +251,7 @@ export default function DealsPage() {
                               'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 ring-2 ring-red-500/50': tx.status === 'dispute',
                               'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200': tx.status === 'cancelled',
                               'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200': tx.status === 'delivered',
+                              'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 ring-2 ring-yellow-500/50': tx.status === 'pending',
                           })
                       }>
                           {getStatusText(tx.status)}

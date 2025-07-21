@@ -50,6 +50,8 @@ import {
   X,
   Handshake,
   CircleDollarSign,
+  Send,
+  ThumbsDown,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -57,14 +59,21 @@ import { add, isAfter, format, formatISO, differenceInDays } from 'date-fns';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { getDealById, Deal, TimelineEvent } from '@/lib/data';
 import Image from 'next/image';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Textarea } from '@/components/ui/textarea';
 
 
 const getStatusInfo = (status: string) => {
     switch (status) {
+        case 'pending':
+            return {
+                text: 'Pending Acceptance',
+                color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+                icon: Send,
+            };
         case 'inHolding':
             return {
                 text: 'On Hold',
@@ -125,6 +134,8 @@ function DealDetails({ params }: { params: { id: string } }) {
   const [remindersEnabled, setRemindersEnabled] = useState(false);
   const [reminderFigure, setReminderFigure] = useState(1);
   const [reminderPeriod, setReminderPeriod] = useState<Period>('days');
+  const [rejectionReason, setRejectionReason] = useState('');
+  const [editRequest, setEditRequest] = useState('');
 
 
   useEffect(() => {
@@ -159,7 +170,9 @@ function DealDetails({ params }: { params: { id: string } }) {
             if (updates.status === 'completed') icon = CheckCircle;
             if (updates.status === 'dispute') icon = AlertTriangle;
             if (updates.status === 'resolution_pending') icon = Handshake;
-            if (updates.status && ['inHolding'].includes(updates.status)) icon = Lock;
+            if (updates.status === 'inHolding') icon = Lock;
+            if (updates.status === 'pending') icon = Send;
+            if (updates.status === 'cancelled') icon = XCircle;
             if (updates.status && ['created'].includes(updates.status)) icon = FileText;
 
             updatedDeal.timeline.unshift({ ...newTimelineEvent, icon });
@@ -168,6 +181,35 @@ function DealDetails({ params }: { params: { id: string } }) {
         return updatedDeal;
     });
   };
+
+  const handleAcceptAndFund = () => {
+    handleDealUpdate(
+      { status: 'inHolding' },
+      { date: format(new Date(), 'PPP'), event: 'You accepted and funded the deal. The deal is now active.' }
+    );
+    toast({ title: "Deal Accepted & Funded!", description: "The seller has been notified to begin work." });
+  };
+  
+  const handleRejectDeal = () => {
+    handleDealUpdate(
+      { status: 'cancelled' },
+      { date: format(new Date(), 'PPP'), event: `You rejected the deal. Reason: ${rejectionReason}` }
+    );
+    toast({ title: "Deal Rejected", description: "The deal has been cancelled.", variant: "destructive" });
+  };
+  
+  const handleRequestEdits = () => {
+    // In a real app, this would trigger a more complex workflow.
+    // For now, we'll add a message and a timeline event.
+    const newMessage = { sender: 'You', message: `Requesting edits: ${editRequest}`, date: new Date().toISOString() };
+    setDeal(prev => prev ? ({ ...prev, messages: [...prev.messages, newMessage] }) : undefined);
+    handleDealUpdate(
+      {}, // No status change, just a timeline event
+      { date: format(new Date(), 'PPP'), event: `You requested edits to the deal.` }
+    );
+    toast({ title: "Edit Request Sent", description: "Your message has been sent to the other party." });
+  };
+
 
   const handleMarkAsDelivered = () => {
     const today = formatISO(new Date());
@@ -229,6 +271,7 @@ function DealDetails({ params }: { params: { id: string } }) {
   
   const daysSinceDelivery = deal.deliveredDate ? differenceInDays(new Date(), new Date(deal.deliveredDate)) : 0;
   const canSellerClaimFunds = deal.role === 'seller' && deal.status === 'in_review' && daysSinceDelivery > BUYER_RESPONSE_PERIOD_DAYS;
+  const isPendingCounterparty = deal.status === 'pending' && deal.role === 'buyer';
 
 
   const isReminderInPast = useMemo(() => {
@@ -383,6 +426,83 @@ function DealDetails({ params }: { params: { id: string } }) {
               ))}
             </CardContent>
              <CardFooter className="border-t pt-4 flex flex-wrap gap-2">
+                {isPendingCounterparty && (
+                  <div className='flex flex-wrap gap-2 w-full'>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button><CheckCircle className="mr-2"/>Accept & Fund Deal</Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Accept and Fund Deal?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            By clicking confirm, you agree to the terms and will be prompted to pay GHS {deal.amount.toLocaleString()}. The funds will be held securely by Betweena until the deal is completed.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction onClick={handleAcceptAndFund}>Confirm & Pay</AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline"><FilePenLine className="mr-2"/>Request Edits</Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Request Edits</DialogTitle>
+                          <DialogDescription>
+                            Explain what you'd like to change. This will be sent as a message to the other party.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <Textarea 
+                          placeholder="e.g., Can we change the deadline to next Friday? Also, I'd like to add another acceptance criterion."
+                          value={editRequest}
+                          onChange={e => setEditRequest(e.target.value)}
+                          rows={4}
+                        />
+                        <DialogFooter>
+                            <DialogTrigger asChild>
+                                <Button variant="outline">Cancel</Button>
+                            </DialogTrigger>
+                            <DialogTrigger asChild>
+                                <Button onClick={handleRequestEdits} disabled={!editRequest.trim()}>Send Request</Button>
+                            </DialogTrigger>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button variant="destructive"><ThumbsDown className="mr-2"/>Reject Deal</Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                            <DialogTitle>Reject Deal</DialogTitle>
+                            <DialogDescription>
+                                Please provide a reason for rejecting this deal. This will be shared with the other party.
+                            </DialogDescription>
+                            </DialogHeader>
+                            <Textarea 
+                              placeholder="e.g., The price is too high, or I found another seller."
+                              value={rejectionReason}
+                              onChange={e => setRejectionReason(e.target.value)}
+                              rows={4}
+                            />
+                            <DialogFooter>
+                                <DialogTrigger asChild>
+                                    <Button variant="outline">Cancel</Button>
+                                </DialogTrigger>
+                                <DialogTrigger asChild>
+                                    <Button variant="destructive" onClick={handleRejectDeal} disabled={!rejectionReason.trim()}>Confirm Rejection</Button>
+                                </DialogTrigger>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                  </div>
+                )}
                 {deal.role === 'buyer' && deal.status === 'in_review' && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
@@ -499,7 +619,7 @@ function DealDetails({ params }: { params: { id: string } }) {
                         </Tooltip>
                     </TooltipProvider>
                  )}
-                 {!isDealInactive && deal.status !== 'dispute' && deal.status !== 'resolution_pending' && (
+                 {!isDealInactive && deal.status !== 'dispute' && deal.status !== 'resolution_pending' && deal.status !== 'pending' && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button variant="destructive">
@@ -638,6 +758,4 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
   const params = use(paramsPromise);
   return <DealDetails params={params} />;
 }
-    
-
     
