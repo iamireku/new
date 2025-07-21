@@ -1,4 +1,4 @@
-// /src/app/signup/page.tsx
+
 'use client';
 
 import Link from 'next/link';
@@ -8,6 +8,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { AppLogo } from '@/components/AppLogo';
+import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react';
 
 function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -32,10 +34,41 @@ function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
 
 export default function SignupPage() {
   const router = useRouter();
+  const { toast } = useToast();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSignup = (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    router.push('/onboarding');
+    setIsLoading(true);
+
+    try {
+      // TODO: Replace with actual Firebase Authentication logic
+      console.log('Attempting to create user with:', { email, password });
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      console.log('User created successfully (simulated).');
+
+      toast({
+        title: "Account Created!",
+        description: "You're being redirected to the onboarding process."
+      });
+      
+      router.push('/onboarding');
+
+    } catch (error) {
+      console.error('Signup failed (simulated):', error);
+      toast({
+        variant: 'destructive',
+        title: 'Signup Failed',
+        description: 'Could not create your account. Please try again.',
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -52,22 +85,22 @@ export default function SignupPage() {
           <form onSubmit={handleSignup} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="full-name">Full Name</Label>
-              <Input id="full-name" placeholder="John Doe" required />
+              <Input id="full-name" placeholder="John Doe" required disabled={isLoading} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="m@example.com" required />
+              <Input id="email" type="email" placeholder="m@example.com" required value={email} onChange={e => setEmail(e.target.value)} disabled={isLoading} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" required />
+              <Input id="password" type="password" required value={password} onChange={e => setPassword(e.target.value)} disabled={isLoading} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="referral-code">Referral Code (If you have one)</Label>
-              <Input id="referral-code" placeholder="Enter referral code" />
+              <Input id="referral-code" placeholder="Enter referral code" disabled={isLoading} />
             </div>
-            <Button type="submit" className="w-full">
-              Create Account
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading ? 'Creating Account...' : 'Create Account'}
             </Button>
           </form>
           <div className="my-4 flex items-center">
@@ -75,7 +108,7 @@ export default function SignupPage() {
             <span className="mx-4 flex-shrink text-xs uppercase text-muted-foreground">Or</span>
             <div className="flex-grow border-t border-muted" />
           </div>
-          <Button variant="outline" className="w-full">
+          <Button variant="outline" className="w-full" disabled={isLoading}>
             <GoogleIcon className="mr-2 h-4 w-4" />
             Sign up with Google
           </Button>
