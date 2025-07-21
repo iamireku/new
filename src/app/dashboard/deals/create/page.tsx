@@ -58,7 +58,7 @@ interface Criterion {
 
 export default function CreateDealPage() {
   const [step, setStep] = useState(1);
-  const [role, setRole] = useState<'buyer' | 'seller' | null>(null);
+  const [role, setRole] = useState<'buyer' | 'seller' | null>('seller');
   const [dealTitle, setDealTitle] = useState('');
   const [dealImages, setDealImages] = useState<string[]>([]);
   const [acceptanceCriteria, setAcceptanceCriteria] = useState<Criterion[]>([]);
@@ -473,12 +473,12 @@ export default function CreateDealPage() {
                             </div>
                             <DialogFooter>
                                 <Button type="button" variant="outline" onClick={() => {
-                                    const dialogCloseButton = document.querySelector('[data-radix-dialog-close]') as HTMLElement | null;
+                                    const dialogCloseButton = document.querySelector('button[data-radix-dialog-close="true"]') as HTMLElement | null;
                                     dialogCloseButton?.click();
                                 }}>Cancel</Button>
                                 <Button type="button" onClick={() => {
                                     setLocation('Selected from Map'); // Placeholder
-                                    const dialogCloseButton = document.querySelector('[data-radix-dialog-close]') as HTMLElement | null;
+                                    const dialogCloseButton = document.querySelector('button[data-radix-dialog-close="true"]') as HTMLElement | null;
                                     dialogCloseButton?.click();
                                 }}>Confirm Location</Button>
                             </DialogFooter>
