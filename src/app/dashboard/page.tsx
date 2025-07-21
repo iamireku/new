@@ -4,16 +4,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
+  CardFooter
 } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Wallet, Landmark, Users, ArrowUpRight, ArrowDownLeft, Copy, Share2, Check, PlusCircle, Building, Phone, RefreshCw, AlertCircle, Handshake, Eye } from 'lucide-react';
+import { PlusCircle, Building, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -21,18 +14,16 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { recentTransactions, leaderboard, currentUser, savedPaymentMethods, PaymentMethod, dealsData } from '@/lib/data';
-
-const TRANSACTIONS_PER_PAGE = 5;
+import { savedPaymentMethods } from '@/lib/data';
+import { SummaryCards } from '@/components/dashboard/summary-cards';
+import { ReferralRanks } from '@/components/dashboard/referral-ranks';
+import { AttentionDeals } from '@/components/dashboard/attention-deals';
+import { RecentTransactions } from '@/components/dashboard/recent-transactions';
 
 export default function DashboardPage() {
     const { toast } = useToast();
-    const [copied, setCopied] = useState(false);
     const [isAddFundsDialogOpen, setIsAddFundsDialogOpen] = useState(false);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(savedPaymentMethods[0]?.id || '');
-    const [visibleTransactionsCount, setVisibleTransactionsCount] = useState(TRANSACTIONS_PER_PAGE);
-
-    const referralLink = `https://betweena.app/signup?ref=${currentUser.referralCode}`;
 
     const handleAddFunds = () => {
       setIsAddFundsDialogOpen(false);
@@ -40,59 +31,7 @@ export default function DashboardPage() {
           title: 'Deposit Initialized',
           description: 'Your request has been received. You will be prompted to confirm the transaction.',
       });
-  }
-
-    const copyToClipboard = () => {
-        navigator.clipboard.writeText(referralLink);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-        toast({
-            title: 'Copied to clipboard!',
-        });
-    };
-
-    const handleShare = async () => {
-        if (navigator.share) {
-            try {
-            await navigator.share({
-                title: 'Join me on Betweena!',
-                text: `Use my referral code to sign up: ${currentUser.referralCode}`,
-                url: referralLink,
-            });
-            } catch (error) {
-            console.error('Sharing failed:', error);
-            }
-        } else {
-            copyToClipboard();
-            toast({
-                title: 'Share not supported',
-                description: 'Link copied to clipboard instead.',
-            });
-        }
-    };
-
-    const currentUserIndex = leaderboard.findIndex(u => u.name === currentUser.name);
-    let displayUsers = [];
-    if (currentUserIndex !== -1) {
-        const startIndex = Math.max(0, currentUserIndex - 1);
-        const endIndex = Math.min(leaderboard.length, currentUserIndex + 2);
-        displayUsers = leaderboard.slice(startIndex, endIndex);
-    } else {
-        displayUsers = leaderboard.slice(0, 3);
     }
-
-    const getStatusText = (status: string) => {
-        if (status === 'inHolding') return 'On Hold';
-        if (status === 'in_review') return 'In Review';
-        return status.replace('_', ' ');
-    }
-
-    const transactionsToShow = recentTransactions.slice(0, visibleTransactionsCount);
-
-    const dealsNeedingAttention = dealsData.filter(
-        deal => deal.status === 'dispute' || deal.status === 'in_review'
-    );
-
 
   return (
     <div className="space-y-6">
@@ -153,163 +92,23 @@ export default function DashboardPage() {
                           )}
                       </div>
                   </div>
-                  <CardFooter>
+                  <DialogFooter>
                       <Button variant="outline" onClick={() => setIsAddFundsDialogOpen(false)}>Cancel</Button>
                       <Button onClick={handleAddFunds} disabled={savedPaymentMethods.length === 0}>Confirm Deposit</Button>
-                  </CardFooter>
+                  </DialogFooter>
               </DialogContent>
           </Dialog>
         </div>
       </div>
+      
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-headline">Your Balance</CardTitle>
-            <Wallet className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">GHS 12,345.67</div>
-            <p className="text-xs text-muted-foreground">Up 20.1% this month</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-headline">Money on Hold</CardTitle>
-            <Landmark className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">GHS 5,000.00</div>
-            <p className="text-xs text-muted-foreground">In 3 active deals</p>
-          </CardContent>
-        </Card>
-        <Card className="md:col-span-2 lg:col-span-1">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium font-headline">Referral Ranks</CardTitle>
-             <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-             <div className="space-y-4">
-                {displayUsers.map((user) => (
-                    <div key={user.rank} className={cn("flex items-center gap-4 p-2 rounded-lg", {"bg-primary/10": user.name === currentUser.name})}>
-                        <Avatar className="h-9 w-9">
-                            <AvatarImage src={user.avatar} alt={user.name} data-ai-hint={user.hint} />
-                            <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1">
-                            <p className="text-sm font-medium leading-none">{user.name}</p>
-                            <p className="text-sm text-muted-foreground">{user.referrals} referrals</p>
-                        </div>
-                        {user.name === currentUser.name ? (
-                            <div className="flex items-center gap-1">
-                                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={copyToClipboard} aria-label="Copy referral link">
-                                    {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
-                                </Button>
-                                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleShare} aria-label="Share referral link">
-                                    <Share2 className="h-4 w-4" />
-                                </Button>
-                            </div>
-                        ) : (
-                            <div className="font-medium text-right w-[72px]">{`#${user.rank}`}</div>
-                        )}
-                    </div>
-                ))}
-            </div>
-          </CardContent>
-        </Card>
+        <SummaryCards />
+        <ReferralRanks />
       </div>
       
-        <Card>
-            <CardHeader>
-                <CardTitle className="font-headline">Deals Needing Your Attention</CardTitle>
-                <CardDescription>
-                    These deals require an action from you to proceed.
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                {dealsNeedingAttention.length > 0 ? (
-                    <div className="space-y-4">
-                        {dealsNeedingAttention.map((deal) => (
-                            <div key={deal.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 border rounded-lg">
-                                <div className="flex items-center gap-4">
-                                     <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
-                                        deal.status === 'in_review' ? 'bg-purple-100 dark:bg-purple-900/50' : 'bg-red-100 dark:bg-red-900/50'
-                                    )}>
-                                        {deal.status === 'in_review' ? <Eye className='text-purple-500' /> : <AlertCircle className='text-red-500'/>}
-                                    </div>
-                                    <div>
-                                        <p className="font-semibold">{deal.title}</p>
-                                        <p className="text-sm text-muted-foreground">
-                                            With {deal.party}
-                                        </p>
-                                    </div>
-                                </div>
-                                <Button asChild>
-                                    <Link href={`/dashboard/deals/${deal.id}`}>
-                                        {deal.status === 'in_review' ? 'Review Now' : 'View Dispute'}
-                                    </Link>
-                                </Button>
-                            </div>
-                        ))}
-                    </div>
-                ) : (
-                    <div className="text-center text-muted-foreground py-8">
-                        <Handshake className="mx-auto h-12 w-12" />
-                        <p className="mt-4 font-semibold">All clear!</p>
-                        <p>You have no deals that require your immediate attention.</p>
-                    </div>
-                )}
-            </CardContent>
-        </Card>
+      <AttentionDeals />
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="font-headline">Recent Transactions</CardTitle>
-          <CardDescription>Your latest wallet transactions.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-            {transactionsToShow.map((tx) => (
-                <div key={tx.id} className="flex items-center gap-4 p-3 border rounded-lg">
-                    <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
-                        tx.type === 'incoming' ? 'bg-green-100 dark:bg-green-900/50' : 'bg-red-100 dark:bg-red-900/50'
-                    )}>
-                        {tx.type === 'incoming' ? 
-                            <ArrowDownLeft className="h-5 w-5 text-green-500" /> : 
-                            <ArrowUpRight className="h-5 w-5 text-red-500" />
-                        }
-                    </div>
-                    <div className="flex-1">
-                        <p className="font-semibold">{tx.description}</p>
-                        <p className="text-sm text-muted-foreground">
-                            {tx.type === 'incoming' ? 'From' : 'To'}: {tx.party}
-                        </p>
-                    </div>
-                    <div className="text-right">
-                        <p className={cn("font-mono font-semibold", tx.amount > 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>
-                            {tx.amount > 0 ? '+' : ''}GHS {Math.abs(tx.amount).toFixed(2)}
-                        </p>
-                        <Badge variant={tx.status === 'completed' ? 'default' : 'secondary'} className={cn("mt-1", {
-                            'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': tx.status === 'completed',
-                            'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200': tx.status === 'pending',
-                            'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': tx.status === 'inHolding'
-                        })}>
-                            {getStatusText(tx.status)}
-                        </Badge>
-                    </div>
-                </div>
-            ))}
-        </CardContent>
-        {recentTransactions.length > visibleTransactionsCount && (
-            <CardFooter className="justify-center border-t pt-4">
-                <Button 
-                    variant="outline" 
-                    onClick={() => setVisibleTransactionsCount(prev => prev + TRANSACTIONS_PER_PAGE)}
-                >
-                    <RefreshCw className="mr-2 h-4 w-4" />
-                    Load More
-                </Button>
-            </CardFooter>
-        )}
-      </Card>
+      <RecentTransactions />
     </div>
   );
 }
