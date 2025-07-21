@@ -446,15 +446,44 @@ export default function CreateDealPage() {
               </div>
                <div className="space-y-2">
                 <Label htmlFor="location">Delivery/Pickup Location</Label>
-                <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="location"
-                      placeholder="e.g., Accra Mall or Digital Address GA-123-4567"
-                      className="pl-9"
-                      value={location}
-                      onChange={(e) => setLocation(e.target.value)}
-                    />
+                <div className="flex items-center gap-2">
+                    <div className="relative flex-grow">
+                        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          id="location"
+                          placeholder="e.g., Accra Mall or Digital Address"
+                          className="pl-9"
+                          value={location}
+                          onChange={(e) => setLocation(e.target.value)}
+                        />
+                    </div>
+                    <Dialog>
+                        <DialogTrigger asChild>
+                            <Button type="button" variant="outline">Select on Map</Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Select Location</DialogTitle>
+                                <DialogDescription>
+                                    Pan and zoom to find the location, then confirm.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div className="h-64 bg-muted rounded-md flex items-center justify-center">
+                                <p className="text-muted-foreground">Map placeholder</p>
+                            </div>
+                            <DialogFooter>
+                                <Button type="button" variant="outline" onClick={() => {
+                                    const dialogCloseButton = document.querySelector('[data-radix-dialog-close]') as HTMLElement | null;
+                                    dialogCloseButton?.click();
+                                }}>Cancel</Button>
+                                <Button type="button" onClick={() => {
+                                    setLocation('Selected from Map'); // Placeholder
+                                    const dialogCloseButton = document.querySelector('[data-radix-dialog-close]') as HTMLElement | null;
+                                    dialogCloseButton?.click();
+                                }}>Confirm Location</Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
                 </div>
               </div>
             </form>
@@ -544,3 +573,5 @@ export default function CreateDealPage() {
     </div>
   );
 }
+
+    
