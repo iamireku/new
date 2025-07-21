@@ -1,6 +1,6 @@
 // /src/lib/data.ts
 import { FileText, UserCheck, Lock, LucideIcon, Truck, Eye } from "lucide-react";
-import { format } from 'date-fns';
+import { format, formatISO } from 'date-fns';
 
 // Types
 export type DealStatus = 'completed' | 'inHolding' | 'in_review' | 'delivered' | 'dispute' | 'cancelled';
@@ -99,8 +99,8 @@ export let dealsData: Deal[] = [
       id: 'DEAL001', 
       title: 'E-commerce Platform Development', 
       party: 'ClientCorp', 
-      date: '2023-10-26', 
-      deadline: '2023-11-30', 
+      date: '2023-10-26T10:00:00.000Z', 
+      deadline: '2023-11-30T17:00:00.000Z', 
       amount: 15000, 
       status: 'completed', 
       role: 'seller', 
@@ -122,8 +122,8 @@ export let dealsData: Deal[] = [
       id: 'DEAL002', 
       title: 'Brand Identity Design', 
       party: 'Creative LLC', 
-      date: '2023-10-22', 
-      deadline: '2023-11-30', 
+      date: '2023-10-22T10:00:00.000Z', 
+      deadline: '2023-11-30T17:00:00.000Z', 
       amount: 3500, 
       status: 'completed', 
       role: 'buyer', 
@@ -139,8 +139,8 @@ export let dealsData: Deal[] = [
       id: 'DEAL003', 
       title: 'Mobile App UI/UX', 
       party: 'Appify Inc.', 
-      date: '2023-11-05', 
-      deadline: '2023-12-30',
+      date: '2023-11-05T10:00:00.000Z', 
+      deadline: '2023-12-30T17:00:00.000Z',
       amount: 8000, 
       status: 'in_review', 
       role: 'buyer',
@@ -161,10 +161,10 @@ export let dealsData: Deal[] = [
         { sender: 'You', message: 'Hey! Yes, I am just finishing up the final screens. Should be ready for review tomorrow.', date: '2023-11-14' },
       ],
     },
-    { id: 'DEAL004', title: 'SEO & Content Strategy', party: 'Growth Co.', date: '2023-11-10', deadline: '2023-12-15', amount: 2500, status: 'cancelled', role: 'buyer', acceptanceCriteria: [], timeline: [], messages: [] },
-    { id: 'DEAL005', title: 'API Integration Services', party: 'ConnectAll', date: '2023-11-12', deadline: '2023-12-20', amount: 6000, status: 'dispute', role: 'seller', acceptanceCriteria: [], timeline: [], messages: [] },
-    { id: 'DEAL006', title: 'Q4 Marketing Campaign', party: 'AdVantage', date: '2023-11-15', deadline: '2024-01-15', amount: 12000, status: 'inHolding', role: 'seller', acceptanceCriteria: [], timeline: [], messages: [] },
-    { id: 'DEAL007', title: 'Cloud Migration', party: 'Serverless Solutions', date: '2023-11-20', deadline: '2024-02-01', amount: 25000, status: 'cancelled', role: 'seller', acceptanceCriteria: [], timeline: [], messages: [] },
+    { id: 'DEAL004', title: 'SEO & Content Strategy', party: 'Growth Co.', date: '2023-11-10T10:00:00.000Z', deadline: '2023-12-15T17:00:00.000Z', amount: 2500, status: 'cancelled', role: 'buyer', acceptanceCriteria: [], timeline: [], messages: [] },
+    { id: 'DEAL005', title: 'API Integration Services', party: 'ConnectAll', date: '2023-11-12T10:00:00.000Z', deadline: '2023-12-20T17:00:00.000Z', amount: 6000, status: 'dispute', role: 'seller', acceptanceCriteria: [], timeline: [], messages: [] },
+    { id: 'DEAL006', title: 'Q4 Marketing Campaign', party: 'AdVantage', date: '2023-11-15T10:00:00.000Z', deadline: '2024-01-15T17:00:00.000Z', amount: 12000, status: 'inHolding', role: 'seller', acceptanceCriteria: [], timeline: [], messages: [] },
+    { id: 'DEAL007', title: 'Cloud Migration', party: 'Serverless Solutions', date: '2023-11-20T10:00:00.000Z', deadline: '2024-02-01T17:00:00.000Z', amount: 25000, status: 'cancelled', role: 'seller', acceptanceCriteria: [], timeline: [], messages: [] },
 ];
 
 export const getDealById = (id: string): Deal | undefined => {
@@ -176,7 +176,7 @@ export const createDeal = (newDealData: {title: string, party: string, amount: n
         id: `DEAL${String(dealsData.length + 1).padStart(3, '0')}`,
         title: newDealData.title,
         party: newDealData.party,
-        date: format(new Date(), 'yyyy-MM-dd'),
+        date: formatISO(new Date()),
         deadline: newDealData.deadline,
         amount: newDealData.amount,
         status: 'inHolding', // New deals start as inHolding, assuming they get funded immediately
@@ -255,3 +255,5 @@ export const industries = [
     "Transportation & Logistics",
     "Other",
 ];
+
+    

@@ -33,6 +33,7 @@ import {
   AtSign,
   Sparkles,
   CalendarIcon,
+  Clock,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -45,7 +46,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { createDeal } from '@/lib/data';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
-import { format } from 'date-fns';
+import { format, formatISO, setHours, setMinutes } from 'date-fns';
 
 const totalSteps = 5;
 
@@ -89,7 +90,7 @@ export default function CreateDealPage() {
         amount: parseFloat(dealAmount || '0'),
         role: role,
         imageUrl: dealImage || undefined,
-        deadline: deadline ? format(deadline, 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd'),
+        deadline: deadline ? formatISO(deadline) : formatISO(new Date()),
     });
 
     toast({
@@ -149,6 +150,23 @@ export default function CreateDealPage() {
   };
 
   const getPronoun = () => (role === 'buyer' ? 'Seller' : 'Buyer');
+  
+  const handleDateSelect = (date: Date | undefined) => {
+    if (!date) return;
+    const newDeadline = setMinutes(setHours(date, deadline?.getHours() ?? 0), deadline?.getMinutes() ?? 0);
+    setDeadline(newDeadline);
+  };
+  
+  const handleTimeChange = (type: 'hours' | 'minutes', value: number) => {
+    if (!deadline) return;
+    let newDeadline;
+    if (type === 'hours') {
+        newDeadline = setHours(deadline, value);
+    } else {
+        newDeadline = setMinutes(deadline, value);
+    }
+    setDeadline(newDeadline);
+  }
 
   return (
     <div className="flex w-full justify-center">
@@ -367,26 +385,50 @@ export default function CreateDealPage() {
                <div className="space-y-2">
                   <Label htmlFor="deal-deadline">Deal Deadline</Label>
                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-full justify-start text-left font-normal",
-                            !deadline && "text-muted-foreground"
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {deadline ? format(deadline, "PPP") : <span>Pick a date</span>}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0">
-                        <Calendar
-                          mode="single"
-                          selected={deadline}
-                          onSelect={setDeadline}
-                          initialFocus
-                        />
-                      </PopoverContent>
+                        <PopoverTrigger asChild>
+                            <Button
+                            variant={"outline"}
+                            className={cn(
+                                "w-full justify-start text-left font-normal",
+                                !deadline && "text-muted-foreground"
+                            )}
+                            >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {deadline ? format(deadline, "PPP 'at' h:mm a") : <span>Pick a date and time</span>}
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                            <Calendar
+                                mode="single"
+                                selected={deadline}
+                                onSelect={handleDateSelect}
+                                initialFocus
+                            />
+                            <div className="p-3 border-t border-border">
+                                <Label className="flex items-center gap-2 mb-2"><Clock className="h-4 w-4"/> Time</Label>
+                                <div className="flex items-center gap-2">
+                                    <Input
+                                        type="number"
+                                        aria-label="Hour"
+                                        className="w-16"
+                                        min={0}
+                                        max={23}
+                                        value={deadline?.getHours() ?? ""}
+                                        onChange={(e) => handleTimeChange('hours', parseInt(e.target.value, 10))}
+                                    />
+                                    <span>:</span>
+                                    <Input
+                                        type="number"
+                                        aria-label="Minute"
+                                        className="w-16"
+                                        min={0}
+                                        max={59}
+                                        value={deadline?.getMinutes().toString().padStart(2, '0') ?? ""}
+                                        onChange={(e) => handleTimeChange('minutes', parseInt(e.target.value, 10))}
+                                    />
+                                </div>
+                            </div>
+                        </PopoverContent>
                     </Popover>
               </div>
                <p className="text-xs text-muted-foreground pt-2">
@@ -411,7 +453,7 @@ export default function CreateDealPage() {
                         </div>
                         <div className="flex items-center gap-2">
                             <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-                            <span>Due by {deadline ? format(deadline, "PPP") : 'N/A'}</span>
+                            <span>Due by {deadline ? format(deadline, "PPP 'at' h:mm a") : 'N/A'}</span>
                         </div>
                          {(partyId || partyEmail || partyPhone) && <Separator />}
                         {partyId && <div className="flex items-center gap-2">
@@ -470,3 +512,5 @@ export default function CreateDealPage() {
     </div>
   );
 }
+
+    

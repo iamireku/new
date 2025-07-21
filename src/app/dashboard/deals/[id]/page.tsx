@@ -49,7 +49,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import { add, isAfter } from 'date-fns';
+import { add, isAfter, format } from 'date-fns';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { getDealById, savedPaymentMethods } from '@/lib/data';
 import Image from 'next/image';
@@ -168,6 +168,8 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
     }
   }
 
+  const formattedDeadline = deal.deadline ? format(new Date(deal.deadline), "PPP 'at' h:mm a") : 'Not set';
+
 
   return (
     <div className="space-y-6">
@@ -230,14 +232,14 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
                 <Calendar className="h-8 w-8 text-muted-foreground" />
                 <div>
                   <p className="text-sm text-muted-foreground">Creation Date</p>
-                  <p className="text-lg font-bold">{deal.date}</p>
+                  <p className="text-lg font-bold">{format(new Date(deal.date), 'PPP')}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <AlarmClock className="h-8 w-8 text-muted-foreground" />
                 <div>
                   <p className="text-sm text-muted-foreground">Deadline</p>
-                  <p className="text-lg font-bold">{deal.deadline}</p>
+                  <p className="text-lg font-bold">{formattedDeadline}</p>
                 </div>
               </div>
             </CardContent>
@@ -445,3 +447,5 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
     </div>
   );
 }
+
+    
