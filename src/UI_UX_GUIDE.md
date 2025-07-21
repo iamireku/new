@@ -9,7 +9,7 @@ The entire user experience is built on three pillars:
 
 1.  **Trust and Clarity**: Every interaction must build user confidence. The UI must be transparent, professional, and unambiguous. We avoid jargon and make complex financial operations feel safe and understandable.
 2.  **Action-Oriented Design**: The application should proactively guide users to what they need to do next. Dashboards and key pages should highlight required actions, reducing cognitive load and preventing missed steps.
-3.  **Simplicity and Efficiency**: We streamline complex processes like deal creation and amendments into simple, intuitive steps. Features like "Smart Start" (AI Assistant) are designed to make the user's workflow as efficient as possible.
+3.  **Simplicity and Efficiency**: We streamline complex processes like deal creation and amendments into simple, intuitive steps.
 
 ## 2. Style and Branding
 

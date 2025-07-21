@@ -9,7 +9,7 @@ The entire user experience is built on three pillars:
 
 1.  **Trust and Clarity**: Every interaction must build user confidence. The UI must be transparent, professional, and unambiguous. We avoid jargon and make complex financial operations feel safe and understandable.
 2.  **Action-Oriented Design**: The application should proactively guide users to what they need to do next. Dashboards and key pages should highlight required actions, reducing cognitive load and preventing missed steps.
-3.  **Simplicity and Efficiency**: We streamline complex processes like deal creation and amendments into simple, intuitive steps. Features like "Smart Start" (AI Assistant) are designed to make the user's workflow as efficient as possible.
+3.  **Simplicity and Efficiency**: We streamline complex processes like deal creation and amendments into simple, intuitive steps.
 
 ## 2. Style and Branding
 
@@ -48,7 +48,6 @@ Our deal lifecycle is designed to be clear and secure, with distinct states that
 ### Deal Creation
 
 -   **Multi-Step Process:** The flow is broken down into logical steps with a progress bar to manage user expectations.
--   **AI-Assisted "Smart Start":** To reduce friction, users can describe their deal in natural language. Our AI (`smart-start-flow`) will parse the text and pre-fill the form fields, turning a manual task into a quick review.
 -   **Flexible Party Invitation:** Users can initiate a deal with a counterparty using their **Email**, **Phone Number**, or unique **Betweena ID**, providing flexibility and privacy.
 
 ### Deal Management
@@ -74,7 +73,7 @@ We use a customized version of `ShadCN UI` for our component library. This provi
 -   **Card:** The primary container for grouping related information (e.g., Dashboard widgets, profile sections). `CardTitle` is always styled with the bold headline font.
 -   **Button:** Used for all actions. Variants (`default`, `outline`, `destructive`) are used consistently to signal the nature of the action.
 -   **AlertDialog:** Used for critical, user-initiated confirmations that have consequences, such as locking a referral code, raising a dispute, or releasing funds. This ensures the user consciously confirms their action.
--   **Dialog:** Used for standard modal actions like "Add Funds", "Add Payment Method", or using the "Smart Start" feature, where the actions are less critical or destructive.
+-   **Dialog:** Used for standard modal actions like "Add Funds" or "Add Payment Method", where the actions are less critical or destructive.
 -   **Tabs:** Used to organize complex pages with multiple sections, such as the Profile page.
 -   **Input:** Standardized input fields, often enhanced with icons for better context (e.g., `AtSign` for Betweena ID).
 -   **Badge:** Used to display status labels (e.g., Deal Status) with colors mapped to their meaning for quick visual identification.
