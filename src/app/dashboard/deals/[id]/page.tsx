@@ -158,7 +158,7 @@ function DealDetails({ params }: { params: { id: string } }) {
             if (updates.status && ['inHolding', 'delivered', 'in_review'].includes(updates.status)) icon = CheckCircle;
 
 
-            updatedDeal.timeline.push({ ...newTimelineEvent, icon });
+            updatedDeal.timeline.unshift({ ...newTimelineEvent, icon });
         }
         
         return updatedDeal;
@@ -207,7 +207,6 @@ function DealDetails({ params }: { params: { id: string } }) {
   }
 
   const statusInfo = getStatusInfo(deal.status);
-  const reversedTimeline = [...deal.timeline].reverse();
 
   const isDealInactive = deal.status === 'completed' || deal.status === 'cancelled';
   const canAmendDeal = deal.status === 'inHolding';
@@ -219,25 +218,27 @@ function DealDetails({ params }: { params: { id: string } }) {
     
     const now = new Date();
     const deadlineDate = new Date(deal.deadline);
-    let nextReminderDate = add(now, { [reminderPeriod]: reminderFigure });
+    let reminderDate = add(deadlineDate, { [reminderPeriod]: -reminderFigure });
     
-    return isAfter(nextReminderDate, deadlineDate);
+    return isAfter(now, reminderDate);
   }, [reminderFigure, reminderPeriod, remindersEnabled, deal.deadline]);
 
 
   const handleRemindersToggle = (enabled: boolean) => {
     setRemindersEnabled(enabled);
-    toast({
-      title: `Reminders ${enabled ? 'Enabled' : 'Disabled'}`,
-      description: `You will ${enabled ? 'now' : 'no longer'} receive reminders for this deal.`,
-    });
+    if (!isDealInactive) {
+      toast({
+        title: `Reminders ${enabled ? 'Enabled' : 'Disabled'}`,
+        description: `You will ${enabled ? 'now' : 'no longer'} receive reminders for this deal.`,
+      });
+    }
   };
   
   const handleFrequencyChange = () => {
-    if(remindersEnabled) {
+    if(remindersEnabled && !isDealInactive) {
       toast({
         title: 'Reminder Frequency Updated',
-        description: `You will now receive reminders every ${reminderFigure} ${reminderPeriod}.`,
+        description: `You will now be reminded ${reminderFigure} ${reminderPeriod} before the deadline.`,
       });
     }
   }
@@ -488,13 +489,13 @@ function DealDetails({ params }: { params: { id: string } }) {
             </CardHeader>
             <CardContent>
                 <ul className="space-y-4">
-                    {reversedTimeline.map((item, index) => (
+                    {deal.timeline.map((item, index) => (
                         <li key={index} className="flex gap-4">
                             <div className="flex flex-col items-center">
                                 <div className={cn("flex h-8 w-8 items-center justify-center rounded-full", index === 0 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground")}>
                                     <item.icon className="h-4 w-4" />
                                 </div>
-                                {index < reversedTimeline.length - 1 && <div className="w-px flex-1 bg-border" />}
+                                {index < deal.timeline.length - 1 && <div className="w-px flex-1 bg-border" />}
                             </div>
                             <div>
                                 <p className="text-sm font-medium">{item.event}</p>
@@ -524,7 +525,7 @@ function DealDetails({ params }: { params: { id: string } }) {
                     />
                 </div>
                 <div className="space-y-2">
-                   <Label className={cn({"text-muted-foreground": isDealInactive})}>Frequency</Label>
+                   <Label className={cn({"text-muted-foreground": isDealInactive || !remindersEnabled})}>Frequency</Label>
                     <div className="flex items-center gap-2">
                         <Input
                             type="number"
@@ -539,8 +540,8 @@ function DealDetails({ params }: { params: { id: string } }) {
                             value={reminderPeriod}
                             onValueChange={(value: Period) => {
                                 setReminderPeriod(value);
-                                handleFrequencyChange();
                             }}
+                            onClose={handleFrequencyChange}
                             disabled={!remindersEnabled || isDealInactive}
                         >
                             <SelectTrigger>
@@ -553,11 +554,12 @@ function DealDetails({ params }: { params: { id: string } }) {
                             </SelectContent>
                         </Select>
                     </div>
+                    <p className="text-xs text-muted-foreground">Set a reminder before the deadline.</p>
                 </div>
                 {isReminderInPast && !isDealInactive && (
                     <div className="flex items-center gap-2 text-xs text-yellow-600 p-2 bg-yellow-50 rounded-md">
                         <Info className="h-4 w-4" />
-                        <span>This frequency will send reminders past the deal's deadline.</span>
+                        <span>This reminder is in the past.</span>
                     </div>
                 )}
                  {isDealInactive && (
