@@ -35,24 +35,25 @@ import {
   AlertTriangle,
   CheckCircle,
   Truck,
-  X,
+  XCircle,
   ArrowLeft,
   BellRing,
   AlarmClock,
   Info,
-  UserCheck as UserCheckIcon,
+  UserCheck,
   PlusCircle,
   Building,
   Phone,
   FilePenLine,
   Eye,
   MapPin,
+  X,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { add, isAfter, format } from 'date-fns';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { getDealById, savedPaymentMethods } from '@/lib/data';
+import { getDealById, savedPaymentMethods, Deal, TimelineEvent } from '@/lib/data';
 import Image from 'next/image';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -90,7 +91,7 @@ const getStatusInfo = (status: string) => {
              return {
                 text: 'Cancelled',
                 color: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200',
-                icon: <X className="h-4 w-4" />,
+                icon: <XCircle className="h-4 w-4" />,
             };
         case 'delivered':
             return {
@@ -106,9 +107,10 @@ const getStatusInfo = (status: string) => {
 type Period = 'hours' | 'days' | 'weeks';
 
 function DealDetails({ params }: { params: { id: string } }) {
-  const deal = getDealById(params.id);
+  const initialDeal = useMemo(() => getDealById(params.id), [params.id]);
   const { toast } = useToast();
 
+  const [deal, setDeal] = useState<Deal | undefined>(initialDeal);
   const [remindersEnabled, setRemindersEnabled] = useState(false);
   const [reminderFigure, setReminderFigure] = useState(1);
   const [reminderPeriod, setReminderPeriod] = useState<Period>('days');
@@ -132,6 +134,50 @@ function DealDetails({ params }: { params: { id: string } }) {
             </Card>
         </div>
     );
+  }
+
+  const handleDealUpdate = (updates: Partial<Deal>, newTimelineEvent?: Omit<TimelineEvent, 'icon'>) => {
+    setDeal(prevDeal => {
+        if (!prevDeal) return undefined;
+        const updatedDeal = { ...prevDeal, ...updates };
+
+        if (newTimelineEvent) {
+            let icon: any = FileText;
+            if (updates.status === 'delivered') icon = Truck;
+            if (updates.status === 'in_review') icon = Eye;
+            if (updates.status === 'completed') icon = CheckCircle;
+            if (updates.status === 'dispute') icon = AlertTriangle;
+
+            updatedDeal.timeline.push({ ...newTimelineEvent, icon });
+        }
+        
+        return updatedDeal;
+    });
+  };
+
+  const handleMarkAsDelivered = () => {
+    handleDealUpdate(
+      { status: 'in_review' },
+      { date: format(new Date(), 'PPP'), event: 'You marked as delivered. Buyer is reviewing.' }
+    );
+    toast({ title: "Deal Marked as Delivered", description: "The buyer has been notified to review and release funds." });
+  };
+
+  const handleReleaseFunds = () => {
+    const updatedCriteria = deal.acceptanceCriteria.map(c => ({ ...c, completed: true }));
+    handleDealUpdate(
+      { status: 'completed', acceptanceCriteria: updatedCriteria },
+      { date: format(new Date(), 'PPP'), event: 'Funds released. Deal completed.' }
+    );
+    toast({ title: "Funds Released!", description: "The money has been sent to the seller." });
+  };
+  
+  const handleRaiseDispute = () => {
+    handleDealUpdate(
+        { status: 'dispute' },
+        { date: format(new Date(), 'PPP'), event: 'Dispute raised. Deal paused.' }
+    );
+    toast({ title: "Dispute Raised", description: "The deal is now on hold. Our team will be in touch.", variant: 'destructive'});
   }
 
   const statusInfo = getStatusInfo(deal.status);
@@ -219,7 +265,12 @@ function DealDetails({ params }: { params: { id: string } }) {
                         )}
                     </Carousel>
                      {isDealInactive && (
-                        <div className="absolute inset-0 bg-black/20 rounded-t-lg" />
+                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center rounded-t-lg">
+                           <Badge variant="secondary" className={cn("text-lg gap-2", statusInfo.color)}>
+                              {statusInfo.icon}
+                              <span>{statusInfo.text}</span>
+                          </Badge>
+                        </div>
                     )}
                 </CardContent>
             </Card>
@@ -278,7 +329,7 @@ function DealDetails({ params }: { params: { id: string } }) {
             <CardContent className="space-y-3">
               {deal.acceptanceCriteria.map((criterion) => (
                 <div key={criterion.id} className="flex items-start gap-3">
-                  <Checkbox id={`criterion-${criterion.id}`} checked={criterion.completed} className="mt-1" />
+                  <Checkbox id={`criterion-${criterion.id}`} checked={criterion.completed} disabled className="mt-1" />
                   <Label htmlFor={`criterion-${criterion.id}`} className={cn("font-normal", {'line-through text-muted-foreground': criterion.completed})}>
                     {criterion.text}
                   </Label>
@@ -300,7 +351,7 @@ function DealDetails({ params }: { params: { id: string } }) {
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction>Confirm & Release</AlertDialogAction>
+                        <AlertDialogAction onClick={handleReleaseFunds}>Confirm & Release</AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
@@ -319,7 +370,7 @@ function DealDetails({ params }: { params: { id: string } }) {
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction>Yes, Mark as Delivered</AlertDialogAction>
+                        <AlertDialogAction onClick={handleMarkAsDelivered}>Yes, Mark as Delivered</AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
@@ -342,7 +393,7 @@ function DealDetails({ params }: { params: { id: string } }) {
                  {!isDealInactive && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button variant="outline">
+                      <Button variant="destructive">
                           <AlertTriangle className="mr-2"/>Raise a Dispute
                       </Button>
                     </AlertDialogTrigger>
@@ -355,7 +406,7 @@ function DealDetails({ params }: { params: { id: string } }) {
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction>Yes, Raise Dispute</AlertDialogAction>
+                        <AlertDialogAction onClick={handleRaiseDispute}>Yes, Raise Dispute</AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>

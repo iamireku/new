@@ -1,5 +1,5 @@
 // /src/lib/data.ts
-import { FileText, UserCheck, Lock, LucideIcon, Truck, Eye } from "lucide-react";
+import { FileText, UserCheck, Lock, LucideIcon, Truck, Eye, CheckCircle, AlertTriangle, XCircle } from "lucide-react";
 import { format, formatISO } from 'date-fns';
 
 // Types
@@ -111,10 +111,11 @@ export let dealsData: Deal[] = [
         { id: 2, text: 'Admin training completed', completed: true },
       ],
       timeline: [
-        { date: '2023-10-26', event: 'Deal created', icon: FileText },
-        { date: '2023-10-27', event: 'ClientCorp funded the deal', icon: UserCheck },
-        { date: '2023-11-25', event: 'Seller marked as delivered', icon: Truck },
-        { date: '2023-11-26', event: 'Buyer released funds', icon: Eye },
+        { date: format(new Date('2023-10-26'), 'PPP'), event: 'Deal created', icon: FileText },
+        { date: format(new Date('2023-10-27'), 'PPP'), event: 'ClientCorp funded the deal', icon: UserCheck },
+        { date: format(new Date('2023-11-25'), 'PPP'), event: 'You marked as delivered', icon: Truck },
+        { date: format(new Date('2023-11-26'), 'PPP'), event: 'Buyer released funds', icon: Eye },
+        { date: format(new Date('2023-11-26'), 'PPP'), event: 'Deal completed', icon: CheckCircle },
       ],
       messages: [
         { sender: 'ClientCorp', message: 'Thanks for the great work!', date: '2023-11-26' },
@@ -134,7 +135,13 @@ export let dealsData: Deal[] = [
         { id: 1, text: 'Logo pack delivered in all formats', completed: true },
         { id: 2, text: 'Brand guidelines document provided', completed: true },
       ],
-      timeline: [],
+      timeline: [
+        { date: format(new Date('2023-10-22'), 'PPP'), event: 'Deal created', icon: FileText },
+        { date: format(new Date('2023-10-23'), 'PPP'), event: 'You funded the deal', icon: UserCheck },
+        { date: format(new Date('2023-11-15'), 'PPP'), event: 'Seller marked as delivered', icon: Truck },
+        { date: format(new Date('2023-11-16'), 'PPP'), event: 'You released funds', icon: Eye },
+        { date: format(new Date('2023-11-16'), 'PPP'), event: 'Deal completed', icon: CheckCircle },
+      ],
       messages: [],
       imageUrls: ['https://placehold.co/600x400.png']
     },
@@ -154,25 +161,58 @@ export let dealsData: Deal[] = [
         { id: 3, text: 'Prototype link provided for review', completed: false },
       ],
       timeline: [
-        { date: '2023-11-05', event: 'Deal created by You (Seller)', icon: FileText },
-        { date: '2023-11-06', event: 'Appify Inc. accepted & funded the deal', icon: UserCheck },
-        { date: '2023-11-07', event: 'Funds secured in holding.', icon: Lock },
-        { date: '2023-11-15', event: 'Seller marked as Delivered.', icon: Truck },
-        { date: '2023-11-15', event: 'Deal is now in review by the Buyer.', icon: Eye },
+        { date: format(new Date('2023-11-05'), 'PPP'), event: 'Deal created by Seller', icon: FileText },
+        { date: format(new Date('2023-11-06'), 'PPP'), event: 'You funded the deal', icon: UserCheck },
+        { date: format(new Date('2023-11-07'), 'PPP'), event: 'Funds secured in holding.', icon: Lock },
+        { date: format(new Date('2023-11-15'), 'PPP'), event: 'Seller marked as Delivered.', icon: Truck },
+        { date: format(new Date('2023-11-15'), 'PPP'), event: 'Deal is now in review by you.', icon: Eye },
       ],
       messages: [
         { sender: 'Appify Inc.', message: 'Just checking on the status of the prototype. Any updates?', date: '2023-11-14' },
         { sender: 'You', message: 'Hey! Yes, I am just finishing up the final screens. Should be ready for review tomorrow.', date: '2023-11-14' },
       ],
     },
-    { id: 'DEAL004', title: 'SEO & Content Strategy', party: 'Growth Co.', date: '2023-11-10T10:00:00.000Z', deadline: '2023-12-15T17:00:00.000Z', amount: 2500, status: 'cancelled', role: 'buyer', acceptanceCriteria: [], timeline: [], messages: [] },
-    { id: 'DEAL005', title: 'API Integration Services', party: 'ConnectAll', date: '2023-11-12T10:00:00.000Z', deadline: '2023-12-20T17:00:00.000Z', amount: 6000, status: 'dispute', role: 'seller', acceptanceCriteria: [], timeline: [], messages: [] },
-    { id: 'DEAL006', title: 'Q4 Marketing Campaign', party: 'AdVantage', date: '2023-11-15T10:00:00.000Z', deadline: '2024-01-15T17:00:00.000Z', amount: 12000, status: 'inHolding', role: 'seller', acceptanceCriteria: [], timeline: [], messages: [] },
-    { id: 'DEAL007', title: 'Cloud Migration', party: 'Serverless Solutions', date: '2023-11-20T10:00:00.000Z', deadline: '2024-02-01T17:00:00.000Z', amount: 25000, status: 'cancelled', role: 'seller', acceptanceCriteria: [], timeline: [], messages: [] },
+    { id: 'DEAL004', title: 'SEO & Content Strategy', party: 'Growth Co.', date: '2023-11-10T10:00:00.000Z', deadline: '2023-12-15T17:00:00.000Z', amount: 2500, status: 'cancelled', role: 'buyer', 
+      acceptanceCriteria: [], 
+      timeline: [
+        { date: format(new Date('2023-11-10'), 'PPP'), event: 'Deal created', icon: FileText },
+        { date: format(new Date('2023-11-11'), 'PPP'), event: 'Deal cancelled by you', icon: XCircle },
+      ], 
+      messages: [] 
+    },
+    { id: 'DEAL005', title: 'API Integration Services', party: 'ConnectAll', date: '2023-11-12T10:00:00.000Z', deadline: '2023-12-20T17:00:00.000Z', amount: 6000, status: 'dispute', role: 'seller', 
+      acceptanceCriteria: [{id: 1, text: "API key provided", completed: false}], 
+      timeline: [
+        { date: format(new Date('2023-11-12'), 'PPP'), event: 'Deal created', icon: FileText },
+        { date: format(new Date('2023-11-13'), 'PPP'), event: 'Buyer funded the deal', icon: UserCheck },
+        { date: format(new Date('2023-11-14'), 'PPP'), event: 'Dispute raised by buyer', icon: AlertTriangle },
+      ], 
+      messages: [] 
+    },
+    { id: 'DEAL006', title: 'Q4 Marketing Campaign', party: 'AdVantage', date: '2023-11-15T10:00:00.000Z', deadline: '2024-01-15T17:00:00.000Z', amount: 12000, status: 'inHolding', role: 'seller', 
+      acceptanceCriteria: [], 
+      timeline: [
+        { date: format(new Date('2023-11-15'), 'PPP'), event: 'Deal created', icon: FileText },
+        { date: format(new Date('2023-11-16'), 'PPP'), event: 'Buyer funded the deal', icon: UserCheck },
+        { date: format(new Date('2023-11-16'), 'PPP'), event: 'Funds secured in holding', icon: Lock },
+      ], 
+      messages: [] 
+    },
+    { id: 'DEAL007', title: 'Cloud Migration', party: 'Serverless Solutions', date: '2023-11-20T10:00:00.000Z', deadline: '2024-02-01T17:00:00.000Z', amount: 25000, status: 'cancelled', role: 'seller', 
+      acceptanceCriteria: [], 
+      timeline: [
+        { date: format(new Date('2023-11-20'), 'PPP'), event: 'Deal created', icon: FileText },
+        { date: format(new Date('2023-11-21'), 'PPP'), event: 'Deal cancelled by buyer', icon: XCircle },
+      ], 
+      messages: [] 
+    },
 ];
 
 export const getDealById = (id: string): Deal | undefined => {
-    return dealsData.find(deal => deal.id === id);
+    // This is a deep copy to prevent modifying the original data object
+    // In a real app, you'd fetch fresh data from the server.
+    const deal = dealsData.find(deal => deal.id === id);
+    return deal ? JSON.parse(JSON.stringify(deal)) : undefined;
 }
 
 export const createDeal = (newDealData: {title: string, party: string, amount: number, role: DealRole, imageUrls: string[], deadline: string, acceptanceCriteria: AcceptanceCriterion[], location?: string}) => {
@@ -187,9 +227,9 @@ export const createDeal = (newDealData: {title: string, party: string, amount: n
         role: newDealData.role,
         acceptanceCriteria: newDealData.acceptanceCriteria.map(c => ({...c, completed: false})),
         timeline: [
-            { date: format(new Date(), 'yyyy-MM-dd'), event: `Deal created by You (${newDealData.role})`, icon: FileText },
-            { date: format(new Date(), 'yyyy-MM-dd'), event: `${newDealData.party} accepted & funded the deal`, icon: UserCheck },
-            { date: format(new Date(), 'yyyy-MM-dd'), event: 'Funds secured in holding.', icon: Lock },
+            { date: format(new Date(), 'PPP'), event: `Deal created by You (${newDealData.role})`, icon: FileText },
+            { date: format(new Date(), 'PPP'), event: `${newDealData.party} accepted & funded the deal`, icon: UserCheck },
+            { date: format(new Date(), 'PPP'), event: 'Funds secured in holding.', icon: Lock },
         ],
         messages: [],
         imageUrls: newDealData.imageUrls,
