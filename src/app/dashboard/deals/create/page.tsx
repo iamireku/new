@@ -41,6 +41,7 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
+import { createDeal } from '@/lib/data';
 
 const totalSteps = 5;
 
@@ -75,6 +76,16 @@ export default function CreateDealPage() {
   const progress = (step / totalSteps) * 100;
 
   const handleFinish = () => {
+    if (!role) return;
+
+    createDeal({
+        title: dealTitle || 'Untitled Deal',
+        party: partyId || partyEmail || partyPhone || 'Unknown Party',
+        amount: parseFloat(dealAmount || '0'),
+        role: role,
+        imageUrl: dealImage || undefined
+    });
+
     toast({
       title: 'Invitation Sent!',
       description: 'Your new deal has been sent to the other party.',

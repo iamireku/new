@@ -1,5 +1,6 @@
 // /src/lib/data.ts
 import { FileText, UserCheck, Lock, LucideIcon, Truck, Eye } from "lucide-react";
+import { format } from 'date-fns';
 
 // Types
 export type DealStatus = 'completed' | 'inHolding' | 'in_review' | 'delivered' | 'dispute' | 'cancelled';
@@ -130,6 +131,29 @@ export const dealsData: Deal[] = [
 
 export const getDealById = (id: string): Deal | undefined => {
     return dealsData.find(deal => deal.id === id);
+}
+
+export const createDeal = (newDealData: {title: string, party: string, amount: number, role: DealRole, imageUrl?: string}) => {
+    const newDeal: Deal = {
+        id: `DEAL${String(dealsData.length + 1).padStart(3, '0')}`,
+        title: newDealData.title,
+        party: newDealData.party,
+        date: format(new Date(), 'yyyy-MM-dd'),
+        deadline: format(new Date(new Date().setDate(new Date().getDate() + 30)), 'yyyy-MM-dd'), // Default 30 day deadline
+        amount: newDealData.amount,
+        status: 'inHolding', // New deals start as inHolding, assuming they get funded immediately
+        role: newDealData.role,
+        acceptanceCriteria: [],
+        timeline: [
+            { date: format(new Date(), 'yyyy-MM-dd'), event: `Deal created by You (${newDealData.role})`, icon: FileText },
+            { date: format(new Date(), 'yyyy-MM-dd'), event: `${newDealData.party} accepted & funded the deal`, icon: UserCheck },
+            { date: format(new Date(), 'yyyy-MM-dd'), event: 'Funds secured in holding.', icon: Lock },
+        ],
+        messages: [],
+        imageUrl: newDealData.imageUrl,
+    };
+    dealsData.unshift(newDeal); // Add to the beginning of the array
+    return newDeal;
 }
 
 export const recentTransactions: Transaction[] = [
