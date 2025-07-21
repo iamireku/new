@@ -439,12 +439,11 @@ export default function CreateDealPage() {
                 <div className="space-y-4 rounded-lg border p-4">
                     <h3 className="font-semibold text-lg">{dealTitle || 'Untitled Deal'}</h3>
                     {dealImage && (
-                        <div className="flex items-center gap-2">
-                            <ImageIcon className="h-4 w-4 text-muted-foreground"/>
-                            <span>Image has been attached</span>
+                        <div className="mt-2">
+                            <Image src={dealImage} alt="Deal preview" width={200} height={100} className="rounded-md object-cover w-full h-auto max-h-48" />
                         </div>
                     )}
-                    <div className="grid gap-2 text-sm">
+                    <div className="grid gap-2 text-sm pt-2">
                         <div className="flex items-center gap-2">
                             <Banknote className="h-4 w-4 text-muted-foreground" />
                             <span className="font-mono text-base">GHS {parseFloat(dealAmount || '0').toLocaleString()}</span>
