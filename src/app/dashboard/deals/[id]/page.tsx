@@ -1,4 +1,4 @@
-// /src/app/dashboard/deals/[id]/page.tsx
+
 'use client';
 
 import { useState, useMemo, useEffect, use } from 'react';
@@ -159,8 +159,8 @@ function DealDetails({ params }: { params: { id: string } }) {
             if (updates.status === 'completed') icon = CheckCircle;
             if (updates.status === 'dispute') icon = AlertTriangle;
             if (updates.status === 'resolution_pending') icon = Handshake;
-            if (updates.status && ['inHolding', 'delivered', 'in_review'].includes(updates.status)) icon = CheckCircle;
-
+            if (updates.status && ['inHolding'].includes(updates.status)) icon = Lock;
+            if (updates.status && ['created'].includes(updates.status)) icon = FileText;
 
             updatedDeal.timeline.unshift({ ...newTimelineEvent, icon });
         }
@@ -638,4 +638,6 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
   const params = use(paramsPromise);
   return <DealDetails params={params} />;
 }
+    
+
     
