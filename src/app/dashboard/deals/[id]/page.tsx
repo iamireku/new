@@ -103,8 +103,7 @@ const getStatusInfo = (status: string) => {
 
 type Period = 'hours' | 'days' | 'weeks';
 
-export default function DealDetailsPage({ params: paramsPromise }: { params: { id: string } }) {
-  const params = use(paramsPromise);
+function DealDetails({ params }: { params: { id: string } }) {
   const deal = getDealById(params.id);
   const { toast } = useToast();
 
@@ -169,7 +168,6 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
   }
 
   const formattedDeadline = deal.deadline ? format(new Date(deal.deadline), "PPP 'at' h:mm a") : 'Not set';
-
 
   return (
     <div className="space-y-6">
@@ -448,4 +446,8 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
   );
 }
 
+export default function DealDetailsPage({ params: paramsPromise }: { params: { id: string } }) {
+  const params = use(paramsPromise);
+  return <DealDetails params={params} />;
+}
     
