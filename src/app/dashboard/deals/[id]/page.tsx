@@ -69,46 +69,46 @@ const getStatusInfo = (status: string) => {
             return {
                 text: 'On Hold',
                 color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
-                icon: <Lock className="h-4 w-4" />,
+                icon: Lock,
             };
         case 'in_review':
              return {
                 text: 'In Review',
                 color: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
-                icon: <Eye className="h-4 w-4" />,
+                icon: Eye,
             };
         case 'dispute':
             return {
                 text: 'Dispute',
                 color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
-                icon: <AlertTriangle className="h-4 w-4" />,
+                icon: AlertTriangle,
             };
         case 'resolution_pending':
             return {
                 text: 'Resolution Pending',
                 color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-                icon: <Handshake className="h-4 w-4" />,
+                icon: Handshake,
             };
          case 'completed':
             return {
                 text: 'Completed',
                 color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-                icon: <CheckCircle className="h-4 w-4" />,
+                icon: CheckCircle,
             };
         case 'cancelled':
              return {
                 text: 'Cancelled',
                 color: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200',
-                icon: <XCircle className="h-4 w-4" />,
+                icon: XCircle,
             };
         case 'delivered':
             return {
                 text: 'Delivered',
                 color: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
-                icon: <Truck className="h-4 w-4" />,
+                icon: Truck,
             }
         default:
-            return { text: 'Unknown', color: 'bg-gray-100 text-gray-800' };
+            return { text: 'Unknown', color: 'bg-gray-100 text-gray-800', icon: Info };
     }
 };
 
@@ -214,13 +214,14 @@ function DealDetails({ params }: { params: { id: string } }) {
 
   const handleApproveResolution = () => {
     handleDealUpdate(
-        { status: deal.statusBeforeDispute, resolutionInitiator: undefined },
+        { status: deal.statusBeforeDispute || 'inHolding', resolutionInitiator: undefined },
         { date: format(new Date(), 'PPP'), event: 'Dispute resolved. The deal is now active again.' }
     );
     toast({ title: "Dispute Resolved!", description: "The deal has been restored to its previous state." });
   }
 
   const statusInfo = getStatusInfo(deal.status);
+  const StatusIcon = statusInfo.icon;
 
   const isDealInactive = deal.status === 'completed' || deal.status === 'cancelled';
   const canAmendDeal = deal.status === 'inHolding';
@@ -275,7 +276,7 @@ function DealDetails({ params }: { params: { id: string } }) {
             </div>
             <div className="flex items-center gap-2">
                 <Badge variant="secondary" className={cn("text-base gap-2", statusInfo.color)}>
-                    {statusInfo.icon}
+                    <StatusIcon className="h-4 w-4" />
                     <span>{statusInfo.text}</span>
                 </Badge>
             </div>
@@ -312,7 +313,7 @@ function DealDetails({ params }: { params: { id: string } }) {
                      {isDealInactive && (
                         <div className="absolute inset-0 bg-black/20 flex items-center justify-center rounded-t-lg">
                            <Badge variant="secondary" className={cn("text-lg gap-2", statusInfo.color)}>
-                              {statusInfo.icon}
+                              <StatusIcon className="h-4 w-4" />
                               <span>{statusInfo.text}</span>
                           </Badge>
                         </div>
@@ -583,10 +584,9 @@ function DealDetails({ params }: { params: { id: string } }) {
                             onValueChange={(value: Period) => {
                                 setReminderPeriod(value);
                             }}
-                            onClose={handleFrequencyChange}
                             disabled={!remindersEnabled || isDealInactive}
                         >
-                            <SelectTrigger>
+                            <SelectTrigger onBlur={handleFrequencyChange}>
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
