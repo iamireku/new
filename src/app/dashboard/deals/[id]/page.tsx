@@ -48,12 +48,13 @@ import {
   Eye,
   MapPin,
   X,
+  Handshake,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { add, isAfter, format } from 'date-fns';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { getDealById, savedPaymentMethods, Deal, TimelineEvent } from '@/lib/data';
+import { getDealById, savedPaymentMethods, Deal, TimelineEvent, DealRole } from '@/lib/data';
 import Image from 'next/image';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -80,6 +81,12 @@ const getStatusInfo = (status: string) => {
                 text: 'Dispute',
                 color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
                 icon: <AlertTriangle className="h-4 w-4" />,
+            };
+        case 'resolution_pending':
+            return {
+                text: 'Resolution Pending',
+                color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+                icon: <Handshake className="h-4 w-4" />,
             };
          case 'completed':
             return {
@@ -147,6 +154,9 @@ function DealDetails({ params }: { params: { id: string } }) {
             if (updates.status === 'in_review') icon = Eye;
             if (updates.status === 'completed') icon = CheckCircle;
             if (updates.status === 'dispute') icon = AlertTriangle;
+            if (updates.status === 'resolution_pending') icon = Handshake;
+            if (updates.status && ['inHolding', 'delivered', 'in_review'].includes(updates.status)) icon = CheckCircle;
+
 
             updatedDeal.timeline.push({ ...newTimelineEvent, icon });
         }
@@ -174,10 +184,26 @@ function DealDetails({ params }: { params: { id: string } }) {
   
   const handleRaiseDispute = () => {
     handleDealUpdate(
-        { status: 'dispute' },
+        { status: 'dispute', statusBeforeDispute: deal.status },
         { date: format(new Date(), 'PPP'), event: 'Dispute raised. Deal paused.' }
     );
     toast({ title: "Dispute Raised", description: "The deal is now on hold. Our team will be in touch.", variant: 'destructive'});
+  }
+
+  const handleProposeResolution = () => {
+    handleDealUpdate(
+        { status: 'resolution_pending', resolutionInitiator: deal.role },
+        { date: format(new Date(), 'PPP'), event: 'You proposed to resolve the dispute.' }
+    );
+    toast({ title: "Resolution Proposed", description: "Waiting for the other party to approve." });
+  }
+
+  const handleApproveResolution = () => {
+    handleDealUpdate(
+        { status: deal.statusBeforeDispute, resolutionInitiator: undefined },
+        { date: format(new Date(), 'PPP'), event: 'Dispute resolved. The deal is now active again.' }
+    );
+    toast({ title: "Dispute Resolved!", description: "The deal has been restored to its previous state." });
   }
 
   const statusInfo = getStatusInfo(deal.status);
@@ -185,6 +211,7 @@ function DealDetails({ params }: { params: { id: string } }) {
 
   const isDealInactive = deal.status === 'completed' || deal.status === 'cancelled';
   const canAmendDeal = deal.status === 'inHolding';
+  const isResolutionProposedByOtherParty = deal.status === 'resolution_pending' && deal.resolutionInitiator !== deal.role;
 
 
   const isReminderInPast = useMemo(() => {
@@ -375,6 +402,46 @@ function DealDetails({ params }: { params: { id: string } }) {
                     </AlertDialogContent>
                   </AlertDialog>
                 )}
+
+                 {deal.status === 'dispute' && (
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button><Handshake className="mr-2 h-4 w-4" />Resolve Dispute</Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Propose to Resolve Dispute?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                This will send a request to the other party to resolve the dispute. If they accept, the deal will return to its previous state.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={handleProposeResolution}>Yes, Propose Resolution</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                 )}
+                 {isResolutionProposedByOtherParty && (
+                     <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button><CheckCircle className="mr-2 h-4 w-4" />Approve Resolution</Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Approve Dispute Resolution?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                By approving, you agree to resolve the dispute and continue the deal from where it left off.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={handleApproveResolution}>Yes, Approve</AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                     </AlertDialog>
+                 )}
+                 
                  <div className="flex-grow" />
                  {canAmendDeal && (
                     <TooltipProvider>
@@ -390,7 +457,7 @@ function DealDetails({ params }: { params: { id: string } }) {
                         </Tooltip>
                     </TooltipProvider>
                  )}
-                 {!isDealInactive && (
+                 {!isDealInactive && deal.status !== 'dispute' && deal.status !== 'resolution_pending' && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button variant="destructive">

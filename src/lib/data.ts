@@ -1,9 +1,9 @@
 // /src/lib/data.ts
-import { FileText, UserCheck, Lock, LucideIcon, Truck, Eye, CheckCircle, AlertTriangle, XCircle } from "lucide-react";
+import { FileText, UserCheck, Lock, LucideIcon, Truck, Eye, CheckCircle, AlertTriangle, XCircle, Handshake } from "lucide-react";
 import { format, formatISO } from 'date-fns';
 
 // Types
-export type DealStatus = 'completed' | 'inHolding' | 'in_review' | 'delivered' | 'dispute' | 'cancelled';
+export type DealStatus = 'completed' | 'inHolding' | 'in_review' | 'delivered' | 'dispute' | 'cancelled' | 'resolution_pending';
 export type DealRole = 'buyer' | 'seller';
 
 export interface AcceptanceCriterion {
@@ -38,6 +38,8 @@ export interface Deal {
   messages: Message[];
   imageUrls?: string[];
   location?: string;
+  statusBeforeDispute?: DealStatus;
+  resolutionInitiator?: DealRole;
 }
 
 export type TransactionType = 'incoming' | 'outgoing';
@@ -180,7 +182,16 @@ export let dealsData: Deal[] = [
       ], 
       messages: [] 
     },
-    { id: 'DEAL005', title: 'API Integration Services', party: 'ConnectAll', date: '2023-11-12T10:00:00.000Z', deadline: '2023-12-20T17:00:00.000Z', amount: 6000, status: 'dispute', role: 'seller', 
+    { 
+      id: 'DEAL005', 
+      title: 'API Integration Services', 
+      party: 'ConnectAll', 
+      date: '2023-11-12T10:00:00.000Z', 
+      deadline: '2023-12-20T17:00:00.000Z', 
+      amount: 6000, 
+      status: 'dispute', 
+      role: 'seller', 
+      statusBeforeDispute: 'inHolding',
       acceptanceCriteria: [{id: 1, text: "API key provided", completed: false}], 
       timeline: [
         { date: format(new Date('2023-11-12'), 'PPP'), event: 'Deal created', icon: FileText },
@@ -273,7 +284,7 @@ export const walletTransactions: WalletTransaction[] = [
   { id: 'WTX005', type: 'Withdrawal', date: '2023-11-18', amount: -2000, status: 'Pending', description: 'Withdrawal to Fidelity Bank account ending in 1234.' },
 ];
 
-export const statusOptions = ['inHolding', 'in_review', 'delivered', 'completed', 'dispute', 'cancelled'];
+export const statusOptions = ['inHolding', 'in_review', 'delivered', 'completed', 'dispute', 'cancelled', 'resolution_pending'];
 export const roleOptions = ['all', 'seller', 'buyer'];
 
 export const avatars = [
