@@ -94,9 +94,47 @@ export interface PaymentMethod {
 
 
 // Mock Data
-export const dealsData: Deal[] = [
-    { id: 'DEAL001', title: 'E-commerce Platform Development', party: 'ClientCorp', date: '2023-10-26', deadline: '2023-11-30', amount: 15000, status: 'completed', role: 'seller', acceptanceCriteria: [], timeline: [], messages: [] },
-    { id: 'DEAL002', title: 'Brand Identity Design', party: 'Creative LLC', date: '2023-10-22', deadline: '2023-11-30', amount: 3500, status: 'completed', role: 'buyer', acceptanceCriteria: [], timeline: [], messages: [], imageUrl: 'https://placehold.co/600x400.png' },
+export let dealsData: Deal[] = [
+    { 
+      id: 'DEAL001', 
+      title: 'E-commerce Platform Development', 
+      party: 'ClientCorp', 
+      date: '2023-10-26', 
+      deadline: '2023-11-30', 
+      amount: 15000, 
+      status: 'completed', 
+      role: 'seller', 
+      acceptanceCriteria: [
+        { id: 1, text: 'Platform deployed to production', completed: true },
+        { id: 2, text: 'Admin training completed', completed: true },
+      ],
+      timeline: [
+        { date: '2023-10-26', event: 'Deal created', icon: FileText },
+        { date: '2023-10-27', event: 'ClientCorp funded the deal', icon: UserCheck },
+        { date: '2023-11-25', event: 'Seller marked as delivered', icon: Truck },
+        { date: '2023-11-26', event: 'Buyer released funds', icon: Eye },
+      ],
+      messages: [
+        { sender: 'ClientCorp', message: 'Thanks for the great work!', date: '2023-11-26' },
+      ]
+    },
+    { 
+      id: 'DEAL002', 
+      title: 'Brand Identity Design', 
+      party: 'Creative LLC', 
+      date: '2023-10-22', 
+      deadline: '2023-11-30', 
+      amount: 3500, 
+      status: 'completed', 
+      role: 'buyer', 
+      acceptanceCriteria: [
+        { id: 1, text: 'Logo pack delivered in all formats', completed: true },
+        { id: 2, text: 'Brand guidelines document provided', completed: true },
+      ],
+      timeline: [],
+      messages: [],
+      imageUrl: 'https://placehold.co/600x400.png'
+    },
     { 
       id: 'DEAL003', 
       title: 'Mobile App UI/UX', 
