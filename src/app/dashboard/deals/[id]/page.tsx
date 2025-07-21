@@ -55,7 +55,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { add, isAfter, format, formatISO, differenceInDays } from 'date-fns';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { getDealById, savedPaymentMethods, Deal, TimelineEvent, DealRole } from '@/lib/data';
+import { getDealById, Deal, TimelineEvent } from '@/lib/data';
 import Image from 'next/image';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -529,11 +529,13 @@ function DealDetails({ params }: { params: { id: string } }) {
             </CardHeader>
             <CardContent>
                 <ul className="space-y-4">
-                    {deal.timeline.map((item, index) => (
+                    {deal.timeline.map((item, index) => {
+                        const Icon = item.icon;
+                        return (
                         <li key={index} className="flex gap-4">
                             <div className="flex flex-col items-center">
                                 <div className={cn("flex h-8 w-8 items-center justify-center rounded-full", index === 0 ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground")}>
-                                    <item.icon className="h-4 w-4" />
+                                    <Icon className="h-4 w-4" />
                                 </div>
                                 {index < deal.timeline.length - 1 && <div className="w-px flex-1 bg-border" />}
                             </div>
@@ -542,7 +544,7 @@ function DealDetails({ params }: { params: { id: string } }) {
                                 <p className="text-xs text-muted-foreground">{item.date}</p>
                             </div>
                         </li>
-                    ))}
+                    )})}
                 </ul>
             </CardContent>
           </Card>
