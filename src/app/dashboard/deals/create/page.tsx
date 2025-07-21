@@ -32,6 +32,7 @@ import {
   ImageIcon,
   AtSign,
   Sparkles,
+  CalendarIcon,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -42,6 +43,9 @@ import Image from 'next/image';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { createDeal } from '@/lib/data';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { format } from 'date-fns';
 
 const totalSteps = 5;
 
@@ -65,6 +69,7 @@ export default function CreateDealPage() {
   const [partyEmail, setPartyEmail] = useState('');
   const [partyPhone, setPartyPhone] = useState('');
   const [dealAmount, setDealAmount] = useState('');
+  const [deadline, setDeadline] = useState<Date | undefined>(new Date());
 
 
   const router = useRouter();
@@ -83,7 +88,8 @@ export default function CreateDealPage() {
         party: partyId || partyEmail || partyPhone || 'Unknown Party',
         amount: parseFloat(dealAmount || '0'),
         role: role,
-        imageUrl: dealImage || undefined
+        imageUrl: dealImage || undefined,
+        deadline: deadline ? format(deadline, 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd'),
     });
 
     toast({
@@ -164,7 +170,7 @@ export default function CreateDealPage() {
                             {step === 1 && 'Are you the buyer or the seller in this deal?'}
                             {step === 2 && 'Give your deal a clear title and define the terms.'}
                             {step === 3 && `Who are you making this deal with?`}
-                            {step === 4 && 'How much is the deal for?'}
+                            {step === 4 && 'How much is the deal for and when is it due?'}
                             {step === 5 && 'Check the details below before creating the deal.'}
                         </CardDescription>
                     </div>
@@ -358,8 +364,33 @@ export default function CreateDealPage() {
                   onChange={(e) => setDealAmount(e.target.value)}
                 />
               </div>
+               <div className="space-y-2">
+                  <Label htmlFor="deal-deadline">Deal Deadline</Label>
+                   <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full justify-start text-left font-normal",
+                            !deadline && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {deadline ? format(deadline, "PPP") : <span>Pick a date</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={deadline}
+                          onSelect={setDeadline}
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+              </div>
                <p className="text-xs text-muted-foreground pt-2">
-                This amount will be held safely by us once the deal is accepted and funded. Ensure you have sufficient funds in your wallet.
+                The amount will be held safely by us. The deadline is when the work should be completed.
               </p>
             </form>
           )}
@@ -377,6 +408,10 @@ export default function CreateDealPage() {
                         <div className="flex items-center gap-2">
                             <Banknote className="h-4 w-4 text-muted-foreground" />
                             <span className="font-mono text-base">GHS {parseFloat(dealAmount || '0').toLocaleString()}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <CalendarIcon className="h-4 w-4 text-muted-foreground" />
+                            <span>Due by {deadline ? format(deadline, "PPP") : 'N/A'}</span>
                         </div>
                          {(partyId || partyEmail || partyPhone) && <Separator />}
                         {partyId && <div className="flex items-center gap-2">
@@ -418,7 +453,7 @@ export default function CreateDealPage() {
           ) : <div />}
           
           {step < totalSteps && (
-            <Button onClick={nextStep} disabled={step === 1 && !role}>
+            <Button onClick={nextStep} disabled={(step === 1 && !role) || (step === 4 && !dealAmount)}>
               Next
               <ArrowRight className="ml-2" />
             </Button>

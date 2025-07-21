@@ -171,13 +171,13 @@ export const getDealById = (id: string): Deal | undefined => {
     return dealsData.find(deal => deal.id === id);
 }
 
-export const createDeal = (newDealData: {title: string, party: string, amount: number, role: DealRole, imageUrl?: string}) => {
+export const createDeal = (newDealData: {title: string, party: string, amount: number, role: DealRole, imageUrl?: string, deadline: string}) => {
     const newDeal: Deal = {
         id: `DEAL${String(dealsData.length + 1).padStart(3, '0')}`,
         title: newDealData.title,
         party: newDealData.party,
         date: format(new Date(), 'yyyy-MM-dd'),
-        deadline: format(new Date(new Date().setDate(new Date().getDate() + 30)), 'yyyy-MM-dd'), // Default 30 day deadline
+        deadline: newDealData.deadline,
         amount: newDealData.amount,
         status: 'inHolding', // New deals start as inHolding, assuming they get funded immediately
         role: newDealData.role,
