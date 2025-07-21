@@ -52,10 +52,10 @@ export default function LandingPage() {
                 <div className="grid gap-12 md:grid-cols-2 md:items-center">
                     <div className="text-center md:text-left">
                         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl font-headline">
-                            The New Standard for Trust in African Commerce
+                            Safe Deals for Social Commerce & Freelancers
                         </h1>
                         <p className="mt-4 max-w-2xl text-lg text-muted-foreground md:text-xl">
-                            Whether you're a freelancer in Accra, a business in Lagos, or buying goods online, Betweena ensures your money is safe until the job is done.
+                           Buying on Instagram or selling your services? Betweena holds the payment securely. No more scams. The seller only gets paid when the buyer is happy.
                         </p>
                         <div className="mt-8 flex flex-wrap justify-center md:justify-start gap-4">
                           <Button size="lg" asChild>
@@ -73,7 +73,7 @@ export default function LandingPage() {
                             height={400}
                             alt="People shaking hands over a deal"
                             className="rounded-lg shadow-lg"
-                            data-ai-hint="happy business people"
+                            data-ai-hint="artisan craft"
                         />
                     </div>
                 </div>
