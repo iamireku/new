@@ -125,8 +125,8 @@ export default function LandingPage() {
                    />
                    <BenefitCard 
                         icon={<Briefcase className="h-6 w-6"/>}
-                        title="Business-to-Business (B2B)"
-                        description="Secure large transactions and manage supplier payments with confidence. Our clear audit trail simplifies accounting and builds trust with your partners."
+                        title="Service Providers"
+                        description="Secure client projects and manage payments with confidence. Our clear audit trail simplifies accounting and builds trust with your clients."
                    />
                    <BenefitCard 
                         icon={<ShoppingCart className="h-6 w-6"/>}
