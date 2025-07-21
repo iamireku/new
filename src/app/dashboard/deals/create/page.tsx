@@ -1,4 +1,4 @@
-// /src/app/dashboard/deals/create/page.tsx
+
 'use client';
 
 import { useState } from 'react';
@@ -299,7 +299,7 @@ export default function CreateDealPage() {
                  </div>
                  <div className="flex flex-col sm:flex-row gap-2 pt-2">
                     <Input 
-                        placeholder="Add a new criterion..."
+                        placeholder="e.g., 'Color: blue', 'Weight: 2kg', or 'Service delivered by Friday'"
                         value={newCriterion}
                         onChange={(e) => setNewCriterion(e.target.value)}
                         onKeyDown={(e) => { if(e.key === 'Enter') { e.preventDefault(); handleAddCriterion(); }}}
