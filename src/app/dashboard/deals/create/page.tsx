@@ -299,17 +299,18 @@ export default function CreateDealPage() {
           {step === 3 && (
             <form className="space-y-4">
               <div className="space-y-2">
-                  <Label htmlFor="party-id">Other Person's Betweena ID</Label>
-                  <div className="relative">
-                      <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input 
-                          id="party-id"
-                          placeholder="e.g. acme-inc"
-                          className="pl-9"
-                          value={partyId}
-                          onChange={(e) => setPartyId(e.target.value)}
-                      />
-                  </div>
+                <Label htmlFor="party-phone">Other Person's Phone Number</Label>
+                <div className="relative">
+                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="party-phone"
+                      type="tel"
+                      placeholder="+233 12 345 6789"
+                      className="pl-9"
+                      value={partyPhone}
+                      onChange={(e) => setPartyPhone(e.target.value)}
+                    />
+                </div>
               </div>
                <div className="my-4 flex items-center">
                   <div className="flex-grow border-t border-muted" />
@@ -335,19 +336,18 @@ export default function CreateDealPage() {
                   <span className="mx-4 flex-shrink text-xs uppercase text-muted-foreground">Or</span>
                   <div className="flex-grow border-t border-muted" />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="party-phone">Other Person's Phone Number</Label>
-                <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="party-phone"
-                      type="tel"
-                      placeholder="+233 12 345 6789"
-                      className="pl-9"
-                      value={partyPhone}
-                      onChange={(e) => setPartyPhone(e.target.value)}
-                    />
-                </div>
+               <div className="space-y-2">
+                  <Label htmlFor="party-id">Other Person's Betweena ID</Label>
+                  <div className="relative">
+                      <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input 
+                          id="party-id"
+                          placeholder="e.g. acme-inc"
+                          className="pl-9"
+                          value={partyId}
+                          onChange={(e) => setPartyId(e.target.value)}
+                      />
+                  </div>
               </div>
                <p className="text-xs text-muted-foreground pt-2">If the person is not on Betweena, we will send an invitation to them to join the deal.</p>
             </form>
