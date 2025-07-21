@@ -34,23 +34,38 @@ The color scheme is designed to feel professional, trustworthy, and clean.
 
 ## 3. Core User Flows & UX Patterns
 
+### Deal Lifecycle
+
+Our deal lifecycle is designed to be clear and secure, with distinct states that inform both parties of the deal's progress.
+
+1.  **Creation**: A deal is initiated by one party and sent to the other for acceptance.
+2.  **inHolding**: Once the deal is accepted and funded by the buyer, the money is secured by Betweena. The deal status is "On Hold" (`inHolding`), and the seller is notified to begin work.
+3.  **delivered**: The seller completes their work and marks the deal as delivered. The status changes to "Delivered", and the buyer is notified.
+4.  **in_review**: The deal is now in the buyer's hands. The status is "In Review". The buyer must verify that the goods/services meet the acceptance criteria.
+5.  **completed**: The buyer accepts the delivery, and the funds are released to the seller. The deal is marked as "Completed".
+6.  **dispute**: If there's a disagreement, either party can raise a dispute, pausing the deal and flagging it for manual intervention.
+
 ### Deal Creation
 
 -   **Multi-Step Process:** The flow is broken down into logical steps with a progress bar to manage user expectations.
--   **AI-Assisted "Smart Start":** To reduce friction, users can describe their deal in natural language, and the AI will pre-fill the form fields, turning a manual task into a quick review.
+-   **AI-Assisted "Smart Start":** To reduce friction, users can describe their deal in natural language. Our AI (`smart-start-flow`) will parse the text and pre-fill the form fields, turning a manual task into a quick review.
 -   **Flexible Party Invitation:** Users can initiate a deal with a counterparty using their **Email**, **Phone Number**, or unique **Betweena ID**, providing flexibility and privacy.
 
 ### Deal Management
 
--   **Action-Oriented Dashboard:** The dashboard's primary role is to surface "Deals Needing Your Attention" (e.g., those requiring funding or in dispute), directing the user to their most urgent tasks.
+-   **Action-Oriented Dashboard:** The dashboard's primary role is to surface "Deals Needing Your Attention". This card highlights deals in `in_review` (prompting the buyer to release funds) and `dispute` statuses.
+-   **Clear Action Buttons:** On the deal details page, buttons are dynamically shown based on the user's role and the deal's status.
+    -   Seller sees **"I Have Delivered"** when the deal is `inHolding`.
+    -   Buyer sees **"Accept & Release Money"** when the deal is `in_review`.
 -   **Vertical Timeline History:** On the deal details page, a clear vertical timeline visually represents the deal's history, with the most recent event highlighted, making the deal status instantly understandable.
--   **Amendment System:** Instead of a simple "edit," changes to an active deal are handled through a formal "Amendment Proposal" system. This ensures that both parties must agree to any changes, maintaining the integrity of the agreement. The "Amend Deal" button is only available for deals in `funding` or `in_escrow` states.
+-   **Inactive Deal Visuals:** For `completed` or `cancelled` deals, a visual overlay is applied to the deal image to signify that the deal is closed.
 
 ### Identity and Profile Management
 
--   **Betweena ID:** Each user has a unique, customizable Betweena ID (e.g., `@username`). This acts as their public identifier on the platform, allowing them to make deals without exposing personal contact information. The ID can only be customized once.
--   **Referral System:** Referrals are treated as a distinct feature from the user's identity. The referral system is housed in its own dedicated "Referral" tab on the profile page, complete with clear warnings about the consequences of changing a referral code.
--   **Payment Methods:** Users can manage their withdrawal methods (Bank Account, Mobile Money) in a dedicated "Payments" tab. The UI gracefully handles cases where no payment methods have been added, guiding the user to add one.
+-   **Betweena ID:** Each user has a unique, customizable Betweena ID (e.g., `@username`). This acts as their public identifier on the platform. The ID can only be customized once, a fact which is communicated to the user in a confirmation dialog.
+-   **Referral System:** The referral code can also be customized once. The UI includes a prominent warning in the "Referral" tab explaining that changing the code will sever ties to previous referrals.
+-   **Payment Methods:** Users can manage their withdrawal methods in a dedicated "Payments" tab.
+    -   **Verified Names:** For both Mobile Money and Bank Accounts, the system simulates fetching the registered account name after the user enters their number. This prevents typos and builds trust. The name field is read-only.
 
 ## 4. Component Library (ShadCN UI)
 
@@ -58,8 +73,9 @@ We use a customized version of `ShadCN UI` for our component library. This provi
 
 -   **Card:** The primary container for grouping related information (e.g., Dashboard widgets, profile sections). `CardTitle` is always styled with the bold headline font.
 -   **Button:** Used for all actions. Variants (`default`, `outline`, `destructive`) are used consistently to signal the nature of the action.
--   **Dialog / AlertDialog:** Used for modal actions like confirming a withdrawal, raising a dispute, or using the "Smart Start" feature.
+-   **AlertDialog:** Used for critical, user-initiated confirmations that have consequences, such as locking a referral code, raising a dispute, or releasing funds. This ensures the user consciously confirms their action.
+-   **Dialog:** Used for standard modal actions like "Add Funds", "Add Payment Method", or using the "Smart Start" feature, where the actions are less critical or destructive.
 -   **Tabs:** Used to organize complex pages with multiple sections, such as the Profile page.
 -   **Input:** Standardized input fields, often enhanced with icons for better context (e.g., `AtSign` for Betweena ID).
--   **Badge:** Used to display status labels (e.g., Deal Status, Transaction Status) with colors mapped to their meaning.
+-   **Badge:** Used to display status labels (e.g., Deal Status) with colors mapped to their meaning for quick visual identification.
 -   **Tooltip:** Provides additional information on hover, such as for disabled buttons or icon-only actions.

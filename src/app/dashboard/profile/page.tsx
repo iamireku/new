@@ -360,10 +360,6 @@ export default function ProfilePage() {
                                             />
                                         </div>
                                          <div className="space-y-2">
-                                            <Label htmlFor="momo-number-confirm">Confirm Phone Number</Label>
-                                            <Input id="momo-number-confirm" placeholder="024 123 4567" />
-                                        </div>
-                                         <div className="space-y-2">
                                             <Label htmlFor="momo-name">Registered Name</Label>
                                             <Input 
                                                 id="momo-name" 
@@ -388,10 +384,6 @@ export default function ProfilePage() {
                                                 onChange={(e) => setBankAccountNumber(e.target.value)}
                                                 onBlur={handleFetchBankName}
                                             />
-                                        </div>
-                                         <div className="space-y-2">
-                                            <Label htmlFor="account-number-confirm">Confirm Account Number</Label>
-                                            <Input id="account-number-confirm" placeholder="1234567890123" />
                                         </div>
                                         <div className="space-y-2">
                                             <Label htmlFor="account-name">Account Name</Label>
