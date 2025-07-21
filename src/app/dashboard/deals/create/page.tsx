@@ -3,6 +3,10 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useForm, useFieldArray, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -29,7 +33,6 @@ import {
   FileText,
   UserCheck,
   UploadCloud,
-  ImageIcon,
   AtSign,
   Sparkles,
   CalendarIcon,
@@ -38,7 +41,6 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Separator } from '@/components/ui/separator';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
@@ -48,50 +50,78 @@ import { createDeal } from '@/lib/data';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { format, formatISO, setHours, setMinutes } from 'date-fns';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+
 
 const totalSteps = 5;
 
-interface Criterion {
-  id: number;
-  text: string;
-}
+const dealSchema = z.object({
+    role: z.enum(['buyer', 'seller'], { required_error: "You must select a role." }),
+    title: z.string().min(3, "Title must be at least 3 characters."),
+    images: z.array(z.string()).max(3).optional(),
+    acceptanceCriteria: z.array(z.object({ id: z.string(), text: z.string() })).optional(),
+    partyId: z.string().optional(),
+    partyEmail: z.string().email("Please enter a valid email.").optional(),
+    partyPhone: z.string().optional(),
+    amount: z.preprocess(
+        (a) => parseFloat(z.string().parse(a)),
+        z.number().positive("Amount must be a positive number.")
+    ),
+    deadline: z.date().optional(),
+    location: z.string().optional(),
+}).refine(data => data.partyId || data.partyEmail || data.partyPhone, {
+    message: "You must provide at least one contact method for the other party.",
+    path: ["partyPhone"], // Assign error to one field
+});
+
+type DealFormData = z.infer<typeof dealSchema>;
+
 
 export default function CreateDealPage() {
   const [step, setStep] = useState(1);
-  const [role, setRole] = useState<'buyer' | 'seller' | null>('seller');
-  const [dealTitle, setDealTitle] = useState('');
-  const [dealImages, setDealImages] = useState<string[]>([]);
-  const [acceptanceCriteria, setAcceptanceCriteria] = useState<Criterion[]>([]);
   const [newCriterion, setNewCriterion] = useState('');
-
-  const [partyId, setPartyId] = useState('');
-  const [partyEmail, setPartyEmail] = useState('');
-  const [partyPhone, setPartyPhone] = useState('');
-  const [dealAmount, setDealAmount] = useState('');
-  const [deadline, setDeadline] = useState<Date | undefined>(new Date());
-  const [location, setLocation] = useState('');
-
-
+  
   const router = useRouter();
   const { toast } = useToast();
+
+  const form = useForm<DealFormData>({
+    resolver: zodResolver(dealSchema),
+    defaultValues: {
+        role: 'seller',
+        title: '',
+        images: [],
+        acceptanceCriteria: [],
+        partyId: '',
+        partyEmail: '',
+        partyPhone: '',
+        amount: 0,
+        deadline: new Date(),
+        location: '',
+    }
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "acceptanceCriteria"
+  });
+  
+  const watchedRole = form.watch('role');
 
   const nextStep = () => setStep((prev) => (prev < totalSteps ? prev + 1 : prev));
   const prevStep = () => setStep((prev) => (prev > 1 ? prev - 1 : prev));
 
   const progress = (step / totalSteps) * 100;
 
-  const handleFinish = () => {
-    if (!role) return;
-
+  const handleFinish = (data: DealFormData) => {
     createDeal({
-        title: dealTitle || 'Untitled Deal',
-        party: partyId || partyEmail || partyPhone || 'Unknown Party',
-        amount: parseFloat(dealAmount || '0'),
-        role: role,
-        imageUrls: dealImages,
-        deadline: deadline ? formatISO(deadline) : formatISO(new Date()),
-        acceptanceCriteria: acceptanceCriteria,
-        location: location,
+        title: data.title || 'Untitled Deal',
+        party: data.partyId || data.partyEmail || data.partyPhone || 'Unknown Party',
+        amount: data.amount,
+        role: data.role,
+        imageUrls: data.images || [],
+        deadline: data.deadline ? formatISO(data.deadline) : formatISO(new Date()),
+        acceptanceCriteria: (data.acceptanceCriteria || []).map(c => ({...c, id: Date.now()})),
+        location: data.location || undefined,
     });
 
     toast({
@@ -100,31 +130,25 @@ export default function CreateDealPage() {
     });
     router.push('/dashboard/deals');
   };
-
+  
   const handleAddCriterion = () => {
     if (newCriterion.trim()) {
-      setAcceptanceCriteria([
-        ...acceptanceCriteria,
-        { id: Date.now(), text: newCriterion.trim() },
-      ]);
-      setNewCriterion('');
+        append({ id: Date.now().toString(), text: newCriterion.trim() });
+        setNewCriterion('');
     }
   };
 
-  const handleRemoveCriterion = (idToRemove: number) => {
-    setAcceptanceCriteria(acceptanceCriteria.filter((c) => c.id !== idToRemove));
-  };
-  
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
+    const currentImages = form.getValues('images') || [];
     if (files) {
-      const remainingSlots = 3 - dealImages.length;
+      const remainingSlots = 3 - currentImages.length;
       const filesToProcess = Array.from(files).slice(0, remainingSlots);
 
       filesToProcess.forEach(file => {
         const reader = new FileReader();
         reader.onloadend = () => {
-            setDealImages(prev => [...prev, reader.result as string]);
+            form.setValue('images', [...currentImages, reader.result as string]);
         };
         reader.readAsDataURL(file);
       });
@@ -132,7 +156,8 @@ export default function CreateDealPage() {
   };
 
   const handleRemoveImage = (indexToRemove: number) => {
-    setDealImages(prev => prev.filter((_, index) => index !== indexToRemove));
+    const currentImages = form.getValues('images') || [];
+    form.setValue('images', currentImages.filter((_, index) => index !== indexToRemove));
   };
   
   const handleSmartStart = () => {
@@ -144,43 +169,54 @@ export default function CreateDealPage() {
 
   const getStepIcon = (currentStep: number) => {
     switch (currentStep) {
-      case 1:
-        return <UserCheck className="h-6 w-6" />;
-      case 2:
-        return <Info className="h-6 w-6" />;
-      case 3:
-        return <Users className="h-6 w-6" />;
-      case 4:
-        return <Banknote className="h-6 w-6" />;
-      case 5:
-        return <FileText className="h-6 w-6" />;
-      default:
-        return null;
+      case 1: return <UserCheck className="h-6 w-6" />;
+      case 2: return <Info className="h-6 w-6" />;
+      case 3: return <Users className="h-6 w-6" />;
+      case 4: return <Banknote className="h-6 w-6" />;
+      case 5: return <FileText className="h-6 w-6" />;
+      default: return null;
     }
   };
 
-  const getPronoun = () => (role === 'buyer' ? 'Seller' : 'Buyer');
+  const getPronoun = () => (watchedRole === 'buyer' ? 'Seller' : 'Buyer');
   
-  const handleDateSelect = (date: Date | undefined) => {
+  const handleDateSelect = (date: Date | undefined, field: any) => {
     if (!date) return;
-    const newDeadline = setMinutes(setHours(date, deadline?.getHours() ?? 0), deadline?.getMinutes() ?? 0);
-    setDeadline(newDeadline);
+    const currentDeadline = form.getValues('deadline') || new Date();
+    const newDeadline = setMinutes(setHours(date, currentDeadline.getHours()), currentDeadline.getMinutes());
+    field.onChange(newDeadline);
   };
   
-  const handleTimeChange = (type: 'hours' | 'minutes', value: number) => {
-    if (!deadline) return;
+  const handleTimeChange = (type: 'hours' | 'minutes', value: number, field: any) => {
+    const currentDeadline = form.getValues('deadline') || new Date();
     let newDeadline;
     if (type === 'hours') {
-        newDeadline = setHours(deadline, value);
+        newDeadline = setHours(currentDeadline, value);
     } else {
-        newDeadline = setMinutes(deadline, value);
+        newDeadline = setMinutes(currentDeadline, value);
     }
-    setDeadline(newDeadline);
+    field.onChange(newDeadline);
   }
+
+  const triggerValidation = async () => {
+    if (step === 2) return await form.trigger(["title"]);
+    if (step === 3) return await form.trigger(["partyEmail", "partyId", "partyPhone"]);
+    if (step === 4) return await form.trigger(["amount", "deadline"]);
+    return true;
+  };
+  
+  const handleNext = async () => {
+    const isValid = await triggerValidation();
+    if (isValid) {
+      nextStep();
+    }
+  };
 
   return (
     <div className="flex w-full justify-center">
-      <Card className="w-full max-w-2xl">
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(handleFinish)} className='w-full max-w-2xl'>
+      <Card>
         <CardHeader>
           <Progress value={progress} className="mb-4" />
            <div className="flex items-start justify-between gap-4">
@@ -189,7 +225,7 @@ export default function CreateDealPage() {
                     <div className="flex-1">
                         <CardTitle>
                             {step === 1 && 'Your Role'}
-                            {step === 2 && (role === 'buyer' ? "What are you buying?" : "What are you selling?")}
+                            {step === 2 && (watchedRole === 'buyer' ? "What are you buying?" : "What are you selling?")}
                             {step === 3 && `The Other Person (${getPronoun()})`}
                             {step === 4 && 'Amount and Terms'}
                             {step === 5 && 'Review Your Deal'}
@@ -205,7 +241,7 @@ export default function CreateDealPage() {
                 </div>
                  <Dialog>
                     <DialogTrigger asChild>
-                        <Button variant="outline"><Sparkles className="mr-2"/> Smart Start</Button>
+                        <Button type="button" variant="outline"><Sparkles className="mr-2"/> Smart Start</Button>
                     </DialogTrigger>
                     <DialogContent>
                         <DialogHeader>
@@ -219,7 +255,7 @@ export default function CreateDealPage() {
                             rows={5}
                         />
                         <CardFooter>
-                            <Button className="w-full" onClick={handleSmartStart}>Generate Deal</Button>
+                            <Button type="button" className="w-full" onClick={handleSmartStart}>Generate Deal</Button>
                         </CardFooter>
                     </DialogContent>
                 </Dialog>
@@ -227,86 +263,113 @@ export default function CreateDealPage() {
         </CardHeader>
         <CardContent className="min-h-[250px]">
           {step === 1 && (
-            <div className="flex items-center justify-center pt-8">
-              <RadioGroup
-                value={role || ''}
-                onValueChange={(value: 'buyer' | 'seller') => setRole(value)}
-                className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-sm"
-              >
-                <Label
-                  htmlFor="buyer"
-                  className={cn(
-                    'flex flex-col items-center justify-center rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground',
-                    role === 'buyer' && 'border-primary'
-                  )}
-                >
-                  <RadioGroupItem value="buyer" id="buyer" className="sr-only" />
-                  <span className="text-2xl mb-2">🛍️</span>
-                  <span className="font-bold">I am the Buyer</span>
-                  <span className="text-xs text-muted-foreground">I am paying for a product or service.</span>
-                </Label>
-                <Label
-                  htmlFor="seller"
-                  className={cn(
-                    'flex flex-col items-center justify-center rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground',
-                    role === 'seller' && 'border-primary'
-                  )}
-                >
-                  <RadioGroupItem value="seller" id="seller" className="sr-only" />
-                  <span className="text-2xl mb-2">📦</span>
-                  <span className="font-bold">I am the Seller</span>
-                  <span className="text-xs text-muted-foreground">I am providing a product or service.</span>
-                </Label>
-              </RadioGroup>
-            </div>
+            <FormField
+                control={form.control}
+                name="role"
+                render={({ field }) => (
+                    <FormItem className="flex items-center justify-center pt-8">
+                    <FormControl>
+                        <RadioGroup
+                            onValueChange={field.onChange}
+                            value={field.value}
+                            className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full max-w-sm"
+                        >
+                            <FormItem>
+                                <FormControl>
+                                <Label
+                                htmlFor="buyer"
+                                className={cn(
+                                    'flex flex-col items-center justify-center rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground',
+                                    field.value === 'buyer' && 'border-primary'
+                                )}
+                                >
+                                <RadioGroupItem value="buyer" id="buyer" className="sr-only" />
+                                <span className="text-2xl mb-2">🛍️</span>
+                                <span className="font-bold">I am the Buyer</span>
+                                <span className="text-xs text-muted-foreground">I am paying for a product or service.</span>
+                                </Label>
+                                </FormControl>
+                            </FormItem>
+                             <FormItem>
+                                <FormControl>
+                                <Label
+                                htmlFor="seller"
+                                className={cn(
+                                    'flex flex-col items-center justify-center rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground',
+                                    field.value === 'seller' && 'border-primary'
+                                )}
+                                >
+                                <RadioGroupItem value="seller" id="seller" className="sr-only" />
+                                <span className="text-2xl mb-2">📦</span>
+                                <span className="font-bold">I am the Seller</span>
+                                <span className="text-xs text-muted-foreground">I am providing a product or service.</span>
+                                </Label>
+                                </FormControl>
+                            </FormItem>
+                        </RadioGroup>
+                    </FormControl>
+                    </FormItem>
+                )}
+            />
           )}
           {step === 2 && (
             <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="deal-title">Service or Product</Label>
-                <Input
-                  id="deal-title"
-                  placeholder="e.g., iPhone 15 or Website Design"
-                  value={dealTitle}
-                  onChange={(e) => setDealTitle(e.target.value)}
-                />
-              </div>
-
-              <div className="space-y-2">
-                  <Label>Deal Images (Up to 3)</Label>
-                  <div className="grid grid-cols-3 gap-2">
-                      {dealImages.map((image, index) => (
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Service or Product</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., iPhone 15 or Website Design" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="images"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Deal Images (Up to 3)</FormLabel>
+                     <FormControl>
+                        <div className="grid grid-cols-3 gap-2">
+                        {(field.value || []).map((image, index) => (
                           <div key={index} className="relative group aspect-square">
-                              <Image src={image} alt={`Deal preview ${index + 1}`} fill className="rounded-md object-cover" />
-                              <Button variant="destructive" size="icon" className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100" onClick={() => handleRemoveImage(index)}>
-                                  <X className="h-4 w-4" />
-                              </Button>
+                            <Image src={image} alt={`Deal preview ${index + 1}`} fill className="rounded-md object-cover" />
+                            <Button type="button" variant="destructive" size="icon" className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100" onClick={() => handleRemoveImage(index)}>
+                              <X className="h-4 w-4" />
+                            </Button>
                           </div>
-                      ))}
-                      {dealImages.length < 3 && (
+                        ))}
+                        {(field.value || []).length < 3 && (
                           <Label htmlFor="deal-image-upload" className="flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted">
-                              <div className="flex flex-col items-center justify-center text-center p-2">
-                                  <UploadCloud className="w-8 h-8 mb-2 text-muted-foreground" />
-                                  <p className="text-xs text-muted-foreground">
-                                      <span className="font-semibold">Click to upload</span>
-                                  </p>
-                              </div>
-                              <Input id="deal-image-upload" type="file" className="hidden" accept="image/*" multiple onChange={handleImageUpload} />
+                            <div className="flex flex-col items-center justify-center text-center p-2">
+                              <UploadCloud className="w-8 h-8 mb-2 text-muted-foreground" />
+                              <p className="text-xs text-muted-foreground">
+                                <span className="font-semibold">Click to upload</span>
+                              </p>
+                            </div>
+                            <Input id="deal-image-upload" type="file" className="hidden" accept="image/*" multiple onChange={handleImageUpload} />
                           </Label>
-                      )}
-                  </div>
-                   <p className="text-xs text-muted-foreground">Tip: Found an item online? You can upload screenshots.</p>
-              </div>
+                        )}
+                        </div>
+                     </FormControl>
+                    <p className="text-xs text-muted-foreground">Tip: Found an item online? You can upload screenshots.</p>
+                  </FormItem>
+                )}
+              />
 
               <div className="space-y-2">
                  <Label>Acceptance Criteria</Label>
                  <p className="text-xs text-muted-foreground">Define what needs to be done for the deal to be complete.</p>
                  <div className="space-y-2">
-                    {acceptanceCriteria.map((criterion) => (
-                      <div key={criterion.id} className="flex items-center gap-2">
-                        <Checkbox id={`criterion-${criterion.id}`} disabled checked />
-                        <Label htmlFor={`criterion-${criterion.id}`} className="flex-1 font-normal text-sm">{criterion.text}</Label>
-                        <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleRemoveCriterion(criterion.id)}>
+                    {fields.map((field, index) => (
+                      <div key={field.id} className="flex items-center gap-2">
+                        <Checkbox id={`criterion-${field.id}`} disabled checked />
+                        <Label htmlFor={`criterion-${field.id}`} className="flex-1 font-normal text-sm">{field.text}</Label>
+                        <Button type="button" variant="ghost" size="icon" className="h-6 w-6" onClick={() => remove(index)}>
                             <X className="h-4 w-4" />
                         </Button>
                       </div>
@@ -328,173 +391,198 @@ export default function CreateDealPage() {
             </div>
           )}
           {step === 3 && (
-            <form className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="party-phone">Other Person's Phone Number</Label>
-                <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="party-phone"
-                      type="tel"
-                      placeholder="+233 12 345 6789"
-                      className="pl-9"
-                      value={partyPhone}
-                      onChange={(e) => setPartyPhone(e.target.value)}
-                    />
-                </div>
-              </div>
+            <div className="space-y-4">
+               <FormField
+                    control={form.control}
+                    name="partyPhone"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Other Person's Phone Number</FormLabel>
+                        <FormControl>
+                            <div className="relative">
+                                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                <Input type="tel" placeholder="+233 12 345 6789" className="pl-9" {...field} />
+                            </div>
+                        </FormControl>
+                        </FormItem>
+                    )}
+                />
+
                <div className="my-4 flex items-center">
                   <div className="flex-grow border-t border-muted" />
                   <span className="mx-4 flex-shrink text-xs uppercase text-muted-foreground">Or</span>
                   <div className="flex-grow border-t border-muted" />
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="party-email">Other Person's Email</Label>
-                <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      id="party-email"
-                      type="email"
-                      placeholder="friend@example.com"
-                      className="pl-9"
-                      value={partyEmail}
-                      onChange={(e) => setPartyEmail(e.target.value)}
-                    />
-                </div>
-              </div>
+
+                <FormField
+                    control={form.control}
+                    name="partyEmail"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Other Person's Email</FormLabel>
+                        <FormControl>
+                           <div className="relative">
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                <Input type="email" placeholder="friend@example.com" className="pl-9" {...field} />
+                            </div>
+                        </FormControl>
+                        </FormItem>
+                    )}
+                />
+             
                <div className="my-4 flex items-center">
                   <div className="flex-grow border-t border-muted" />
                   <span className="mx-4 flex-shrink text-xs uppercase text-muted-foreground">Or</span>
                   <div className="flex-grow border-t border-muted" />
               </div>
-               <div className="space-y-2">
-                  <Label htmlFor="party-id">Other Person's Betweena ID</Label>
-                  <div className="relative">
-                      <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input 
-                          id="party-id"
-                          placeholder="e.g. acme-inc"
-                          className="pl-9"
-                          value={partyId}
-                          onChange={(e) => setPartyId(e.target.value)}
-                      />
-                  </div>
-              </div>
+              
+               <FormField
+                    control={form.control}
+                    name="partyId"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Other Person's Betweena ID</FormLabel>
+                        <FormControl>
+                           <div className="relative">
+                                <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                <Input placeholder="e.g. acme-inc" className="pl-9" {...field} />
+                            </div>
+                        </FormControl>
+                        </FormItem>
+                    )}
+                />
+               <FormMessage>{form.formState.errors.partyPhone?.message}</FormMessage>
                <p className="text-xs text-muted-foreground pt-2">If the person is not on Betweena, we will send an invitation to them to join the deal.</p>
-            </form>
+            </div>
           )}
           {step === 4 && (
-            <form className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="deal-amount">Deal Amount (GHS)</Label>
-                <Input 
-                  id="deal-amount" 
-                  type="number" 
-                  placeholder="5000" 
-                  value={dealAmount}
-                  onChange={(e) => setDealAmount(e.target.value)}
+            <div className="space-y-4">
+                <FormField
+                    control={form.control}
+                    name="amount"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Deal Amount (GHS)</FormLabel>
+                        <FormControl>
+                            <Input type="number" placeholder="5000" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
                 />
-              </div>
-               <div className="space-y-2">
-                  <Label htmlFor="deal-deadline">Deal Deadline</Label>
-                   <Popover>
-                        <PopoverTrigger asChild>
-                            <Button
-                            variant={"outline"}
-                            className={cn(
-                                "w-full justify-start text-left font-normal",
-                                !deadline && "text-muted-foreground"
-                            )}
-                            >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {deadline ? format(deadline, "PPP 'at' h:mm a") : <span>Pick a date and time</span>}
-                            </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0">
-                            <Calendar
-                                mode="single"
-                                selected={deadline}
-                                onSelect={handleDateSelect}
-                                initialFocus
-                            />
-                            <div className="p-3 border-t border-border">
-                                <Label className="flex items-center gap-2 mb-2"><Clock className="h-4 w-4"/> Time</Label>
-                                <div className="flex items-center gap-2">
+                 <FormField
+                    control={form.control}
+                    name="deadline"
+                    render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                        <FormLabel>Deal Deadline</FormLabel>
+                        <Popover>
+                            <PopoverTrigger asChild>
+                            <FormControl>
+                                <Button
+                                variant={"outline"}
+                                className={cn(
+                                    "w-full justify-start text-left font-normal",
+                                    !field.value && "text-muted-foreground"
+                                )}
+                                >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {field.value ? format(field.value, "PPP 'at' h:mm a") : <span>Pick a date and time</span>}
+                                </Button>
+                            </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0">
+                                <Calendar
+                                    mode="single"
+                                    selected={field.value}
+                                    onSelect={(date) => handleDateSelect(date, field)}
+                                    initialFocus
+                                />
+                                <div className="p-3 border-t border-border">
+                                    <Label className="flex items-center gap-2 mb-2"><Clock className="h-4 w-4"/> Time</Label>
+                                    <div className="flex items-center gap-2">
+                                        <Input
+                                            type="number"
+                                            aria-label="Hour"
+                                            className="w-16"
+                                            min={0}
+                                            max={23}
+                                            value={field.value?.getHours() ?? ""}
+                                            onChange={(e) => handleTimeChange('hours', parseInt(e.target.value, 10), field)}
+                                        />
+                                        <span>:</span>
+                                        <Input
+                                            type="number"
+                                            aria-label="Minute"
+                                            className="w-16"
+                                            min={0}
+                                            max={59}
+                                            value={field.value?.getMinutes().toString().padStart(2, '0') ?? ""}
+                                            onChange={(e) => handleTimeChange('minutes', parseInt(e.target.value, 10), field)}
+                                        />
+                                    </div>
+                                </div>
+                            </PopoverContent>
+                        </Popover>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+               <FormField
+                    control={form.control}
+                    name="location"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Delivery/Pickup Location</FormLabel>
+                        <FormControl>
+                            <div className="flex items-center gap-2">
+                                <div className="relative flex-grow">
+                                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                     <Input
-                                        type="number"
-                                        aria-label="Hour"
-                                        className="w-16"
-                                        min={0}
-                                        max={23}
-                                        value={deadline?.getHours() ?? ""}
-                                        onChange={(e) => handleTimeChange('hours', parseInt(e.target.value, 10))}
-                                    />
-                                    <span>:</span>
-                                    <Input
-                                        type="number"
-                                        aria-label="Minute"
-                                        className="w-16"
-                                        min={0}
-                                        max={59}
-                                        value={deadline?.getMinutes().toString().padStart(2, '0') ?? ""}
-                                        onChange={(e) => handleTimeChange('minutes', parseInt(e.target.value, 10))}
+                                    placeholder="e.g., Accra Mall or Digital Address"
+                                    className="pl-9"
+                                    {...field}
                                     />
                                 </div>
+                                <Dialog>
+                                    <DialogTrigger asChild>
+                                        <Button type="button" variant="outline">Select on Map</Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>Select Location</DialogTitle>
+                                            <DialogDescription>
+                                                Pan and zoom to find the location, then confirm.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <div className="h-64 bg-muted rounded-md flex items-center justify-center">
+                                            <p className="text-muted-foreground">Map placeholder</p>
+                                        </div>
+                                        <DialogFooter>
+                                            <DialogTrigger asChild><Button type="button" variant="outline">Cancel</Button></DialogTrigger>
+                                            <Button type="button" onClick={() => {
+                                                field.onChange('Selected from Map');
+                                                const dialogCloseButton = document.querySelector('button[data-radix-dialog-close="true"]') as HTMLElement | null;
+                                                dialogCloseButton?.click();
+                                            }}>Confirm Location</Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
                             </div>
-                        </PopoverContent>
-                    </Popover>
-              </div>
-               <div className="space-y-2">
-                <Label htmlFor="location">Delivery/Pickup Location</Label>
-                <div className="flex items-center gap-2">
-                    <div className="relative flex-grow">
-                        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          id="location"
-                          placeholder="e.g., Accra Mall or Digital Address"
-                          className="pl-9"
-                          value={location}
-                          onChange={(e) => setLocation(e.target.value)}
-                        />
-                    </div>
-                    <Dialog>
-                        <DialogTrigger asChild>
-                            <Button type="button" variant="outline">Select on Map</Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Select Location</DialogTitle>
-                                <DialogDescription>
-                                    Pan and zoom to find the location, then confirm.
-                                </DialogDescription>
-                            </DialogHeader>
-                            <div className="h-64 bg-muted rounded-md flex items-center justify-center">
-                                <p className="text-muted-foreground">Map placeholder</p>
-                            </div>
-                            <DialogFooter>
-                                <Button type="button" variant="outline" onClick={() => {
-                                    const dialogCloseButton = document.querySelector('button[data-radix-dialog-close="true"]') as HTMLElement | null;
-                                    dialogCloseButton?.click();
-                                }}>Cancel</Button>
-                                <Button type="button" onClick={() => {
-                                    setLocation('Selected from Map'); // Placeholder
-                                    const dialogCloseButton = document.querySelector('button[data-radix-dialog-close="true"]') as HTMLElement | null;
-                                    dialogCloseButton?.click();
-                                }}>Confirm Location</Button>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
-                </div>
-              </div>
-            </form>
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+            </div>
           )}
           {step === 5 && (
             <div className="space-y-6">
                 <div className="space-y-4 rounded-lg border p-4">
-                    <h3 className="font-semibold text-lg">{dealTitle || 'Untitled Deal'}</h3>
-                    {dealImages.length > 0 && (
+                    <h3 className="font-semibold text-lg">{form.getValues('title') || 'Untitled Deal'}</h3>
+                    {form.getValues('images') && form.getValues('images')!.length > 0 && (
                         <div className="mt-2 grid grid-cols-3 gap-2">
-                            {dealImages.map((image, index) => (
+                            {form.getValues('images')!.map((image, index) => (
                                 <div key={index} className="relative aspect-square">
                                     <Image src={image} alt={`Deal preview ${index + 1}`} fill className="rounded-md object-cover" />
                                 </div>
@@ -504,35 +592,35 @@ export default function CreateDealPage() {
                     <div className="grid gap-2 text-sm pt-2">
                         <div className="flex items-center gap-2">
                             <Banknote className="h-4 w-4 text-muted-foreground" />
-                            <span className="font-mono text-base">GHS {parseFloat(dealAmount || '0').toLocaleString()}</span>
+                            <span className="font-mono text-base">GHS {form.getValues('amount').toLocaleString()}</span>
                         </div>
                         <div className="flex items-center gap-2">
                             <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-                            <span>Due by {deadline ? format(deadline, "PPP 'at' h:mm a") : 'N/A'}</span>
+                            <span>Due by {form.getValues('deadline') ? format(form.getValues('deadline')!, "PPP 'at' h:mm a") : 'N/A'}</span>
                         </div>
-                         {location && (
+                         {form.getValues('location') && (
                            <div className="flex items-center gap-2">
                                 <MapPin className="h-4 w-4 text-muted-foreground" />
-                                <span>{location}</span>
+                                <span>{form.getValues('location')}</span>
                             </div>
                         )}
-                         {(partyId || partyEmail || partyPhone) && <Separator />}
-                        {partyId && <div className="flex items-center gap-2">
+                        {(form.getValues('partyId') || form.getValues('partyEmail') || form.getValues('partyPhone')) && <hr className='my-2' />}
+                        {form.getValues('partyId') && <div className="flex items-center gap-2">
                             <AtSign className="h-4 w-4 text-muted-foreground" />
-                            <span>@{partyId}</span>
+                            <span>@{form.getValues('partyId')}</span>
                         </div>}
-                        {partyEmail && <div className="flex items-center gap-2">
+                        {form.getValues('partyEmail') && <div className="flex items-center gap-2">
                             <Mail className="h-4 w-4 text-muted-foreground" />
-                            <span>{partyEmail}</span>
+                            <span>{form.getValues('partyEmail')}</span>
                         </div>}
-                        {partyPhone && <div className="flex items-center gap-2">
+                        {form.getValues('partyPhone') && <div className="flex items-center gap-2">
                             <Phone className="h-4 w-4 text-muted-foreground" />
-                            <span>{partyPhone}</span>
+                            <span>{form.getValues('partyPhone')}</span>
                         </div>}
-                         <Separator />
+                         <hr className='my-2' />
                         <div className="flex items-center gap-2">
                             <UserCheck className="h-4 w-4 text-muted-foreground" />
-                            <span>You are the <span className="font-semibold capitalize">{role}</span></span>
+                            <span>You are the <span className="font-semibold capitalize">{form.getValues('role')}</span></span>
                         </div>
                     </div>
                 </div>
@@ -540,8 +628,8 @@ export default function CreateDealPage() {
                 <div className="space-y-2">
                     <Label className="font-medium">Acceptance Criteria</Label>
                     <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                        {acceptanceCriteria.map(c => <li key={c.id}>{c.text}</li>)}
-                        {acceptanceCriteria.length === 0 && <li>No criteria defined.</li>}
+                        {fields.map(c => <li key={c.id}>{c.text}</li>)}
+                        {fields.length === 0 && <li>No criteria defined.</li>}
                     </ul>
                 </div>
             </div>
@@ -549,27 +637,31 @@ export default function CreateDealPage() {
         </CardContent>
         <CardFooter className="flex justify-between">
           {step > 1 ? (
-            <Button variant="outline" onClick={prevStep}>
+            <Button type="button" variant="outline" onClick={prevStep}>
               <ArrowLeft className="mr-2" />
               Back
             </Button>
           ) : <div />}
           
           {step < totalSteps && (
-            <Button onClick={nextStep} disabled={(step === 1 && !role) || (step === 4 && !dealAmount)}>
+            <Button type="button" onClick={handleNext}>
               Next
               <ArrowRight className="ml-2" />
             </Button>
           )}
 
           {step === totalSteps && (
-            <Button className="w-full" onClick={handleFinish}>
+            <Button type="submit" className="w-full">
               <CheckCircle className="mr-2" />
               Create & Send Invitation
             </Button>
           )}
         </CardFooter>
       </Card>
+      </form>
+    </Form>
     </div>
   );
 }
+
+    
