@@ -60,10 +60,7 @@ export default function CreateDealPage() {
   const [role, setRole] = useState<'buyer' | 'seller' | null>(null);
   const [dealTitle, setDealTitle] = useState('');
   const [dealImage, setDealImage] = useState<string | null>(null);
-  const [acceptanceCriteria, setAcceptanceCriteria] = useState<Criterion[]>([
-    { id: 1, text: 'Product delivered as described' },
-    { id: 2, text: 'Service completed on time' },
-  ]);
+  const [acceptanceCriteria, setAcceptanceCriteria] = useState<Criterion[]>([]);
   const [newCriterion, setNewCriterion] = useState('');
 
   const [partyId, setPartyId] = useState('');
@@ -91,6 +88,7 @@ export default function CreateDealPage() {
         role: role,
         imageUrl: dealImage || undefined,
         deadline: deadline ? formatISO(deadline) : formatISO(new Date()),
+        acceptanceCriteria: acceptanceCriteria.map(c => ({...c, completed: false})),
     });
 
     toast({
@@ -512,5 +510,3 @@ export default function CreateDealPage() {
     </div>
   );
 }
-
-    

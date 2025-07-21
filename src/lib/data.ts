@@ -171,7 +171,7 @@ export const getDealById = (id: string): Deal | undefined => {
     return dealsData.find(deal => deal.id === id);
 }
 
-export const createDeal = (newDealData: {title: string, party: string, amount: number, role: DealRole, imageUrl?: string, deadline: string}) => {
+export const createDeal = (newDealData: {title: string, party: string, amount: number, role: DealRole, imageUrl?: string, deadline: string, acceptanceCriteria: AcceptanceCriterion[]}) => {
     const newDeal: Deal = {
         id: `DEAL${String(dealsData.length + 1).padStart(3, '0')}`,
         title: newDealData.title,
@@ -181,7 +181,7 @@ export const createDeal = (newDealData: {title: string, party: string, amount: n
         amount: newDealData.amount,
         status: 'inHolding', // New deals start as inHolding, assuming they get funded immediately
         role: newDealData.role,
-        acceptanceCriteria: [],
+        acceptanceCriteria: newDealData.acceptanceCriteria,
         timeline: [
             { date: format(new Date(), 'yyyy-MM-dd'), event: `Deal created by You (${newDealData.role})`, icon: FileText },
             { date: format(new Date(), 'yyyy-MM-dd'), event: `${newDealData.party} accepted & funded the deal`, icon: UserCheck },
@@ -255,5 +255,3 @@ export const industries = [
     "Transportation & Logistics",
     "Other",
 ];
-
-    
