@@ -56,6 +56,7 @@ import Image from 'next/image';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
 
 const getStatusInfo = (status: string) => {
@@ -190,17 +191,32 @@ function DealDetails({ params }: { params: { id: string } }) {
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
-            {deal.imageUrl && (
+            {deal.imageUrls && deal.imageUrls.length > 0 && (
             <Card>
                 <CardContent className="p-0 relative">
-                    <Image
-                        src={deal.imageUrl}
-                        alt={deal.title}
-                        width={800}
-                        height={400}
-                        className={cn("w-full h-auto object-cover rounded-t-lg", { "opacity-50": isDealInactive })}
-                        data-ai-hint="product image"
-                    />
+                     <Carousel className="w-full rounded-t-lg overflow-hidden">
+                        <CarouselContent>
+                            {deal.imageUrls.map((url, index) => (
+                                <CarouselItem key={index}>
+                                    <div className="relative aspect-video">
+                                        <Image
+                                            src={url}
+                                            alt={`${deal.title} image ${index + 1}`}
+                                            fill
+                                            className={cn("object-cover", { "opacity-50": isDealInactive })}
+                                            data-ai-hint="product image"
+                                        />
+                                    </div>
+                                </CarouselItem>
+                            ))}
+                        </CarouselContent>
+                        {deal.imageUrls.length > 1 && (
+                            <>
+                                <CarouselPrevious className="left-4" />
+                                <CarouselNext className="right-4" />
+                            </>
+                        )}
+                    </Carousel>
                      {isDealInactive && (
                         <div className="absolute inset-0 bg-black/20 rounded-t-lg" />
                     )}

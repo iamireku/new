@@ -59,7 +59,7 @@ export default function CreateDealPage() {
   const [step, setStep] = useState(1);
   const [role, setRole] = useState<'buyer' | 'seller' | null>(null);
   const [dealTitle, setDealTitle] = useState('');
-  const [dealImage, setDealImage] = useState<string | null>(null);
+  const [dealImages, setDealImages] = useState<string[]>([]);
   const [acceptanceCriteria, setAcceptanceCriteria] = useState<Criterion[]>([]);
   const [newCriterion, setNewCriterion] = useState('');
 
@@ -86,7 +86,7 @@ export default function CreateDealPage() {
         party: partyId || partyEmail || partyPhone || 'Unknown Party',
         amount: parseFloat(dealAmount || '0'),
         role: role,
-        imageUrl: dealImage || undefined,
+        imageUrls: dealImages,
         deadline: deadline ? formatISO(deadline) : formatISO(new Date()),
         acceptanceCriteria: acceptanceCriteria.map(c => ({...c, completed: false})),
     });
@@ -113,14 +113,23 @@ export default function CreateDealPage() {
   };
   
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setDealImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    const files = event.target.files;
+    if (files) {
+      const remainingSlots = 3 - dealImages.length;
+      const filesToProcess = Array.from(files).slice(0, remainingSlots);
+
+      filesToProcess.forEach(file => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setDealImages(prev => [...prev, reader.result as string]);
+        };
+        reader.readAsDataURL(file);
+      });
     }
+  };
+
+  const handleRemoveImage = (indexToRemove: number) => {
+    setDealImages(prev => prev.filter((_, index) => index !== indexToRemove));
   };
   
   const handleSmartStart = () => {
@@ -261,26 +270,29 @@ export default function CreateDealPage() {
               </div>
 
               <div className="space-y-2">
-                  <Label>Deal Image (Optional)</Label>
-                  {dealImage ? (
-                    <div className="relative group">
-                       <Image src={dealImage} alt="Deal preview" width={200} height={200} className="rounded-md object-cover w-full h-48" />
-                       <Button variant="destructive" size="icon" className="absolute top-2 right-2 h-7 w-7 opacity-0 group-hover:opacity-100" onClick={() => setDealImage(null)}>
-                           <X className="h-4 w-4" />
-                       </Button>
-                    </div>
-                  ) : (
-                    <Label htmlFor="deal-image-upload" className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted">
-                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                            <UploadCloud className="w-8 h-8 mb-2 text-muted-foreground" />
-                            <p className="mb-2 text-sm text-muted-foreground">
-                                <span className="font-semibold">Click to upload</span> or drag and drop
-                            </p>
-                            <p className="text-xs text-muted-foreground">PNG, JPG or GIF (MAX. 800x400px)</p>
-                        </div>
-                        <Input id="deal-image-upload" type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
-                    </Label>
-                  )}
+                  <Label>Deal Images (Up to 3)</Label>
+                  <div className="grid grid-cols-3 gap-2">
+                      {dealImages.map((image, index) => (
+                          <div key={index} className="relative group aspect-square">
+                              <Image src={image} alt={`Deal preview ${index + 1}`} fill className="rounded-md object-cover" />
+                              <Button variant="destructive" size="icon" className="absolute top-1 right-1 h-6 w-6 opacity-0 group-hover:opacity-100" onClick={() => handleRemoveImage(index)}>
+                                  <X className="h-4 w-4" />
+                              </Button>
+                          </div>
+                      ))}
+                      {dealImages.length < 3 && (
+                          <Label htmlFor="deal-image-upload" className="flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted">
+                              <div className="flex flex-col items-center justify-center text-center p-2">
+                                  <UploadCloud className="w-8 h-8 mb-2 text-muted-foreground" />
+                                  <p className="text-xs text-muted-foreground">
+                                      <span className="font-semibold">Click to upload</span>
+                                  </p>
+                              </div>
+                              <Input id="deal-image-upload" type="file" className="hidden" accept="image/*" multiple onChange={handleImageUpload} />
+                          </Label>
+                      )}
+                  </div>
+                   <p className="text-xs text-muted-foreground">Tip: Found an item online? You can upload screenshots.</p>
               </div>
 
               <div className="space-y-2">
@@ -438,9 +450,13 @@ export default function CreateDealPage() {
             <div className="space-y-6">
                 <div className="space-y-4 rounded-lg border p-4">
                     <h3 className="font-semibold text-lg">{dealTitle || 'Untitled Deal'}</h3>
-                    {dealImage && (
-                        <div className="mt-2">
-                            <Image src={dealImage} alt="Deal preview" width={200} height={100} className="rounded-md object-cover w-full h-auto max-h-48" />
+                    {dealImages.length > 0 && (
+                        <div className="mt-2 grid grid-cols-3 gap-2">
+                            {dealImages.map((image, index) => (
+                                <div key={index} className="relative aspect-square">
+                                    <Image src={image} alt={`Deal preview ${index + 1}`} fill className="rounded-md object-cover" />
+                                </div>
+                            ))}
                         </div>
                     )}
                     <div className="grid gap-2 text-sm pt-2">

@@ -36,7 +36,7 @@ export interface Deal {
   acceptanceCriteria: AcceptanceCriterion[];
   timeline: TimelineEvent[];
   messages: Message[];
-  imageUrl?: string;
+  imageUrls?: string[];
 }
 
 export type TransactionType = 'incoming' | 'outgoing';
@@ -133,7 +133,7 @@ export let dealsData: Deal[] = [
       ],
       timeline: [],
       messages: [],
-      imageUrl: 'https://placehold.co/600x400.png'
+      imageUrls: ['https://placehold.co/600x400.png']
     },
     { 
       id: 'DEAL003', 
@@ -171,7 +171,7 @@ export const getDealById = (id: string): Deal | undefined => {
     return dealsData.find(deal => deal.id === id);
 }
 
-export const createDeal = (newDealData: {title: string, party: string, amount: number, role: DealRole, imageUrl?: string, deadline: string, acceptanceCriteria: AcceptanceCriterion[]}) => {
+export const createDeal = (newDealData: {title: string, party: string, amount: number, role: DealRole, imageUrls: string[], deadline: string, acceptanceCriteria: AcceptanceCriterion[]}) => {
     const newDeal: Deal = {
         id: `DEAL${String(dealsData.length + 1).padStart(3, '0')}`,
         title: newDealData.title,
@@ -188,7 +188,7 @@ export const createDeal = (newDealData: {title: string, party: string, amount: n
             { date: format(new Date(), 'yyyy-MM-dd'), event: 'Funds secured in holding.', icon: Lock },
         ],
         messages: [],
-        imageUrl: newDealData.imageUrl,
+        imageUrls: newDealData.imageUrls,
     };
     dealsData.unshift(newDeal); // Add to the beginning of the array
     return newDeal;
