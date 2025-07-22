@@ -1,6 +1,7 @@
 // /src/components/dashboard/attention-deals.tsx
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Card,
@@ -12,12 +13,22 @@ import {
 import { AlertCircle, Handshake, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { dealsData } from '@/lib/data';
+import { getDeals } from '@/lib/services/deals.service';
+import type { Deal } from '@/lib/data';
 
 export function AttentionDeals() {
-    const dealsNeedingAttention = dealsData.filter(
-        deal => deal.status === 'dispute' || deal.status === 'in_review'
-    );
+    const [dealsNeedingAttention, setDealsNeedingAttention] = useState<Deal[]>([]);
+
+    useEffect(() => {
+        async function fetchData() {
+            const allDeals = await getDeals();
+            const filteredDeals = allDeals.filter(
+                deal => deal.status === 'dispute' || deal.status === 'in_review'
+            );
+            setDealsNeedingAttention(filteredDeals);
+        }
+        fetchData();
+    }, []);
 
     return (
         <Card>

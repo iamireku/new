@@ -1,27 +1,34 @@
 
 'use client';
 
-import { useReducer, useMemo } from 'react';
-import { getDealById, Deal } from '@/lib/data';
+import { useReducer, useEffect } from 'react';
+import type { Deal } from '@/lib/data';
+import { getDealById } from '@/lib/services/deals.service';
 import { dealReducer, DealAction } from '@/lib/deal-reducer';
 import { useToast } from '@/hooks/use-toast';
 
 export function useDeal(dealId: string) {
   const { toast } = useToast();
 
-  const initialDeal = useMemo(() => {
-    const deal = getDealById(dealId);
-    if (!deal) return undefined;
-    // This simulates fetching and attaching the icon component after getting data
-    deal.timeline = deal.timeline.map(event => ({
-        ...event,
-        // @ts-ignore
-        icon: event.iconName ? getIconComponent(event.iconName) : event.icon
-    }));
-    return deal;
-  }, [dealId]);
+  const [deal, dispatch] = useReducer(dealReducer, null);
 
-  const [deal, dispatch] = useReducer(dealReducer, initialDeal);
+  useEffect(() => {
+    async function fetchDeal() {
+      const initialDeal = await getDealById(dealId);
+      if (initialDeal) {
+        // This simulates fetching and attaching the icon component after getting data
+        initialDeal.timeline = initialDeal.timeline.map(event => ({
+            ...event,
+            // @ts-ignore
+            icon: event.iconName ? getIconComponent(event.iconName) : event.icon
+        }));
+        dispatch({ type: 'SET_DEAL', payload: initialDeal });
+      }
+    }
+    if (dealId) {
+      fetchDeal();
+    }
+  }, [dealId]);
 
   const performAction = (action: DealAction, successToast: { title: string; description: string; variant?: "default" | "destructive" | null | undefined }) => {
     dispatch(action);

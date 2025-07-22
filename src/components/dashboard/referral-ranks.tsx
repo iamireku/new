@@ -1,7 +1,7 @@
 // /src/components/dashboard/referral-ranks.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -13,12 +13,31 @@ import { Users, Copy, Share2, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { leaderboard, currentUser } from '@/lib/data';
+import type { LeaderboardUser, CurrentUser } from '@/lib/data';
+import { getLeaderboard, getCurrentUser } from '@/lib/services/user.service';
 
 export function ReferralRanks() {
     const { toast } = useToast();
     const [copied, setCopied] = useState(false);
+    const [leaderboard, setLeaderboard] = useState<LeaderboardUser[]>([]);
+    const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
+
+    useEffect(() => {
+        async function fetchData() {
+            const [leaderboardData, currentUserData] = await Promise.all([
+                getLeaderboard(),
+                getCurrentUser()
+            ]);
+            setLeaderboard(leaderboardData);
+            setCurrentUser(currentUserData);
+        }
+        fetchData();
+    }, []);
     
+    if (!currentUser) {
+        return null; // Or a loading state
+    }
+
     const referralLink = `https://betweena.app/signup?ref=${currentUser.referralCode}`;
 
     const copyToClipboard = () => {

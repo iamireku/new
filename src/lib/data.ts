@@ -238,35 +238,6 @@ export let dealsData: Deal[] = [
     },
 ];
 
-export const getDealById = (id: string): Deal | undefined => {
-    // This is a deep copy to prevent modifying the original data object
-    // In a real app, you'd fetch fresh data from the server.
-    const deal = dealsData.find(deal => deal.id === id);
-    return deal ? JSON.parse(JSON.stringify(deal)) : undefined;
-}
-
-export const createDeal = (newDealData: {title: string, party: string, amount: number, role: DealRole, imageUrls: string[], deadline: string, acceptanceCriteria: AcceptanceCriterion[], location?: string}) => {
-    const newDeal: Deal = {
-        id: `DEAL${String(dealsData.length + 1).padStart(3, '0')}`,
-        title: newDealData.title,
-        party: newDealData.party,
-        date: formatISO(new Date()),
-        deadline: newDealData.deadline,
-        amount: newDealData.amount,
-        status: 'pending', // New deals start as pending
-        role: newDealData.role === 'buyer' ? 'seller' : 'buyer', // The user creating the deal is one role, the party is the other
-        acceptanceCriteria: newDealData.acceptanceCriteria.map(c => ({...c, completed: false})),
-        timeline: [
-            { date: format(new Date(), 'PPP'), event: `You created this deal. Awaiting acceptance from ${newDealData.party}.`, iconName: 'Send' } as any,
-        ],
-        messages: [],
-        imageUrls: newDealData.imageUrls,
-        location: newDealData.location,
-    };
-    dealsData.unshift(newDeal); // Add to the beginning of the array
-    return newDeal;
-}
-
 export const recentTransactions: Transaction[] = [
   { id: 'T001', description: 'Website Design', party: 'ClientCorp', amount: 2500, type: 'incoming', status: 'completed' },
   { id: 'T002', description: 'Marketing Services', party: 'AdVantage', amount: -1200, type: 'outgoing', status: 'pending' },
@@ -330,4 +301,3 @@ export const industries = [
     "Transportation & Logistics",
     "Other",
 ];
-

@@ -6,6 +6,7 @@ import type { Deal, TimelineEvent, DealRole } from '@/lib/data';
 import { FileText, Truck, Eye, CheckCircle, AlertTriangle, Handshake, Lock, Send, XCircle } from 'lucide-react';
 
 export type DealAction =
+  | { type: 'SET_DEAL'; payload: Deal }
   | { type: 'ACCEPT_AND_FUND' }
   | { type: 'REJECT'; payload: { reason: string } }
   | { type: 'REQUEST_EDITS'; payload: { message: string } }
@@ -17,7 +18,15 @@ export type DealAction =
   | { type: 'APPROVE_RESOLUTION' };
 
 
-export function dealReducer(deal: Deal, action: DealAction): Deal {
+export function dealReducer(deal: Deal | null, action: DealAction): Deal | null {
+  if (action.type === 'SET_DEAL') {
+    return action.payload;
+  }
+
+  if (!deal) {
+    return null;
+  }
+
   const now = new Date();
   const today = format(now, 'PPP');
 
@@ -133,7 +142,7 @@ export function dealReducer(deal: Deal, action: DealAction): Deal {
         };
     }
     default: {
-      throw Error('Unknown action: ' + (action as any).type);
+      return deal;
     }
   }
 }

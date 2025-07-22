@@ -1,11 +1,9 @@
 // /src/app/dashboard/page.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import {
-  CardFooter
-} from '@/components/ui/card';
+import { CardFooter } from '@/components/ui/card';
 import { PlusCircle, Building, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -14,7 +12,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { savedPaymentMethods } from '@/lib/data';
+import type { PaymentMethod } from '@/lib/data';
+import { getSavedPaymentMethods } from '@/lib/services/user.service';
 import { SummaryCards } from '@/components/dashboard/summary-cards';
 import { ReferralRanks } from '@/components/dashboard/referral-ranks';
 import { AttentionDeals } from '@/components/dashboard/attention-deals';
@@ -23,7 +22,19 @@ import { RecentTransactions } from '@/components/dashboard/recent-transactions';
 export default function DashboardPage() {
     const { toast } = useToast();
     const [isAddFundsDialogOpen, setIsAddFundsDialogOpen] = useState(false);
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(savedPaymentMethods[0]?.id || '');
+    const [savedPaymentMethods, setSavedPaymentMethods] = useState<PaymentMethod[]>([]);
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
+
+    useEffect(() => {
+        async function fetchPaymentMethods() {
+            const methods = await getSavedPaymentMethods();
+            setSavedPaymentMethods(methods);
+            if (methods.length > 0) {
+                setSelectedPaymentMethod(methods[0].id);
+            }
+        }
+        fetchPaymentMethods();
+    }, []);
 
     const handleAddFunds = () => {
       setIsAddFundsDialogOpen(false);

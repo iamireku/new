@@ -1,6 +1,7 @@
 // /src/app/dashboard/layout.tsx
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AppLogo } from '@/components/AppLogo';
@@ -18,7 +19,8 @@ import {
   Handshake,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { dealsData } from '@/lib/data';
+import { getDeals } from '@/lib/services/deals.service';
+import type { Deal } from '@/lib/data';
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -33,8 +35,17 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const [deals, setDeals] = useState<Deal[]>([]);
 
-  const dealsNeedingAttentionCount = dealsData.filter(
+  useEffect(() => {
+    async function fetchData() {
+      const dealsData = await getDeals();
+      setDeals(dealsData);
+    }
+    fetchData();
+  }, []);
+
+  const dealsNeedingAttentionCount = deals.filter(
     deal => deal.status === 'in_review' || deal.status === 'dispute'
   ).length;
 

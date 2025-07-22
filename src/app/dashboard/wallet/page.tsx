@@ -1,7 +1,7 @@
 // /src/app/dashboard/wallet/page.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -20,14 +20,33 @@ import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
-import { walletTransactions, savedPaymentMethods, PaymentMethod } from '@/lib/data';
+import type { WalletTransaction, PaymentMethod } from '@/lib/data';
+import { getWalletTransactions } from '@/lib/services/wallet.service';
+import { getSavedPaymentMethods } from '@/lib/services/user.service';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 export default function WalletPage() {
+    const [transactions, setTransactions] = useState<WalletTransaction[]>([]);
+    const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
     const [isWithdrawDialogOpen, setIsWithdrawDialogOpen] = useState(false);
     const [isAddFundsDialogOpen, setIsAddFundsDialogOpen] = useState(false);
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(savedPaymentMethods[0]?.id || '');
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
     const { toast } = useToast();
+
+    useEffect(() => {
+        async function fetchData() {
+            const [transactionsData, paymentMethodsData] = await Promise.all([
+                getWalletTransactions(),
+                getSavedPaymentMethods()
+            ]);
+            setTransactions(transactionsData);
+            setPaymentMethods(paymentMethodsData);
+            if (paymentMethodsData.length > 0) {
+                setSelectedPaymentMethod(paymentMethodsData[0].id);
+            }
+        }
+        fetchData();
+    }, []);
 
     const handleWithdraw = () => {
         setIsWithdrawDialogOpen(false);
@@ -71,9 +90,9 @@ export default function WalletPage() {
                         </div>
                         <div className="space-y-2">
                             <Label>Select Payment Method</Label>
-                            {savedPaymentMethods.length > 0 ? (
+                            {paymentMethods.length > 0 ? (
                                 <RadioGroup value={selectedPaymentMethod} onValueChange={setSelectedPaymentMethod} className="space-y-2">
-                                    {savedPaymentMethods.map(method => (
+                                    {paymentMethods.map(method => (
                                         <Label key={method.id} htmlFor={`add-${method.id}`} className={cn('flex items-center gap-4 rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground', selectedPaymentMethod === method.id && 'border-primary')}>
                                             <RadioGroupItem value={method.id} id={`add-${method.id}`}/>
                                             {method.type === 'bank' ? <Building className="h-6 w-6 text-muted-foreground" /> : <Phone className="h-6 w-6 text-muted-foreground" />}
@@ -100,7 +119,7 @@ export default function WalletPage() {
                     </div>
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setIsAddFundsDialogOpen(false)}>Cancel</Button>
-                        <Button onClick={handleAddFunds} disabled={savedPaymentMethods.length === 0}>Confirm Deposit</Button>
+                        <Button onClick={handleAddFunds} disabled={paymentMethods.length === 0}>Confirm Deposit</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
@@ -125,9 +144,9 @@ export default function WalletPage() {
                         </div>
                         <div className="space-y-2">
                              <Label>Select Payment Method</Label>
-                             {savedPaymentMethods.length > 0 ? (
+                             {paymentMethods.length > 0 ? (
                                 <RadioGroup value={selectedPaymentMethod} onValueChange={setSelectedPaymentMethod} className="space-y-2">
-                                    {savedPaymentMethods.map(method => (
+                                    {paymentMethods.map(method => (
                                         <Label key={method.id} htmlFor={`withdraw-${method.id}`} className={cn('flex items-center gap-4 rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground', selectedPaymentMethod === method.id && 'border-primary')}>
                                             <RadioGroupItem value={method.id} id={`withdraw-${method.id}`}/>
                                             {method.type === 'bank' ? <Building className="h-6 w-6 text-muted-foreground" /> : <Phone className="h-6 w-6 text-muted-foreground" />}
@@ -154,7 +173,7 @@ export default function WalletPage() {
                     </div>
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setIsWithdrawDialogOpen(false)}>Cancel</Button>
-                        <Button onClick={handleWithdraw} disabled={savedPaymentMethods.length === 0}>Confirm Withdrawal</Button>
+                        <Button onClick={handleWithdraw} disabled={paymentMethods.length === 0}>Confirm Withdrawal</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
@@ -189,7 +208,7 @@ export default function WalletPage() {
         </CardHeader>
         <CardContent>
            <div className="space-y-4">
-            {walletTransactions.map((tx) => (
+            {transactions.map((tx) => (
               <Collapsible key={tx.id} asChild>
                 <Card>
                   <CollapsibleTrigger asChild>

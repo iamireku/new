@@ -1,7 +1,7 @@
 // /src/components/dashboard/recent-transactions.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -14,12 +14,22 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowUpRight, ArrowDownLeft, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { recentTransactions } from '@/lib/data';
+import { getRecentTransactions } from '@/lib/services/wallet.service';
+import type { Transaction } from '@/lib/data';
 
 const TRANSACTIONS_PER_PAGE = 5;
 
 export function RecentTransactions() {
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [visibleTransactionsCount, setVisibleTransactionsCount] = useState(TRANSACTIONS_PER_PAGE);
+
+    useEffect(() => {
+        async function fetchData() {
+            const data = await getRecentTransactions();
+            setTransactions(data);
+        }
+        fetchData();
+    }, []);
 
     const getStatusText = (status: string) => {
         if (status === 'inHolding') return 'On Hold';
@@ -27,7 +37,7 @@ export function RecentTransactions() {
         return status.replace('_', ' ');
     }
 
-    const transactionsToShow = recentTransactions.slice(0, visibleTransactionsCount);
+    const transactionsToShow = transactions.slice(0, visibleTransactionsCount);
 
     return (
         <Card>
@@ -67,7 +77,7 @@ export function RecentTransactions() {
                 </div>
             ))}
         </CardContent>
-        {recentTransactions.length > visibleTransactionsCount && (
+        {transactions.length > visibleTransactionsCount && (
             <CardFooter className="justify-center border-t pt-4">
                 <Button 
                     variant="outline" 

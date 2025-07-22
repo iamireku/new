@@ -52,7 +52,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { format, differenceInDays } from 'date-fns';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Deal } from '@/lib/data';
+import type { Deal } from '@/lib/data';
 import Image from 'next/image';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -60,6 +60,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { Textarea } from '@/components/ui/textarea';
 import { useDeal } from '@/hooks/use-deal';
 import { useToast } from '@/hooks/use-toast';
+import React from 'react';
 
 // Constants
 const BUYER_RESPONSE_PERIOD_DAYS = 7;

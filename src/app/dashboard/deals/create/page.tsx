@@ -3,7 +3,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useForm, useFieldArray, Controller } from 'react-hook-form';
+import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 
@@ -47,7 +47,7 @@ import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
-import { createDeal } from '@/lib/data';
+import { createDeal } from '@/lib/services/deals.service';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
 import { format, formatISO, setHours, setMinutes } from 'date-fns';
@@ -113,8 +113,8 @@ export default function CreateDealPage() {
 
   const progress = (step / totalSteps) * 100;
 
-  const handleFinish = (data: DealFormData) => {
-    createDeal({
+  const handleFinish = async (data: DealFormData) => {
+    await createDeal({
         title: data.title || 'Untitled Deal',
         party: data.partyId || data.partyEmail || data.partyPhone || 'Unknown Party',
         amount: data.amount,
@@ -149,6 +149,7 @@ export default function CreateDealPage() {
       filesToProcess.forEach(file => {
         const reader = new FileReader();
         reader.onloadend = () => {
+            const currentImages = form.getValues('images') || [];
             form.setValue('images', [...currentImages, reader.result as string]);
         };
         reader.readAsDataURL(file);
@@ -562,7 +563,8 @@ export default function CreateDealPage() {
                                         <DialogFooter>
                                             <DialogTrigger asChild><Button type="button" variant="outline">Cancel</Button></DialogTrigger>
                                             <Button type="button" onClick={() => {
-                                                field.onChange('Selected from Map');
+                                                const currentValue = field.value;
+                                                form.setValue('location', currentValue || 'Selected from Map');
                                                 const dialogCloseButton = document.querySelector('button[data-radix-dialog-close="true"]') as HTMLElement | null;
                                                 dialogCloseButton?.click();
                                             }}>Confirm Location</Button>
@@ -664,5 +666,3 @@ export default function CreateDealPage() {
     </div>
   );
 }
-
-    

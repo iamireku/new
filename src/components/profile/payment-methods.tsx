@@ -1,7 +1,7 @@
 // /src/components/profile/payment-methods.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -17,11 +17,12 @@ import { Input } from '@/components/ui/input';
 import { PlusCircle, Building, Phone, Trash2, CreditCard } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { PaymentMethod, MobileMoneyProvider, PaymentMethodType, savedPaymentMethods } from '@/lib/data';
+import type { PaymentMethod, MobileMoneyProvider, PaymentMethodType } from '@/lib/data';
+import { getSavedPaymentMethods } from '@/lib/services/user.service';
 
 export function PaymentMethods() {
   const [isAddPaymentDialogOpen, setIsAddPaymentDialogOpen] = useState(false);
-  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>(savedPaymentMethods);
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [newPaymentType, setNewPaymentType] = useState<PaymentMethodType>('mobile_money');
   const [momoProvider, setMomoProvider] = useState<MobileMoneyProvider>('mtn');
   const [momoNumber, setMomoNumber] = useState('');
@@ -32,6 +33,14 @@ export function PaymentMethods() {
   const [isFetchingBankName, setIsFetchingBankName] = useState(false);
 
   const { toast } = useToast();
+
+  useEffect(() => {
+    async function fetchPaymentMethods() {
+        const methods = await getSavedPaymentMethods();
+        setPaymentMethods(methods);
+    }
+    fetchPaymentMethods();
+  }, []);
 
   const handleAddPaymentMethod = () => {
       // Logic to save payment method would go here
