@@ -104,14 +104,14 @@ export let dealsData: Deal[] = [
       id: 'DEAL008',
       title: 'Hand-crafted Leather Bag',
       party: 'Artisan Goods',
-      date: formatISO(new Date()),
-      deadline: formatISO(new Date(new Date().setDate(new Date().getDate() + 7))),
+      date: '2023-11-20T10:00:00.000Z',
+      deadline: '2023-11-27T10:00:00.000Z',
       amount: 450,
       status: 'pending',
       role: 'buyer', // The current user is the buyer, waiting to accept.
       acceptanceCriteria: [{ id: 1, text: 'Bag is new and matches the photo.', completed: false }],
       timeline: [
-        { date: format(new Date(), 'PPP'), event: 'Deal created by Artisan Goods. Awaiting your acceptance.', iconName: 'Send' } as any,
+        { date: 'Nov 20, 2023', event: 'Deal created by Artisan Goods. Awaiting your acceptance.', iconName: 'Send' } as any,
       ],
       messages: [],
       imageUrls: ['https://placehold.co/600x400.png']
@@ -175,18 +175,18 @@ export let dealsData: Deal[] = [
       status: 'in_review', 
       role: 'buyer',
       location: 'Remote',
-      deliveredDate: formatISO(new Date(new Date().setDate(new Date().getDate() - 2))), // Delivered 2 days ago
+      deliveredDate: '2023-11-18T10:00:00.000Z', // Delivered 2 days ago
       acceptanceCriteria: [
         { id: 1, text: 'Final designs delivered in Figma', completed: true },
         { id: 2, text: 'All assets exported and shared', completed: true },
         { id: 3, text: 'Prototype link provided for review', completed: false },
       ],
       timeline: [
-        { date: format(new Date(new Date().setDate(new Date().getDate() - 2)), 'PPP'), event: 'Deal is now in review by you.', iconName: 'Eye' } as any,
-        { date: format(new Date(new Date().setDate(new Date().getDate() - 2)), 'PPP'), event: 'Seller marked as Delivered.', iconName: 'Truck' } as any,
-        { date: format(new Date('2023-11-07'), 'PPP'), event: 'Funds secured in holding.', iconName: 'Lock' } as any,
-        { date: format(new Date('2023-11-06'), 'PPP'), event: 'You funded the deal', iconName: 'Lock' } as any,
-        { date: format(new Date('2023-11-05'), 'PPP'), event: 'Deal created by Seller', iconName: 'FileText' } as any,
+        { date: 'Nov 18, 2023', event: 'Deal is now in review by you.', iconName: 'Eye' } as any,
+        { date: 'Nov 18, 2023', event: 'Seller marked as Delivered.', iconName: 'Truck' } as any,
+        { date: 'Nov 07, 2023', event: 'Funds secured in holding.', iconName: 'Lock' } as any,
+        { date: 'Nov 06, 2023', event: 'You funded the deal', iconName: 'Lock' } as any,
+        { date: 'Nov 05, 2023', event: 'Deal created by Seller', iconName: 'FileText' } as any,
       ],
       messages: [
         { sender: 'Appify Inc.', message: 'Just checking on the status of the prototype. Any updates?', date: '2023-11-14' },
@@ -330,3 +330,4 @@ export const industries = [
     "Transportation & Logistics",
     "Other",
 ];
+

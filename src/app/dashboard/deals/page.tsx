@@ -40,6 +40,7 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useToast } from '@/hooks/use-toast';
 import { dealsData, savedPaymentMethods, statusOptions, roleOptions, PaymentMethod } from '@/lib/data';
+import { format } from 'date-fns';
 
 
 const getStatusText = (status: string) => {
@@ -241,7 +242,7 @@ export default function DealsPage() {
                   >
                     <TableCell className="font-medium">{tx.title}</TableCell>
                     <TableCell className="text-muted-foreground hidden md:table-cell">{tx.party}</TableCell>
-                    <TableCell className="text-muted-foreground hidden md:table-cell">{tx.date}</TableCell>
+                    <TableCell className="text-muted-foreground hidden md:table-cell">{format(new Date(tx.date), 'PPP')}</TableCell>
                     <TableCell className="text-center">
                       <Badge variant="secondary" className={
                           cn({
