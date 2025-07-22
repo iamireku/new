@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useEffect, use } from 'react';
+import { useEffect } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import {
   Card,
@@ -411,7 +411,7 @@ const DealMessages = ({ deal }: { deal: Deal }) => (
 );
 
 // --- Main Page Component ---
-function DealDetails({ params }: { params: { id: string } }) {
+export default function DealDetailsPage({ params }: { params: { id: string } }) {
   const actions = useDeal(params.id);
   const { deal } = actions;
 
@@ -453,10 +453,3 @@ function DealDetails({ params }: { params: { id: string } }) {
     </div>
   );
 }
-
-export default function DealDetailsPage({ params: paramsPromise }: { params: { id: string } }) {
-  const params = use(paramsPromise);
-  return <DealDetails params={params} />;
-}
-
-    
