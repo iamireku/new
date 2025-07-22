@@ -1,4 +1,4 @@
-// /src/app/onboarding/page.tsx
+
 'use client';
 
 import { useState } from 'react';
@@ -77,14 +77,14 @@ export default function OnboardingPage() {
             {step === 1 && 'Welcome to Betweena!'}
             {step === 2 && 'About You'}
             {step === 3 && 'Your Business'}
-            {step === 4 && 'Payment Setup'}
+            {step === 4 && 'Secure Payouts'}
             {step === 5 && 'All Set!'}
           </CardTitle>
           <CardDescription className="text-center">
             {step === 1 && 'Let\'s set up your account.'}
             {step === 2 && 'This helps us know who you are.'}
             {step === 3 && 'Tell us about your business.'}
-            {step === 4 && 'Add a payment method for withdrawals.'}
+            {step === 4 && 'This is where we send your money after a successful deal. We will never use this to charge you.'}
             {step === 5 && 'You are ready to start.'}
           </CardDescription>
         </CardHeader>
