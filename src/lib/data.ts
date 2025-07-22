@@ -131,11 +131,11 @@ export let dealsData: Deal[] = [
         { id: 2, text: 'Admin training completed', completed: true },
       ],
       timeline: [
-        { date: format(new Date('2023-11-26'), 'PPP'), event: 'Deal completed', iconName: 'CheckCircle' } as any,
-        { date: format(new Date('2023-11-26'), 'PPP'), event: 'Buyer released funds', iconName: 'Eye' } as any,
-        { date: format(new Date('2023-11-25'), 'PPP'), event: 'You marked as delivered', iconName: 'Truck' } as any,
-        { date: format(new Date('2023-10-27'), 'PPP'), event: 'ClientCorp funded the deal', iconName: 'Lock' } as any,
-        { date: format(new Date('2023-10-26'), 'PPP'), event: 'Deal created', iconName: 'FileText' } as any,
+        { date: 'Nov 26, 2023', event: 'Deal completed', iconName: 'CheckCircle' } as any,
+        { date: 'Nov 26, 2023', event: 'Buyer released funds', iconName: 'Eye' } as any,
+        { date: 'Nov 25, 2023', event: 'You marked as delivered', iconName: 'Truck' } as any,
+        { date: 'Oct 27, 2023', event: 'ClientCorp funded the deal', iconName: 'Lock' } as any,
+        { date: 'Oct 26, 2023', event: 'Deal created', iconName: 'FileText' } as any,
       ],
       messages: [
         { sender: 'ClientCorp', message: 'Thanks for the great work!', date: '2023-11-26' },
@@ -156,11 +156,11 @@ export let dealsData: Deal[] = [
         { id: 2, text: 'Brand guidelines document provided', completed: true },
       ],
       timeline: [
-        { date: format(new Date('2023-11-16'), 'PPP'), event: 'Deal completed', iconName: 'CheckCircle' } as any,
-        { date: format(new Date('2023-11-16'), 'PPP'), event: 'You released funds', iconName: 'Eye' } as any,
-        { date: format(new Date('2023-11-15'), 'PPP'), event: 'Seller marked as delivered', iconName: 'Truck' } as any,
-        { date: format(new Date('2023-10-23'), 'PPP'), event: 'You funded the deal', iconName: 'Lock' } as any,
-        { date: format(new Date('2023-10-22'), 'PPP'), event: 'Deal created', iconName: 'FileText' } as any,
+        { date: 'Nov 16, 2023', event: 'Deal completed', iconName: 'CheckCircle' } as any,
+        { date: 'Nov 16, 2023', event: 'You released funds', iconName: 'Eye' } as any,
+        { date: 'Nov 15, 2023', event: 'Seller marked as delivered', iconName: 'Truck' } as any,
+        { date: 'Oct 23, 2023', event: 'You funded the deal', iconName: 'Lock' } as any,
+        { date: 'Oct 22, 2023', event: 'Deal created', iconName: 'FileText' } as any,
       ],
       messages: [],
       imageUrls: ['https://placehold.co/600x400.png']
@@ -196,8 +196,8 @@ export let dealsData: Deal[] = [
     { id: 'DEAL004', title: 'SEO & Content Strategy', party: 'Growth Co.', date: '2023-11-10T10:00:00.000Z', deadline: '2023-12-15T17:00:00.000Z', amount: 2500, status: 'cancelled', role: 'buyer', 
       acceptanceCriteria: [], 
       timeline: [
-        { date: format(new Date('2023-11-11'), 'PPP'), event: 'Deal cancelled by you', iconName: 'XCircle' } as any,
-        { date: format(new Date('2023-11-10'), 'PPP'), event: 'Deal created', iconName: 'FileText' } as any,
+        { date: 'Nov 11, 2023', event: 'Deal cancelled by you', iconName: 'XCircle' } as any,
+        { date: 'Nov 10, 2023', event: 'Deal created', iconName: 'FileText' } as any,
       ], 
       messages: [] 
     },
@@ -213,26 +213,26 @@ export let dealsData: Deal[] = [
       statusBeforeDispute: 'inHolding',
       acceptanceCriteria: [{id: 1, text: "API key provided", completed: false}], 
       timeline: [
-        { date: format(new Date('2023-11-14'), 'PPP'), event: 'Dispute raised by buyer', iconName: 'AlertTriangle' } as any,
-        { date: format(new Date('2023-11-13'), 'PPP'), event: 'Buyer funded the deal', iconName: 'Lock' } as any,
-        { date: format(new Date('2023-11-12'), 'PPP'), event: 'Deal created', iconName: 'FileText' } as any,
+        { date: 'Nov 14, 2023', event: 'Dispute raised by buyer', iconName: 'AlertTriangle' } as any,
+        { date: 'Nov 13, 2023', event: 'Buyer funded the deal', iconName: 'Lock' } as any,
+        { date: 'Nov 12, 2023', event: 'Deal created', iconName: 'FileText' } as any,
       ], 
       messages: [] 
     },
     { id: 'DEAL006', title: 'Q4 Marketing Campaign', party: 'AdVantage', date: '2023-11-15T10:00:00.000Z', deadline: '2024-01-15T17:00:00.000Z', amount: 12000, status: 'inHolding', role: 'seller', 
       acceptanceCriteria: [], 
       timeline: [
-        { date: format(new Date('2023-11-16'), 'PPP'), event: 'Funds secured in holding', iconName: 'Lock' } as any,
-        { date: format(new Date('2023-11-16'), 'PPP'), event: 'Buyer funded the deal', iconName: 'Lock' } as any,
-        { date: format(new Date('2023-11-15'), 'PPP'), event: 'Deal created', iconName: 'FileText' } as any,
+        { date: 'Nov 16, 2023', event: 'Funds secured in holding', iconName: 'Lock' } as any,
+        { date: 'Nov 16, 2023', event: 'Buyer funded the deal', iconName: 'Lock' } as any,
+        { date: 'Nov 15, 2023', event: 'Deal created', iconName: 'FileText' } as any,
       ], 
       messages: [] 
     },
     { id: 'DEAL007', title: 'Cloud Migration', party: 'Serverless Solutions', date: '2023-11-20T10:00:00.000Z', deadline: '2024-02-01T17:00:00.000Z', amount: 25000, status: 'cancelled', role: 'seller', 
       acceptanceCriteria: [], 
       timeline: [
-        { date: format(new Date('2023-11-21'), 'PPP'), event: 'Deal cancelled by buyer', iconName: 'XCircle' } as any,
-        { date: format(new Date('2023-11-20'), 'PPP'), event: 'Deal created', iconName: 'FileText' } as any,
+        { date: 'Nov 21, 2023', event: 'Deal cancelled by buyer', iconName: 'XCircle' } as any,
+        { date: 'Nov 20, 2023', event: 'Deal created', iconName: 'FileText' } as any,
       ], 
       messages: [] 
     },
@@ -301,3 +301,5 @@ export const industries = [
     "Transportation & Logistics",
     "Other",
 ];
+
+    

@@ -393,9 +393,9 @@ const ReminderSettings = ({ deal }: { deal: Deal }) => {
   
 const DealMessages = ({ deal }: { deal: Deal }) => (
     <Card>
-        <CardHeader className="flex items-center gap-2">
+        <CardHeader className="flex flex-row items-center gap-2">
             <MessageSquare className="h-5 w-5"/>
-            <CardTitle className="font-headline">Messages</CardTitle>
+            <CardTitle className="text-lg font-headline">Messages</CardTitle>
         </CardHeader>
         <CardContent>
             <div className="space-y-4 text-sm">
@@ -458,3 +458,5 @@ export default function DealDetailsPage({ params: paramsPromise }: { params: { i
   const params = use(paramsPromise);
   return <DealDetails params={params} />;
 }
+
+    
