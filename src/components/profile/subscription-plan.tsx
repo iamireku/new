@@ -73,9 +73,14 @@ export function SubscriptionPlan() {
                 </CardHeader>
                 {isPro && (
                      <CardContent>
-                        <p>Your subscription is active. Thank you for being a Pro member!</p>
+                        <p className="text-sm text-muted-foreground">Your Pro plan is active. Thank you for being a member!</p>
                     </CardContent>
                 )}
+                 {isPro && (
+                    <CardFooter>
+                       <Button variant="outline" disabled>Manage Subscription</Button>
+                    </CardFooter>
+                 )}
             </Card>
 
             <div className="text-center">
@@ -110,10 +115,12 @@ export function SubscriptionPlan() {
                         </ul>
                     </CardContent>
                     <CardFooter>
-                        <Button variant="outline" className="w-full" disabled>Your Current Plan</Button>
+                        <Button variant="outline" className="w-full" disabled={isPro}>
+                            Your Current Plan
+                        </Button>
                     </CardFooter>
                 </Card>
-                 <Card className={cn("border-2 border-primary", { "border-muted": !isPro })}>
+                 <Card className={cn("border-2", { "border-primary": !isPro, "border-muted": isPro })}>
                     <CardHeader>
                         <CardTitle className="flex items-center justify-between">
                             Pro
