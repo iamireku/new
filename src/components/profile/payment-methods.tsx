@@ -1,4 +1,5 @@
 // /src/components/profile/payment-methods.tsx
+// /src/components/profile/payment-methods.tsx
 'use client';
 
 import { useState, useEffect } from 'react';

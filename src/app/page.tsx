@@ -1,4 +1,5 @@
 // /src/app/page.tsx
+// /src/app/page.tsx
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush } from 'lucide-react';

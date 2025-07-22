@@ -1,4 +1,5 @@
 // /src/components/profile/referral-settings.tsx
+// /src/components/profile/referral-settings.tsx
 'use client';
 
 import { useState } from 'react';

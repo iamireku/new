@@ -1,4 +1,4 @@
-
+// /src/app/dashboard/deals/[id]/page.tsx
 'use client';
 
 import { useEffect, use } from 'react';

@@ -1,4 +1,5 @@
 // /src/components/dashboard/referral-ranks.tsx
+// /src/components/dashboard/referral-ranks.tsx
 'use client';
 
 import { useState } from 'react';
