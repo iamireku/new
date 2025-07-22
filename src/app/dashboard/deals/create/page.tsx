@@ -653,7 +653,7 @@ export default function CreateDealPage() {
           {step === totalSteps && (
             <Button type="submit" className="w-full">
               <CheckCircle className="mr-2" />
-              Create & Send Invitation
+              activate the creation
             </Button>
           )}
         </CardFooter>
