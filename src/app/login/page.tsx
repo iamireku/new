@@ -1,3 +1,4 @@
+
 // /src/app/login/page.tsx
 'use client';
 
@@ -35,11 +36,12 @@ function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
 
 export default function LoginPage() {
   const router = useRouter();
-  const { signIn } = useAuth();
+  const { signIn, signInWithGoogle } = useAuth();
   const { toast } = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,6 +62,25 @@ export default function LoginPage() {
       setIsLoading(false);
     }
   };
+  
+  const handleGoogleSignIn = async () => {
+    setIsGoogleLoading(true);
+    try {
+      await signInWithGoogle();
+      toast({
+        title: "Signed In Successfully!",
+      });
+      router.push('/dashboard');
+    } catch (error: any) {
+       toast({
+        variant: 'destructive',
+        title: 'Google Sign In Failed',
+        description: error.message || 'Could not sign you in with Google. Please try again.',
+      });
+    } finally {
+        setIsGoogleLoading(false);
+    }
+  }
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-secondary">
@@ -75,7 +96,7 @@ export default function LoginPage() {
           <form onSubmit={handleLogin} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" placeholder="m@example.com" required value={email} onChange={e => setEmail(e.target.value)} disabled={isLoading} />
+              <Input id="email" type="email" placeholder="m@example.com" required value={email} onChange={e => setEmail(e.target.value)} disabled={isLoading || isGoogleLoading} />
             </div>
             <div className="space-y-2">
               <div className="flex items-center">
@@ -84,9 +105,9 @@ export default function LoginPage() {
                   Forgot password?
                 </Link>
               </div>
-              <Input id="password" type="password" required value={password} onChange={e => setPassword(e.target.value)} disabled={isLoading} />
+              <Input id="password" type="password" required value={password} onChange={e => setPassword(e.target.value)} disabled={isLoading || isGoogleLoading} />
             </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
+            <Button type="submit" className="w-full" disabled={isLoading || isGoogleLoading}>
               {isLoading ? 'Signing In...' : 'Sign In'}
             </Button>
           </form>
@@ -95,9 +116,21 @@ export default function LoginPage() {
             <span className="mx-4 flex-shrink text-xs uppercase text-muted-foreground">Or</span>
             <div className="flex-grow border-t border-muted" />
           </div>
-          <Button variant="outline" className="w-full" disabled={isLoading}>
-            <GoogleIcon className="mr-2 h-4 w-4" />
-            Sign in with Google
+          <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={isLoading || isGoogleLoading}>
+             {isGoogleLoading ? (
+                <>
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-foreground" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Signing in...
+                </>
+             ) : (
+                <>
+                <GoogleIcon className="mr-2 h-4 w-4" />
+                Sign in with Google
+                </>
+             )}
           </Button>
         </CardContent>
         <CardFooter className="flex justify-center text-sm">
