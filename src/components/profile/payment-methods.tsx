@@ -17,16 +17,11 @@ import { Input } from '@/components/ui/input';
 import { PlusCircle, Building, Phone, Trash2, CreditCard } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { PaymentMethod, MobileMoneyProvider, PaymentMethodType } from '@/lib/data';
-
-const initialPaymentMethods: PaymentMethod[] = [
-    { id: 'pm_1', type: 'mobile_money', details: { provider: 'mtn', phoneNumber: '024 123 4567', phoneName: 'User Name' } },
-    { id: 'pm_2', type: 'bank', details: { bankName: 'Fidelity Bank', accountNumber: '**** **** **** 1234', accountName: 'User Name' } },
-];
+import { PaymentMethod, MobileMoneyProvider, PaymentMethodType, savedPaymentMethods } from '@/lib/data';
 
 export function PaymentMethods() {
   const [isAddPaymentDialogOpen, setIsAddPaymentDialogOpen] = useState(false);
-  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>(initialPaymentMethods);
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>(savedPaymentMethods);
   const [newPaymentType, setNewPaymentType] = useState<PaymentMethodType>('mobile_money');
   const [momoProvider, setMomoProvider] = useState<MobileMoneyProvider>('mtn');
   const [momoNumber, setMomoNumber] = useState('');

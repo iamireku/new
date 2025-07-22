@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useMemo, useEffect, use } from 'react';
+import { useEffect, use } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import {
   Card,
@@ -50,7 +50,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import { add, isAfter, format, differenceInDays } from 'date-fns';
+import { format, differenceInDays } from 'date-fns';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Deal } from '@/lib/data';
 import Image from 'next/image';
@@ -172,8 +172,9 @@ const AcceptanceCriteria = ({ deal, actions }: { deal: Deal, actions: ReturnType
     const isDealInactive = deal.status === 'completed' || deal.status === 'cancelled';
     const canAmendDeal = deal.status === 'inHolding';
   
-    const [rejectionReason, setRejectionReason] = useState('');
-    const [editRequest, setEditRequest] = useState('');
+    const { toast } = useToast();
+    const [rejectionReason, setRejectionReason] = React.useState('');
+    const [editRequest, setEditRequest] = React.useState('');
   
     return (
       <Card>
@@ -311,17 +312,29 @@ const DealTimeline = ({ deal }: { deal: Deal }) => (
 
 const ReminderSettings = ({ deal }: { deal: Deal }) => {
     const { toast } = useToast();
-    const [remindersEnabled, setRemindersEnabled] = useState(false);
-    const [reminderFigure, setReminderFigure] = useState(1);
-    const [reminderPeriod, setReminderPeriod] = useState<Period>('days');
+    const [remindersEnabled, setRemindersEnabled] = React.useState(false);
+    const [reminderFigure, setReminderFigure] = React.useState(1);
+    const [reminderPeriod, setReminderPeriod] = React.useState<Period>('days');
     const isDealInactive = deal.status === 'completed' || deal.status === 'cancelled';
   
-    const isReminderInPast = useMemo(() => {
+    const isReminderInPast = React.useMemo(() => {
       if (!deal.deadline || !remindersEnabled || reminderFigure <= 0) return false;
       const now = new Date();
       const deadlineDate = new Date(deal.deadline);
-      let reminderDate = add(deadlineDate, { [reminderPeriod]: -reminderFigure });
-      return isAfter(now, reminderDate);
+      let reminderDate = new Date(deadlineDate);
+      
+      switch (reminderPeriod) {
+        case 'hours':
+          reminderDate.setHours(reminderDate.getHours() - reminderFigure);
+          break;
+        case 'days':
+          reminderDate.setDate(reminderDate.getDate() - reminderFigure);
+          break;
+        case 'weeks':
+          reminderDate.setDate(reminderDate.getDate() - reminderFigure * 7);
+          break;
+      }
+      return now > reminderDate;
     }, [reminderFigure, reminderPeriod, remindersEnabled, deal.deadline]);
   
     const handleRemindersToggle = (enabled: boolean) => {
