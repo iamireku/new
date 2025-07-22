@@ -1,7 +1,7 @@
 // /src/components/dashboard/referral-ranks.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -14,25 +14,15 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import type { LeaderboardUser, CurrentUser } from '@/lib/data';
-import { getLeaderboard, getCurrentUser } from '@/lib/services/user.service';
 
-export function ReferralRanks() {
+interface ReferralRanksProps {
+    leaderboard: LeaderboardUser[];
+    currentUser: CurrentUser;
+}
+
+export function ReferralRanks({ leaderboard, currentUser }: ReferralRanksProps) {
     const { toast } = useToast();
     const [copied, setCopied] = useState(false);
-    const [leaderboard, setLeaderboard] = useState<LeaderboardUser[]>([]);
-    const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
-
-    useEffect(() => {
-        async function fetchData() {
-            const [leaderboardData, currentUserData] = await Promise.all([
-                getLeaderboard(),
-                getCurrentUser()
-            ]);
-            setLeaderboard(leaderboardData);
-            setCurrentUser(currentUserData);
-        }
-        fetchData();
-    }, []);
     
     if (!currentUser) {
         return null; // Or a loading state

@@ -1,7 +1,7 @@
 // /src/components/dashboard/recent-transactions.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -14,22 +14,16 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowUpRight, ArrowDownLeft, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { getRecentTransactions } from '@/lib/services/wallet.service';
 import type { Transaction } from '@/lib/data';
 
 const TRANSACTIONS_PER_PAGE = 5;
 
-export function RecentTransactions() {
-    const [transactions, setTransactions] = useState<Transaction[]>([]);
-    const [visibleTransactionsCount, setVisibleTransactionsCount] = useState(TRANSACTIONS_PER_PAGE);
+interface RecentTransactionsProps {
+    transactions: Transaction[];
+}
 
-    useEffect(() => {
-        async function fetchData() {
-            const data = await getRecentTransactions();
-            setTransactions(data);
-        }
-        fetchData();
-    }, []);
+export function RecentTransactions({ transactions }: RecentTransactionsProps) {
+    const [visibleTransactionsCount, setVisibleTransactionsCount] = useState(TRANSACTIONS_PER_PAGE);
 
     const getStatusText = (status: string) => {
         if (status === 'inHolding') return 'On Hold';

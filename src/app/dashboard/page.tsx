@@ -12,28 +12,44 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import type { PaymentMethod } from '@/lib/data';
-import { getSavedPaymentMethods } from '@/lib/services/user.service';
+import type { PaymentMethod, Deal, Transaction, LeaderboardUser, CurrentUser } from '@/lib/data';
+import { getSavedPaymentMethods, getCurrentUser, getLeaderboard } from '@/lib/services/user.service';
+import { getDeals } from '@/lib/services/deals.service';
+import { getRecentTransactions } from '@/lib/services/wallet.service';
 import { SummaryCards } from '@/components/dashboard/summary-cards';
 import { ReferralRanks } from '@/components/dashboard/referral-ranks';
 import { AttentionDeals } from '@/components/dashboard/attention-deals';
 import { RecentTransactions } from '@/components/dashboard/recent-transactions';
 
+interface DashboardData {
+    currentUser: CurrentUser;
+    deals: Deal[];
+    transactions: Transaction[];
+    leaderboard: LeaderboardUser[];
+    paymentMethods: PaymentMethod[];
+}
+
 export default function DashboardPage() {
     const { toast } = useToast();
     const [isAddFundsDialogOpen, setIsAddFundsDialogOpen] = useState(false);
-    const [savedPaymentMethods, setSavedPaymentMethods] = useState<PaymentMethod[]>([]);
+    const [data, setData] = useState<DashboardData | null>(null);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
 
     useEffect(() => {
-        async function fetchPaymentMethods() {
-            const methods = await getSavedPaymentMethods();
-            setSavedPaymentMethods(methods);
-            if (methods.length > 0) {
-                setSelectedPaymentMethod(methods[0].id);
+        async function fetchDashboardData() {
+            const [currentUser, deals, transactions, leaderboard, paymentMethods] = await Promise.all([
+                getCurrentUser(),
+                getDeals(),
+                getRecentTransactions(),
+                getLeaderboard(),
+                getSavedPaymentMethods(),
+            ]);
+            setData({ currentUser, deals, transactions, leaderboard, paymentMethods });
+            if (paymentMethods.length > 0) {
+                setSelectedPaymentMethod(paymentMethods[0].id);
             }
         }
-        fetchPaymentMethods();
+        fetchDashboardData();
     }, []);
 
     const handleAddFunds = () => {
@@ -43,6 +59,15 @@ export default function DashboardPage() {
           description: 'Your request has been received. You will be prompted to confirm the transaction.',
       });
     }
+    
+    if (!data) {
+        return <div>Loading dashboard...</div>; // Replace with a proper skeleton loader later
+    }
+
+    const { currentUser, deals, transactions, leaderboard, paymentMethods } = data;
+    const dealsNeedingAttention = deals.filter(
+        deal => deal.status === 'dispute' || deal.status === 'in_review'
+    );
 
   return (
     <div className="space-y-6">
@@ -76,9 +101,9 @@ export default function DashboardPage() {
                       </div>
                       <div className="space-y-2">
                           <Label>Select Payment Method</Label>
-                          {savedPaymentMethods.length > 0 ? (
+                          {paymentMethods.length > 0 ? (
                               <RadioGroup value={selectedPaymentMethod} onValueChange={setSelectedPaymentMethod} className="space-y-2">
-                                  {savedPaymentMethods.map(method => (
+                                  {paymentMethods.map(method => (
                                       <Label key={method.id} htmlFor={method.id} className={cn('flex items-center gap-4 rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground', selectedPaymentMethod === method.id && 'border-primary')}>
                                           <RadioGroupItem value={method.id} id={method.id}/>
                                           {method.type === 'bank' ? <Building className="h-6 w-6 text-muted-foreground" /> : <Phone className="h-6 w-6 text-muted-foreground" />}
@@ -105,7 +130,7 @@ export default function DashboardPage() {
                   </div>
                   <DialogFooter>
                       <Button variant="outline" onClick={() => setIsAddFundsDialogOpen(false)}>Cancel</Button>
-                      <Button onClick={handleAddFunds} disabled={savedPaymentMethods.length === 0}>Confirm Deposit</Button>
+                      <Button onClick={handleAddFunds} disabled={paymentMethods.length === 0}>Confirm Deposit</Button>
                   </DialogFooter>
               </DialogContent>
           </Dialog>
@@ -114,12 +139,12 @@ export default function DashboardPage() {
       
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <SummaryCards />
-        <ReferralRanks />
+        <ReferralRanks leaderboard={leaderboard} currentUser={currentUser} />
       </div>
       
-      <AttentionDeals />
+      <AttentionDeals deals={dealsNeedingAttention} />
 
-      <RecentTransactions />
+      <RecentTransactions transactions={transactions} />
     </div>
   );
 }

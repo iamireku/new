@@ -1,7 +1,6 @@
 // /src/components/dashboard/attention-deals.tsx
 'use client';
 
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Card,
@@ -13,23 +12,13 @@ import {
 import { AlertCircle, Handshake, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { getDeals } from '@/lib/services/deals.service';
 import type { Deal } from '@/lib/data';
 
-export function AttentionDeals() {
-    const [dealsNeedingAttention, setDealsNeedingAttention] = useState<Deal[]>([]);
+interface AttentionDealsProps {
+    deals: Deal[];
+}
 
-    useEffect(() => {
-        async function fetchData() {
-            const allDeals = await getDeals();
-            const filteredDeals = allDeals.filter(
-                deal => deal.status === 'dispute' || deal.status === 'in_review'
-            );
-            setDealsNeedingAttention(filteredDeals);
-        }
-        fetchData();
-    }, []);
-
+export function AttentionDeals({ deals }: AttentionDealsProps) {
     return (
         <Card>
             <CardHeader>
@@ -39,9 +28,9 @@ export function AttentionDeals() {
                 </CardDescription>
             </CardHeader>
             <CardContent>
-                {dealsNeedingAttention.length > 0 ? (
+                {deals.length > 0 ? (
                     <div className="space-y-4">
-                        {dealsNeedingAttention.map((deal) => (
+                        {deals.map((deal) => (
                             <div key={deal.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 border rounded-lg">
                                 <div className="flex items-center gap-4">
                                      <div className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-full",
