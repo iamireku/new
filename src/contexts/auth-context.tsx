@@ -10,6 +10,7 @@ import {
     signOut as firebaseSignOut, 
     signInWithPopup,
     GoogleAuthProvider,
+    updateProfile,
     User 
 } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
@@ -18,7 +19,7 @@ import { useRouter } from 'next/navigation';
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  signUp: (email: string, pass: string) => Promise<any>;
+  signUp: (email: string, pass: string, fullName: string) => Promise<any>;
   signIn: (email: string, pass: string) => Promise<any>;
   signOut: () => Promise<any>;
   signInWithGoogle: () => Promise<any>;
@@ -39,8 +40,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => unsubscribe();
   }, []);
 
-  const signUp = (email: string, pass: string) => {
-    return createUserWithEmailAndPassword(auth, email, pass);
+  const signUp = async (email: string, pass: string, fullName: string) => {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+    if (userCredential.user) {
+      await updateProfile(userCredential.user, {
+        displayName: fullName
+      });
+      // Manually update the user state because onAuthStateChanged might not fire immediately
+      setUser({ ...userCredential.user, displayName: fullName });
+    }
+    return userCredential;
   };
   
   const signIn = (email: string, pass: string) => {

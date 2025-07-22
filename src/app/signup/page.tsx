@@ -37,6 +37,7 @@ export default function SignupPage() {
   const router = useRouter();
   const { toast } = useToast();
   const { signUp, signInWithGoogle } = useAuth();
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -47,7 +48,7 @@ export default function SignupPage() {
     setIsLoading(true);
 
     try {
-      await signUp(email, password);
+      await signUp(email, password, fullName);
       toast({
         title: "Account Created!",
         description: "You're being redirected to the onboarding process."
@@ -98,7 +99,7 @@ export default function SignupPage() {
           <form onSubmit={handleSignup} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="full-name">Full Name</Label>
-              <Input id="full-name" placeholder="John Doe" required disabled={isLoading || isGoogleLoading} />
+              <Input id="full-name" placeholder="John Doe" required value={fullName} onChange={e => setFullName(e.target.value)} disabled={isLoading || isGoogleLoading} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>

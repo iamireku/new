@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { industries, PaymentMethodType, MobileMoneyProvider } from '@/lib/data';
+import { useAuth } from '@/contexts/auth-context';
 
 
 const totalSteps = 5;
@@ -32,6 +33,7 @@ export default function OnboardingPage() {
   const [bankAccountName, setBankAccountName] = useState('');
   const [isFetchingBankName, setIsFetchingBankName] = useState(false);
   const router = useRouter();
+  const { user } = useAuth();
 
   const nextStep = () => setStep((prev) => (prev < totalSteps ? prev + 1 : prev));
   const prevStep = () => setStep((prev) => (prev > 1 ? prev - 1 : prev));
@@ -98,7 +100,7 @@ export default function OnboardingPage() {
             <form className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="full-name">Full Name</Label>
-                <Input id="full-name" defaultValue="User" />
+                <Input id="full-name" defaultValue={user?.displayName || ''} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="dob">Date of Birth</Label>

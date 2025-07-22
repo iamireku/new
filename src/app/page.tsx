@@ -1,7 +1,5 @@
-// /src/app/page.tsx
-'use client';
 
-import * as React from 'react';
+// /src/app/page.tsx
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush } from 'lucide-react';
@@ -9,7 +7,6 @@ import Link from 'next/link';
 import { AppLogo } from '@/components/AppLogo';
 import Image from 'next/image';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import Autoplay from "embla-carousel-autoplay"
 
 
 const ProcessStep = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => (
@@ -37,10 +34,6 @@ const BenefitCard = ({ icon, title, description }: { icon: React.ReactNode, titl
 )
 
 export default function LandingPage() {
-  const plugin = React.useRef(
-    Autoplay({ delay: 4000, stopOnInteraction: true })
-  )
-
   return (
     <div className="flex min-h-screen flex-col bg-secondary">
       <header className="container mx-auto flex h-20 items-center justify-between px-4 md:px-6 bg-secondary">
@@ -76,27 +69,21 @@ export default function LandingPage() {
                         </div>
                     </div>
                     <div>
-                        <Carousel 
-                            className="w-full max-w-xl mx-auto" 
-                            opts={{ loop: true }}
-                            plugins={[plugin.current]}
-                            onMouseEnter={plugin.current.stop}
-                            onMouseLeave={plugin.current.reset}
-                        >
+                        <Carousel className="w-full max-w-xl mx-auto" opts={{ loop: true }}>
                             <CarouselContent>
                                 <CarouselItem>
                                     <Image
                                         src="/hero.png"
                                         width={600}
                                         height={400}
-                                        alt="People shaking hands over a deal"
+                                        alt="A fashion desighner at her shop"
                                         className="rounded-lg shadow-lg"
-                                        data-ai-hint="shaking hands deal"
+                                        data-ai-hint="doing transaction on phone"
                                     />
                                 </CarouselItem>
                                 <CarouselItem>
                                     <Image
-                                        src="https://placehold.co/600x400.png"
+                                        src="/hero2.png"
                                         width={600}
                                         height={400}
                                         alt="Freelancer working on a laptop"
@@ -106,7 +93,7 @@ export default function LandingPage() {
                                 </CarouselItem>
                                 <CarouselItem>
                                      <Image
-                                        src="https://placehold.co/600x400.png"
+                                        src="/hero3.png"
                                         width={600}
                                         height={400}
                                         alt="Online shopping transaction"
