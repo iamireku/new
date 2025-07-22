@@ -91,16 +91,6 @@ export default function LandingPage() {
                                         data-ai-hint="freelancer laptop"
                                     />
                                 </CarouselItem>
-                                <CarouselItem>
-                                     <Image
-                                        src="/hero3.png"
-                                        width={600}
-                                        height={400}
-                                        alt="Online shopping transaction"
-                                        className="rounded-lg shadow-lg"
-                                        data-ai-hint="online shopping"
-                                    />
-                                </CarouselItem>
                             </CarouselContent>
                             <CarouselPrevious className="left-4" />
                             <CarouselNext className="right-4" />

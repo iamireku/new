@@ -16,7 +16,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { Transaction } from '@/lib/data';
 
-const TRANSACTIONS_PER_PAGE = 5;
+const TRANSACTIONS_PER_PAGE = 3;
 
 interface RecentTransactionsProps {
     transactions: Transaction[];
