@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, use } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import {
   Card,
@@ -412,7 +412,8 @@ const DealMessages = ({ deal }: { deal: Deal }) => (
 
 // --- Main Page Component ---
 export default function DealDetailsPage({ params }: { params: { id: string } }) {
-  const actions = useDeal(params.id);
+  const unwrappedParams = React.use(params);
+  const actions = useDeal(unwrappedParams.id);
   const { deal } = actions;
 
   useEffect(() => {
@@ -437,7 +438,7 @@ export default function DealDetailsPage({ params }: { params: { id: string } }) 
 
   return (
     <div className="space-y-6">
-      <DealHeader deal={deal} params={params} />
+      <DealHeader deal={deal} params={unwrappedParams} />
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <DealImageCarousel deal={deal} />
