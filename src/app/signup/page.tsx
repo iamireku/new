@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { AppLogo } from '@/components/AppLogo';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
+import { useAuth } from '@/contexts/auth-context';
 
 function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -35,6 +36,7 @@ function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
 export default function SignupPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { signUp } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -44,27 +46,17 @@ export default function SignupPage() {
     setIsLoading(true);
 
     try {
-      // TODO: Replace with actual Firebase Authentication logic
-      console.log('Attempting to create user with:', { email, password });
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      console.log('User created successfully (simulated).');
-
+      await signUp(email, password);
       toast({
         title: "Account Created!",
         description: "You're being redirected to the onboarding process."
       });
-      
       router.push('/onboarding');
-
-    } catch (error) {
-      console.error('Signup failed (simulated):', error);
+    } catch (error: any) {
       toast({
         variant: 'destructive',
         title: 'Signup Failed',
-        description: 'Could not create your account. Please try again.',
+        description: error.message || 'Could not create your account. Please try again.',
       });
     } finally {
       setIsLoading(false);

@@ -21,6 +21,8 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { getDeals } from '@/lib/services/deals.service';
 import type { Deal } from '@/lib/data';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import { useAuth } from '@/contexts/auth-context';
 
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -29,13 +31,10 @@ const navItems = [
   { href: '/dashboard/profile', icon: User, label: 'Profile' },
 ];
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [deals, setDeals] = useState<Deal[]>([]);
+  const { signOut } = useAuth();
 
   useEffect(() => {
     async function fetchData() {
@@ -79,12 +78,10 @@ export default function DashboardLayout({
             {sidebarNav}
           </div>
           <div className="mt-auto p-4">
-             <Link href="/login">
-                <Button variant="ghost" className="w-full justify-start gap-2">
-                    <LogOut className="h-4 w-4" />
-                    Logout
-                </Button>
-            </Link>
+            <Button variant="ghost" className="w-full justify-start gap-2" onClick={signOut}>
+              <LogOut className="h-4 w-4" />
+              Logout
+            </Button>
           </div>
         </div>
       </div>
@@ -105,12 +102,10 @@ export default function DashboardLayout({
                  {sidebarNav}
                 </div>
                 <div className="mt-auto p-4 border-t">
-                    <Link href="/login">
-                        <Button variant="ghost" className="w-full justify-start gap-2">
-                            <LogOut className="h-4 w-4" />
-                            Logout
-                        </Button>
-                    </Link>
+                  <Button variant="ghost" className="w-full justify-start gap-2" onClick={signOut}>
+                    <LogOut className="h-4 w-4" />
+                    Logout
+                  </Button>
                 </div>
             </SheetContent>
           </Sheet>
@@ -122,5 +117,18 @@ export default function DashboardLayout({
         </main>
       </div>
     </div>
+  );
+}
+
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <ProtectedRoute>
+      <DashboardLayoutContent>{children}</DashboardLayoutContent>
+    </ProtectedRoute>
   );
 }

@@ -25,22 +25,24 @@ import React, { useState, useEffect } from 'react';
 import { Badge } from './ui/badge';
 import { getCurrentUser } from '@/lib/services/user.service';
 import type { CurrentUser } from '@/lib/data';
+import { useAuth } from '@/contexts/auth-context';
 
 export function UserNav() {
   const { theme, setTheme } = useTheme();
-  const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
+  const [currentUserData, setCurrentUserData] = useState<CurrentUser | null>(null);
+  const { user, signOut } = useAuth();
 
   useEffect(() => {
     async function fetchData() {
-      const user = await getCurrentUser();
-      setCurrentUser(user);
+      const userData = await getCurrentUser();
+      setCurrentUserData(userData);
     }
     fetchData();
   }, []);
 
 
-  const userName = currentUser?.name || 'User';
-  const userEmail = currentUser?.email || 'user@example.com';
+  const userName = user?.displayName || currentUserData?.name || 'User';
+  const userEmail = user?.email || 'user@example.com';
 
   return (
     <DropdownMenu>
@@ -57,7 +59,7 @@ export function UserNav() {
           <div className="flex flex-col space-y-1">
             <div className="flex items-center gap-2">
               <p className="text-sm font-medium leading-none">{userName}</p>
-              {currentUser?.plan === 'pro' && (
+              {currentUserData?.plan === 'pro' && (
                 <Badge variant="secondary" className="bg-yellow-200 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200">
                   <Crown className="mr-1 h-3 w-3" />
                   PRO
@@ -107,11 +109,9 @@ export function UserNav() {
           </DropdownMenuSub>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href="/login">
-            <LogOut className="mr-2 h-4 w-4" />
-            <span>Log out</span>
-          </Link>
+        <DropdownMenuItem onClick={signOut}>
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>Log out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
