@@ -6,6 +6,7 @@ import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Pai
 import Link from 'next/link';
 import { AppLogo } from '@/components/AppLogo';
 import Image from 'next/image';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
 
 const ProcessStep = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => (
@@ -68,13 +69,42 @@ export default function LandingPage() {
                         </div>
                     </div>
                     <div>
-                        <Image
-                            src="/my-hero-image.png"
-                            width={600}
-                            height={400}
-                            alt="People shaking hands over a deal"
-                            className="rounded-lg shadow-lg"
-                        />
+                        <Carousel className="w-full max-w-xl mx-auto" opts={{ loop: true }}>
+                            <CarouselContent>
+                                <CarouselItem>
+                                    <Image
+                                        src="/hero.png"
+                                        width={600}
+                                        height={400}
+                                        alt="People shaking hands over a deal"
+                                        className="rounded-lg shadow-lg"
+                                        data-ai-hint="shaking hands deal"
+                                    />
+                                </CarouselItem>
+                                <CarouselItem>
+                                    <Image
+                                        src="https://placehold.co/600x400.png"
+                                        width={600}
+                                        height={400}
+                                        alt="Freelancer working on a laptop"
+                                        className="rounded-lg shadow-lg"
+                                        data-ai-hint="freelancer laptop"
+                                    />
+                                </CarouselItem>
+                                <CarouselItem>
+                                     <Image
+                                        src="https://placehold.co/600x400.png"
+                                        width={600}
+                                        height={400}
+                                        alt="Online shopping transaction"
+                                        className="rounded-lg shadow-lg"
+                                        data-ai-hint="online shopping"
+                                    />
+                                </CarouselItem>
+                            </CarouselContent>
+                            <CarouselPrevious className="left-4" />
+                            <CarouselNext className="right-4" />
+                        </Carousel>
                     </div>
                 </div>
             </div>
@@ -170,5 +200,3 @@ export default function LandingPage() {
     </div>
   );
 }
-
-    
