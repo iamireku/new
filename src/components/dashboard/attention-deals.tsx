@@ -1,5 +1,4 @@
 // /src/components/dashboard/attention-deals.tsx
-// /src/components/dashboard/attention-deals.tsx
 'use client';
 
 import Link from 'next/link';

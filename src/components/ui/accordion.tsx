@@ -1,5 +1,4 @@
 // /src/components/ui/accordion.tsx
-// /src/components/ui/accordion.tsx
 "use client"
 
 import * as React from "react"
