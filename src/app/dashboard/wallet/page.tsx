@@ -1,4 +1,4 @@
-// /src/app/dashboard/wallet/page.tsx
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -12,7 +12,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { PlusCircle, ArrowUpRight, ArrowDownLeft, Building, Phone, ChevronDown } from 'lucide-react';
+import { PlusCircle, ArrowUpRight, ArrowDownLeft, Building, Phone, ChevronDown, Zap, Clock } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -31,6 +31,7 @@ export default function WalletPage() {
     const [isWithdrawDialogOpen, setIsWithdrawDialogOpen] = useState(false);
     const [isAddFundsDialogOpen, setIsAddFundsDialogOpen] = useState(false);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
+    const [withdrawalType, setWithdrawalType] = useState('standard');
     const { toast } = useToast();
 
     useEffect(() => {
@@ -134,7 +135,7 @@ export default function WalletPage() {
                     <DialogHeader>
                         <DialogTitle>Withdraw Funds</DialogTitle>
                         <DialogDescription>
-                          Select a payment method and add amount to receive your funds
+                          Select a payout method, speed, and amount to receive your funds.
                         </DialogDescription>
                     </DialogHeader>
                     <div className="py-4 space-y-4">
@@ -142,8 +143,25 @@ export default function WalletPage() {
                             <Label htmlFor="amount-withdraw">Amount (GHS)</Label>
                             <Input id="amount-withdraw" type="number" placeholder="500.00" />
                         </div>
+                         <div className="space-y-2">
+                            <Label>Speed</Label>
+                             <RadioGroup value={withdrawalType} onValueChange={setWithdrawalType} className="grid grid-cols-2 gap-4">
+                                <Label htmlFor="standard-withdrawal" className={cn('flex flex-col items-center justify-center rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground', withdrawalType === 'standard' && 'border-primary')}>
+                                    <RadioGroupItem value="standard" id="standard-withdrawal" className="sr-only" />
+                                    <Clock className="h-6 w-6 mb-2" />
+                                    <span className="font-semibold">Standard</span>
+                                    <span className="text-xs text-muted-foreground">1-2 days (Free)</span>
+                                </Label>
+                                <Label htmlFor="instant-withdrawal" className={cn('flex flex-col items-center justify-center rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground', withdrawalType === 'instant' && 'border-primary')}>
+                                    <RadioGroupItem value="instant" id="instant-withdrawal" className="sr-only" />
+                                    <Zap className="h-6 w-6 mb-2" />
+                                    <span className="font-semibold">Instant</span>
+                                    <span className="text-xs text-muted-foreground">~5 mins (GHS 2.00)</span>
+                                </Label>
+                             </RadioGroup>
+                        </div>
                         <div className="space-y-2">
-                             <Label>Select Payment Method</Label>
+                             <Label>Select Payout Method</Label>
                              {paymentMethods.length > 0 ? (
                                 <RadioGroup value={selectedPaymentMethod} onValueChange={setSelectedPaymentMethod} className="space-y-2">
                                     {paymentMethods.map(method => (

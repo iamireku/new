@@ -1,4 +1,4 @@
-// /src/components/UserNav.tsx
+
 'use client';
 
 import Link from 'next/link';
@@ -20,12 +20,27 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { LogOut, User, Settings, CreditCard, Sun, Moon, Monitor } from 'lucide-react';
-import React from 'react';
+import { LogOut, User, Settings, CreditCard, Sun, Moon, Monitor, Crown } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Badge } from './ui/badge';
+import { getCurrentUser } from '@/lib/services/user.service';
+import type { CurrentUser } from '@/lib/data';
 
 export function UserNav() {
   const { theme, setTheme } = useTheme();
-  const userName = 'User';
+  const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      const user = await getCurrentUser();
+      setCurrentUser(user);
+    }
+    fetchData();
+  }, []);
+
+
+  const userName = currentUser?.name || 'User';
+  const userEmail = currentUser?.email || 'user@example.com';
 
   return (
     <DropdownMenu>
@@ -40,8 +55,16 @@ export function UserNav() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{userName}</p>
-            <p className="text-xs leading-none text-muted-foreground">user@example.com</p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm font-medium leading-none">{userName}</p>
+              {currentUser?.plan === 'pro' && (
+                <Badge variant="secondary" className="bg-yellow-200 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-200">
+                  <Crown className="mr-1 h-3 w-3" />
+                  PRO
+                </Badge>
+              )}
+            </div>
+            <p className="text-xs leading-none text-muted-foreground">{userEmail}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

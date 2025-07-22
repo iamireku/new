@@ -77,8 +77,10 @@ export interface LeaderboardUser {
 
 export interface CurrentUser {
     name: string;
+    email: string;
     referrals: number;
     referralCode: string;
+    plan: 'free' | 'pro';
 }
 
 export type PaymentMethodType = 'bank' | 'mobile_money';
@@ -265,7 +267,7 @@ export const leaderboard: LeaderboardUser[] = [
     { name: 'Michael Chen', referrals: 12, avatar: 'https://placehold.co/40x40.png', hint: 'man smiling', rank: 6 },
 ];
 
-export const currentUser: CurrentUser = { name: 'You', referrals: 17, referralCode: 'BETA-USER-123' };
+export const currentUser: CurrentUser = { name: 'You', email: 'user@example.com', referrals: 17, referralCode: 'BETA-USER-123', plan: 'free' };
 
 export const savedPaymentMethods: PaymentMethod[] = [
     { id: 'pm_1', type: 'mobile_money', details: { provider: 'mtn', phoneNumber: '024 123 4567', phoneName: 'User Name' } },
@@ -301,5 +303,3 @@ export const industries = [
     "Transportation & Logistics",
     "Other",
 ];
-
-    

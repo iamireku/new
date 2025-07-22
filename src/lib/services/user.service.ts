@@ -20,6 +20,7 @@ export async function getSavedPaymentMethods(): Promise<PaymentMethod[]> {
 // This function simulates fetching the current user's data.
 // In the future, this will make an API call.
 export async function getCurrentUser(): Promise<CurrentUser> {
+  // Deep copy to simulate immutable data from an API
   return JSON.parse(JSON.stringify(currentUser));
 }
 
@@ -28,4 +29,3 @@ export async function getCurrentUser(): Promise<CurrentUser> {
 export async function getLeaderboard(): Promise<LeaderboardUser[]> {
   return JSON.parse(JSON.stringify(leaderboard));
 }
-
