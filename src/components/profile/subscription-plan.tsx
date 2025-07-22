@@ -11,6 +11,7 @@ import type { CurrentUser } from '@/lib/data';
 import { Switch } from '../ui/switch';
 import { Label } from '../ui/label';
 import { useToast } from '@/hooks/use-toast';
+import { Badge } from '@/components/ui/badge';
 
 const proFeatures = [
     'Lower transaction fees',
