@@ -51,20 +51,23 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
 
   const sidebarNav = (
     <nav className="flex flex-col gap-2 px-4">
-      {navItems.map((item) => (
-        <Link key={item.href} href={item.href}>
-          <Button
-            variant={pathname.startsWith(item.href) ? 'default' : 'ghost'}
-            className="w-full justify-start gap-2"
-          >
-            <item.icon className="h-4 w-4" />
-            {item.label}
-            {item.label === 'Deals' && dealsNeedingAttentionCount > 0 && (
-                <Badge className="ml-auto">{dealsNeedingAttentionCount}</Badge>
-            )}
-          </Button>
-        </Link>
-      ))}
+      {navItems.map((item) => {
+        const isActive = item.href === '/dashboard' ? pathname === item.href : pathname.startsWith(item.href);
+        return (
+          <Link key={item.href} href={item.href}>
+            <Button
+              variant={isActive ? 'default' : 'ghost'}
+              className="w-full justify-start gap-2"
+            >
+              <item.icon className="h-4 w-4" />
+              {item.label}
+              {item.label === 'Deals' && dealsNeedingAttentionCount > 0 && (
+                  <Badge className="ml-auto">{dealsNeedingAttentionCount}</Badge>
+              )}
+            </Button>
+          </Link>
+        )
+      })}
     </nav>
   );
 
