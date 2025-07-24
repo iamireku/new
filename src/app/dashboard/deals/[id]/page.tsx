@@ -301,7 +301,7 @@ const DealTimeline = ({ deal }: { deal: Deal }) => (
                     </div>
                     <div>
                     <p className="text-sm font-medium">{item.event}</p>
-                    <p className="text-xs text-muted-foreground">{item.date}</p>
+                    <p className="text-xs text-muted-foreground">{format(new Date(item.date), "PPP 'at' h:mm a")}</p>
                     </div>
                 </li>
                 )
