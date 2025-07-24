@@ -1,5 +1,6 @@
-
 // /src/app/page.tsx
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush } from 'lucide-react';
@@ -7,6 +8,8 @@ import Link from 'next/link';
 import { AppLogo } from '@/components/AppLogo';
 import Image from 'next/image';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import Autoplay from "embla-carousel-autoplay"
+import React from 'react';
 
 
 const ProcessStep = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => (
@@ -34,6 +37,9 @@ const BenefitCard = ({ icon, title, description }: { icon: React.ReactNode, titl
 )
 
 export default function LandingPage() {
+    const plugin = React.useRef(
+        Autoplay({ delay: 4000, stopOnInteraction: true })
+    )
   return (
     <div className="flex min-h-screen flex-col bg-secondary">
       <header className="container mx-auto flex h-20 items-center justify-between px-4 md:px-6 bg-secondary">
@@ -69,7 +75,13 @@ export default function LandingPage() {
                         </div>
                     </div>
                     <div>
-                        <Carousel className="w-full max-w-xl mx-auto" opts={{ loop: true }}>
+                        <Carousel 
+                            className="w-full max-w-xl mx-auto" 
+                            opts={{ loop: true }}
+                            plugins={[plugin.current]}
+                            onMouseEnter={plugin.current.stop}
+                            onMouseLeave={plugin.current.reset}
+                        >
                             <CarouselContent>
                                 <CarouselItem>
                                     <Image
@@ -89,6 +101,16 @@ export default function LandingPage() {
                                         alt="Freelancer working on a laptop"
                                         className="rounded-lg shadow-lg"
                                         data-ai-hint="freelancer laptop"
+                                    />
+                                </CarouselItem>
+                                <CarouselItem>
+                                    <Image
+                                        src="https://placehold.co/600x400.png"
+                                        width={600}
+                                        height={400}
+                                        alt="A person receiving a package"
+                                        className="rounded-lg shadow-lg"
+                                        data-ai-hint="delivery package"
                                     />
                                 </CarouselItem>
                             </CarouselContent>
@@ -178,10 +200,10 @@ export default function LandingPage() {
             <span className="text-muted-foreground">Betweena &copy; {new Date().getFullYear()}</span>
           </div>
           <div className="mt-4 flex gap-4 md:mt-0">
-            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">
+            <Link href="/terms-of-service" className="text-sm text-muted-foreground hover:text-foreground">
               Terms of Service
             </Link>
-            <Link href="#" className="text-sm text-muted-foreground hover:text-foreground">
+            <Link href="/privacy-policy" className="text-sm text-muted-foreground hover:text-foreground">
               Privacy Policy
             </Link>
           </div>
