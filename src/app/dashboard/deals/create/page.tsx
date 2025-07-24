@@ -121,7 +121,7 @@ export default function CreateDealPage() {
         role: data.role,
         imageUrls: data.images || [],
         deadline: data.deadline ? formatISO(data.deadline) : formatISO(new Date()),
-        acceptanceCriteria: (data.acceptanceCriteria || []).map(c => ({...c, id: Date.now()})),
+        acceptanceCriteria: (data.acceptanceCriteria || []).map(c => ({...c, id: Date.now() + Math.random()})),
         location: data.location || undefined,
     });
 
@@ -217,7 +217,7 @@ export default function CreateDealPage() {
   return (
     <div className="flex w-full justify-center">
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(handleFinish)} className='w-full max-w-2xl'>
+      <form onSubmit={(e) => e.preventDefault()} className='w-full max-w-2xl'>
       <Card>
         <CardHeader>
           <Progress value={progress} className="mb-4" />
@@ -654,7 +654,7 @@ export default function CreateDealPage() {
           )}
 
           {step === totalSteps && (
-            <Button type="submit" className="w-full">
+            <Button type="button" className="w-full" onClick={form.handleSubmit(handleFinish)}>
               <CheckCircle className="mr-2" />
               Confirm and Send
             </Button>

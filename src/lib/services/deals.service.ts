@@ -34,7 +34,7 @@ export async function createDeal(newDealData: {
   role: DealRole;
   imageUrls: string[];
   deadline: string;
-  acceptanceCriteria: AcceptanceCriterion[];
+  acceptanceCriteria: Omit<AcceptanceCriterion, 'completed'>[];
   location?: string;
 }): Promise<Deal> {
   const newDeal: Deal = {
@@ -45,7 +45,7 @@ export async function createDeal(newDealData: {
     deadline: newDealData.deadline,
     amount: newDealData.amount,
     status: 'pending',
-    role: newDealData.role === 'buyer' ? 'seller' : 'buyer',
+    role: newDealData.role === 'buyer' ? 'seller' : 'buyer', // The role of the user creating the deal vs the role in the deal object
     acceptanceCriteria: newDealData.acceptanceCriteria.map(c => ({ ...c, completed: false })),
     timeline: [
       { 
