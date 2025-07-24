@@ -1,5 +1,4 @@
 // /src/components/profile/payment-methods.tsx
-// /src/components/profile/payment-methods.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -20,6 +19,7 @@ import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import type { PaymentMethod, MobileMoneyProvider, PaymentMethodType } from '@/lib/data';
 import { getSavedPaymentMethods } from '@/lib/services/user.service';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
 export function PaymentMethods() {
   const [isAddPaymentDialogOpen, setIsAddPaymentDialogOpen] = useState(false);
@@ -29,6 +29,7 @@ export function PaymentMethods() {
   const [momoNumber, setMomoNumber] = useState('');
   const [momoName, setMomoName] = useState('');
   const [isFetchingName, setIsFetchingName] = useState(false);
+  const [bankName, setBankName] = useState('');
   const [bankAccountNumber, setBankAccountNumber] = useState('');
   const [bankAccountName, setBankAccountName] = useState('');
   const [isFetchingBankName, setIsFetchingBankName] = useState(false);
@@ -43,13 +44,63 @@ export function PaymentMethods() {
     fetchPaymentMethods();
   }, []);
 
+  const resetForm = () => {
+    setNewPaymentType('mobile_money');
+    setMomoProvider('mtn');
+    setMomoNumber('');
+    setMomoName('');
+    setBankName('');
+    setBankAccountNumber('');
+    setBankAccountName('');
+  }
+
   const handleAddPaymentMethod = () => {
-      // Logic to save payment method would go here
-      setIsAddPaymentDialogOpen(false);
-      toast({
-          title: 'Payment Method Added',
-          description: 'Your new payment method has been saved successfully.'
-      });
+      let newMethod: PaymentMethod | null = null;
+      if (newPaymentType === 'mobile_money' && momoNumber && momoName) {
+        newMethod = {
+          id: `pm_${Date.now()}`,
+          type: 'mobile_money',
+          details: {
+            provider: momoProvider,
+            phoneNumber: momoNumber,
+            phoneName: momoName,
+          }
+        };
+      } else if (newPaymentType === 'bank' && bankName && bankAccountNumber && bankAccountName) {
+        newMethod = {
+          id: `pm_${Date.now()}`,
+          type: 'bank',
+          details: {
+            bankName: bankName,
+            accountNumber: bankAccountNumber,
+            accountName: bankAccountName,
+          }
+        };
+      }
+      
+      if (newMethod) {
+          setPaymentMethods(prev => [...prev, newMethod!]);
+          setIsAddPaymentDialogOpen(false);
+          toast({
+              title: 'Payment Method Added',
+              description: 'Your new payment method has been saved successfully.'
+          });
+          resetForm();
+      } else {
+          toast({
+              variant: 'destructive',
+              title: 'Incomplete Details',
+              description: 'Please fill out all fields for the selected payment method.'
+          });
+      }
+  }
+
+  const handleDeleteMethod = (id: string) => {
+    setPaymentMethods(prev => prev.filter(method => method.id !== id));
+    toast({
+        title: 'Payment Method Removed',
+        variant: 'destructive',
+    });
   }
   
   const handleFetchName = () => {
@@ -133,7 +184,8 @@ export function PaymentMethods() {
                     <Input
                       id="momo-name"
                       value={isFetchingName ? 'Verifying...' : momoName}
-                      disabled
+                      readOnly
+                      placeholder="Name will appear here"
                     />
                   </div>
                 </div>
@@ -142,7 +194,7 @@ export function PaymentMethods() {
                 <div className="space-y-4 p-4 border rounded-md">
                   <div className="space-y-2">
                     <Label htmlFor="bank-name">Bank</Label>
-                    <Input id="bank-name" placeholder="Fidelity Bank" />
+                    <Input id="bank-name" placeholder="Fidelity Bank" value={bankName} onChange={(e) => setBankName(e.target.value)} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="account-number">Account Number</Label>
@@ -159,7 +211,8 @@ export function PaymentMethods() {
                     <Input
                       id="account-name"
                       value={isFetchingBankName ? 'Verifying...' : bankAccountName}
-                      disabled
+                      readOnly
+                      placeholder="Name will appear here"
                     />
                   </div>
                 </div>
@@ -187,9 +240,25 @@ export function PaymentMethods() {
                   </p>
                 </div>
               </div>
-              <Button variant="ghost" size="icon">
-                <Trash2 className="h-4 w-4 text-destructive" />
-              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                        <Trash2 className="h-4 w-4 text-destructive" />
+                    </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            This will permanently remove this payment method. This action cannot be undone.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => handleDeleteMethod(method.id)}>Delete</AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
             </div>
           ))}
           {paymentMethods.length === 0 && (
