@@ -11,6 +11,7 @@ import { AppLogo } from '@/components/AppLogo';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 import { useAuth } from '@/contexts/auth-context';
+import { Checkbox } from '@/components/ui/checkbox';
 
 function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -40,11 +41,20 @@ export default function SignupPage() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!agreedToTerms) {
+      toast({
+        variant: 'destructive',
+        title: 'Agreement Required',
+        description: 'You must agree to the terms and conditions.',
+      });
+      return;
+    }
     setIsLoading(true);
 
     try {
@@ -66,6 +76,14 @@ export default function SignupPage() {
   };
 
   const handleGoogleSignIn = async () => {
+    if (!agreedToTerms) {
+      toast({
+        variant: 'destructive',
+        title: 'Agreement Required',
+        description: 'You must agree to the terms and conditions.',
+      });
+      return;
+    }
     setIsGoogleLoading(true);
     try {
       await signInWithGoogle();
@@ -84,6 +102,8 @@ export default function SignupPage() {
         setIsGoogleLoading(false);
     }
   }
+  
+  const isButtonDisabled = isLoading || isGoogleLoading || !agreedToTerms;
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center bg-secondary">
@@ -113,7 +133,25 @@ export default function SignupPage() {
               <Label htmlFor="referral-code">Referral Code (If you have one)</Label>
               <Input id="referral-code" placeholder="Enter referral code" disabled={isLoading || isGoogleLoading} />
             </div>
-            <Button type="submit" className="w-full" disabled={isLoading || isGoogleLoading}>
+            <div className="flex items-start space-x-2 pt-2">
+              <Checkbox id="terms" checked={agreedToTerms} onCheckedChange={(checked) => setAgreedToTerms(checked as boolean)} disabled={isLoading || isGoogleLoading} />
+              <div className="grid gap-1.5 leading-none">
+                <label
+                  htmlFor="terms"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  I agree to the 
+                  <Link href="/terms-of-service" className="font-semibold text-primary underline" target="_blank">
+                     Terms of Service
+                  </Link> and 
+                  <Link href="/privacy-policy" className="font-semibold text-primary underline" target="_blank">
+                     Privacy Policy
+                  </Link>
+                  .
+                </label>
+              </div>
+            </div>
+            <Button type="submit" className="w-full" disabled={isButtonDisabled}>
               {isLoading ? 'Creating Account...' : 'Create Account'}
             </Button>
           </form>
@@ -122,7 +160,7 @@ export default function SignupPage() {
             <span className="mx-4 flex-shrink text-xs uppercase text-muted-foreground">Or</span>
             <div className="flex-grow border-t border-muted" />
           </div>
-          <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={isLoading || isGoogleLoading}>
+          <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} disabled={isButtonDisabled}>
              {isGoogleLoading ? (
                 <>
                 <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-foreground" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
