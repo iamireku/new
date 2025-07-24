@@ -24,10 +24,6 @@ export default function TermsOfServicePage() {
           <p className="text-muted-foreground mb-8">Last Updated: {new Date().toLocaleDateString()}</p>
 
           <div className="prose prose-lg dark:prose-invert max-w-none">
-            <p className="border-l-4 border-destructive pl-4 font-semibold text-destructive">
-                Disclaimer: This is a template and not legal advice. You must consult with a legal professional to ensure these terms are compliant and suit your specific needs.
-            </p>
-
             <h2 id="introduction">1. Introduction</h2>
             <p>
               Welcome to Betweena ("we", "us", "our"). We provide a secure escrow platform for social commerce and freelancers. By creating an account or using our services, you agree to be bound by these Terms of Service.

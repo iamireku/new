@@ -24,10 +24,6 @@ export default function PrivacyPolicyPage() {
           <p className="text-muted-foreground mb-8">Last Updated: {new Date().toLocaleDateString()}</p>
 
           <div className="prose prose-lg dark:prose-invert max-w-none">
-            <p className="border-l-4 border-destructive pl-4 font-semibold text-destructive">
-                Disclaimer: This is a template and not legal advice. You must consult with a legal professional to ensure this policy is compliant and suits your specific needs.
-            </p>
-
             <h2 id="introduction">1. Introduction</h2>
             <p>
               This Privacy Policy describes how Betweena ("we", "us", "our") collects, uses, and shares information about you when you use our services. By using our platform, you agree to the collection and use of information in accordance with this policy.
