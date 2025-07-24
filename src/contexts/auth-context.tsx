@@ -1,5 +1,4 @@
 // /src/contexts/auth-context.tsx
-// /src/contexts/auth-context.tsx
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
