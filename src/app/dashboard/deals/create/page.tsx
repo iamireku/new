@@ -132,7 +132,8 @@ export default function CreateDealPage() {
     router.push('/dashboard/deals');
   };
   
-  const handleAddCriterion = () => {
+  const handleAddCriterion = (e?: React.MouseEvent<HTMLButtonElement>) => {
+    if (e) e.preventDefault();
     if (newCriterion.trim()) {
         append({ id: Date.now().toString(), text: newCriterion.trim() });
         setNewCriterion('');

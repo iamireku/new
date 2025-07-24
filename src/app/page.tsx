@@ -103,17 +103,7 @@ export default function LandingPage() {
                                         data-ai-hint="freelancer laptop"
                                     />
                                 </CarouselItem>
-                                <CarouselItem>
-                                    <Image
-                                        src="https://placehold.co/600x400.png"
-                                        width={600}
-                                        height={400}
-                                        alt="A person receiving a package"
-                                        className="rounded-lg shadow-lg"
-                                        data-ai-hint="delivery package"
-                                    />
-                                </CarouselItem>
-                            </CarouselContent>
+                              </CarouselContent>
                             <CarouselPrevious className="left-4" />
                             <CarouselNext className="right-4" />
                         </Carousel>
