@@ -1,7 +1,7 @@
 // /src/app/dashboard/deals/[id]/page.tsx
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import {
   Card,
@@ -410,30 +410,12 @@ const DealMessages = ({ deal }: { deal: Deal }) => (
     </Card>
 );
 
-// --- Main Page Component ---
-export default function DealDetailsPage({ params }: { params: { id: string } }) {
+function DealDetailsView({ deal, params }: { deal: Deal, params: { id: string }}) {
   const actions = useDeal(params.id);
-  const { deal } = actions;
 
   useEffect(() => {
-    if (deal) {
-      document.title = `${deal.title} - Deal Details`;
-    }
-  }, [deal]);
-
-  if (!deal) {
-    return (
-        <div className="flex items-center justify-center h-full">
-            <Card className="w-full max-w-md p-8 text-center">
-                <CardTitle className="text-2xl font-headline">Deal Not Found</CardTitle>
-                <CardDescription>The deal you are looking for does not exist or has been removed.</CardDescription>
-                <Button asChild className="mt-4">
-                    <Link href="/dashboard/deals">Back to Deals</Link>
-                </Button>
-            </Card>
-        </div>
-    );
-  }
+    document.title = `${deal.title} - Deal Details`;
+  }, [deal.title]);
 
   return (
     <div className="space-y-6">
@@ -452,4 +434,26 @@ export default function DealDetailsPage({ params }: { params: { id: string } }) 
       </div>
     </div>
   );
+}
+
+
+// --- Main Page Component ---
+export default function DealDetailsPage({ params }: { params: { id: string } }) {
+  const { deal } = useDeal(params.id);
+
+  if (!deal) {
+    return (
+        <div className="flex items-center justify-center h-full">
+            <Card className="w-full max-w-md p-8 text-center">
+                <CardTitle className="text-2xl font-headline">Deal Not Found</CardTitle>
+                <CardDescription>The deal you are looking for does not exist or has been removed.</CardDescription>
+                <Button asChild className="mt-4">
+                    <Link href="/dashboard/deals">Back to Deals</Link>
+                </Button>
+            </Card>
+        </div>
+    );
+  }
+
+  return <DealDetailsView deal={deal} params={params} />;
 }
