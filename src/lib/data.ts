@@ -58,16 +58,6 @@ export interface Transaction {
 }
 
 
-export interface WalletTransaction {
-  id: string;
-  type: string;
-  date: string;
-  amount: number;
-  status: string;
-  description: string;
-}
-
-
 export interface LeaderboardUser {
     name: string;
     referrals: number;
@@ -249,14 +239,6 @@ export const recentTransactions: Transaction[] = [
   { id: 'T005', description: 'Consulting Fee', party: 'Appify Inc.', amount: 5000, type: 'incoming', status: 'inHolding' },
   { id: 'T006', description: 'Hardware Purchase', party: 'Tech Supply Co.', amount: -850, type: 'outgoing', status: 'completed' },
   { id: 'T007', description: 'Royalty Payment', party: 'Art House', amount: 450, type: 'incoming', status: 'completed' },
-];
-
-export const walletTransactions: WalletTransaction[] = [
-  { id: 'WTX001', type: 'Deposit', date: '2025-11-28', amount: 1000, status: 'Completed', description: 'Manual deposit from linked bank account ending in 1234.' },
-  { id: 'WTX002', type: 'Withdrawal', date: '2025-11-25', amount: -500, status: 'Completed', description: 'Withdrawal to MTN mobile money number 024 123 4567.' },
-  { id: 'WTX003', type: 'Release from hold', date: '2025-11-22', amount: 3500, status: 'Completed', description: 'Funds released from deal "Brand Identity Design" (DEAL002) with Creative LLC.' },
-  { id: 'WTX004', type: 'Funding for deal', date: '2025-11-20', amount: -8000, status: 'Completed', description: 'Funds moved to hold for deal "Mobile App UI/UX" (DEAL003) with Appify Inc.' },
-  { id: 'WTX005', type: 'Withdrawal', date: '2025-11-18', amount: -2000, status: 'Pending', description: 'Withdrawal to Fidelity Bank account ending in 1234.' },
 ];
 
 export const leaderboard: LeaderboardUser[] = [
