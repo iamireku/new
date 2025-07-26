@@ -1,7 +1,7 @@
 // /src/app/dashboard/deals/create/page.tsx
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -39,6 +39,7 @@ import {
   CalendarIcon,
   Clock,
   MapPin,
+  Camera,
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -52,6 +53,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Calendar } from '@/components/ui/calendar';
 import { format, formatISO, setHours, setMinutes } from 'date-fns';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 
 const totalSteps = 5;
@@ -81,7 +83,11 @@ type DealFormData = z.infer<typeof dealSchema>;
 export default function CreateDealPage() {
   const [step, setStep] = useState(1);
   const [newCriterion, setNewCriterion] = useState('');
-  
+  const [isCameraDialogOpen, setIsCameraDialogOpen] = useState(false);
+  const [hasCameraPermission, setHasCameraPermission] = useState<boolean | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
   const router = useRouter();
   const { toast } = useToast();
 
@@ -112,6 +118,37 @@ export default function CreateDealPage() {
   const prevStep = () => setStep((prev) => (prev > 1 ? prev - 1 : prev));
 
   const progress = (step / totalSteps) * 100;
+
+  useEffect(() => {
+    let stream: MediaStream | null = null;
+    const getCameraPermission = async () => {
+      if (isCameraDialogOpen) {
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({ video: true });
+          setHasCameraPermission(true);
+          if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+          }
+        } catch (error) {
+          console.error('Error accessing camera:', error);
+          setHasCameraPermission(false);
+          toast({
+            variant: 'destructive',
+            title: 'Camera Access Denied',
+            description: 'Please enable camera permissions in your browser settings.',
+          });
+        }
+      }
+    };
+
+    getCameraPermission();
+
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+    }
+  }, [isCameraDialogOpen, toast]);
 
   const handleFinish = async (data: DealFormData) => {
     await createDeal({
@@ -170,6 +207,31 @@ export default function CreateDealPage() {
      });
   }
 
+  const handleCaptureImage = () => {
+    if (videoRef.current && canvasRef.current) {
+        const video = videoRef.current;
+        const canvas = canvasRef.current;
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const context = canvas.getContext('2d');
+        if (context) {
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const dataUrl = canvas.toDataURL('image/jpeg');
+            const currentImages = form.getValues('images') || [];
+            if (currentImages.length < 3) {
+                form.setValue('images', [...currentImages, dataUrl]);
+                setIsCameraDialogOpen(false);
+            } else {
+                 toast({
+                    variant: 'destructive',
+                    title: 'Image limit reached',
+                    description: 'You can only upload up to 3 images.',
+                });
+            }
+        }
+    }
+  };
+
   const getStepIcon = (currentStep: number) => {
     switch (currentStep) {
       case 1: return <UserCheck className="h-6 w-6" />;
@@ -217,6 +279,7 @@ export default function CreateDealPage() {
 
   return (
     <div className="flex w-full justify-center">
+    <canvas ref={canvasRef} className="hidden"></canvas>
     <Form {...form}>
       <form onSubmit={(e) => e.preventDefault()} className='w-full max-w-2xl'>
       <Card>
@@ -347,15 +410,45 @@ export default function CreateDealPage() {
                           </div>
                         ))}
                         {(field.value || []).length < 3 && (
-                          <Label htmlFor="deal-image-upload" className="flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted">
-                            <div className="flex flex-col items-center justify-center text-center p-2">
-                              <UploadCloud className="w-8 h-8 mb-2 text-muted-foreground" />
-                              <p className="text-xs text-muted-foreground">
-                                <span className="font-semibold">Click to upload</span>
-                              </p>
+                            <div className="flex flex-col items-center justify-center w-full aspect-square border-2 border-dashed rounded-lg">
+                                <Label htmlFor="deal-image-upload" className="flex flex-col items-center justify-center text-center p-2 cursor-pointer w-full h-full hover:bg-muted">
+                                    <UploadCloud className="w-8 h-8 mb-2 text-muted-foreground" />
+                                    <p className="text-xs text-muted-foreground"><span className="font-semibold">Click to upload</span></p>
+                                    <Input id="deal-image-upload" type="file" className="hidden" accept="image/*" multiple onChange={handleImageUpload} />
+                                </Label>
+                                <div className="text-xs text-muted-foreground my-1">or</div>
+                                <Dialog open={isCameraDialogOpen} onOpenChange={setIsCameraDialogOpen}>
+                                    <DialogTrigger asChild>
+                                        <Button type="button" variant="ghost" size="sm" className="w-full">
+                                            <Camera className="mr-2 h-4 w-4" />
+                                            Use Camera
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>Camera</DialogTitle>
+                                            <DialogDescription>
+                                                Position the item in the frame and take a picture.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <div className="py-4">
+                                            <video ref={videoRef} className="w-full aspect-video rounded-md bg-muted" autoPlay muted playsInline></video>
+                                            {hasCameraPermission === false && (
+                                                <Alert variant="destructive" className="mt-2">
+                                                    <AlertTitle>Camera Access Required</AlertTitle>
+                                                    <AlertDescription>
+                                                        Please allow camera access in your browser to use this feature.
+                                                    </AlertDescription>
+                                                </Alert>
+                                            )}
+                                        </div>
+                                        <DialogFooter>
+                                            <Button type="button" variant="outline" onClick={() => setIsCameraDialogOpen(false)}>Cancel</Button>
+                                            <Button type="button" onClick={handleCaptureImage} disabled={!hasCameraPermission}>Take Picture</Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
                             </div>
-                            <Input id="deal-image-upload" type="file" className="hidden" accept="image/*" multiple onChange={handleImageUpload} />
-                          </Label>
                         )}
                         </div>
                      </FormControl>
