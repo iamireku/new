@@ -469,8 +469,7 @@ const DealMessages = ({ deal }: { deal: Deal }) => (
     </Card>
 );
 
-function DealDetailsClientView({ params }: { params: { id: string } }) {
-  const dealId = params.id;
+function DealDetailsClientView({ dealId }: { dealId: string }) {
   const actions = useDeal(dealId);
   const { deal } = actions;
 
@@ -516,5 +515,5 @@ function DealDetailsClientView({ params }: { params: { id: string } }) {
 
 // --- Main Page Component (Server Component) ---
 export default function DealDetailsPage({ params }: { params: { id: string } }) {
-  return <DealDetailsClientView params={params} />;
+  return <DealDetailsClientView dealId={params.id} />;
 }
