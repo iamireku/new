@@ -84,7 +84,7 @@ type Period = 'hours' | 'days' | 'weeks';
 
 // --- Sub-components ---
 
-const DealHeader = ({ deal, params }: { deal: Deal, params: { id: string } }) => {
+const DealHeader = ({ deal, dealId }: { deal: Deal, dealId: string }) => {
   const statusInfo = getStatusInfo(deal.status);
   const StatusIcon = statusInfo.icon;
   return (
@@ -96,7 +96,7 @@ const DealHeader = ({ deal, params }: { deal: Deal, params: { id: string } }) =>
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div className="flex-1">
           <h1 className="text-3xl font-bold font-headline">{deal.title}</h1>
-          <p className="text-muted-foreground">Deal ID: {params.id}</p>
+          <p className="text-muted-foreground">Deal ID: {dealId}</p>
         </div>
         <div className="flex items-center gap-2">
           <Badge variant="secondary" className={cn("text-base gap-2", statusInfo.color)}>
@@ -410,16 +410,33 @@ const DealMessages = ({ deal }: { deal: Deal }) => (
     </Card>
 );
 
-function DealDetailsView({ deal, params }: { deal: Deal, params: { id: string }}) {
-  const actions = useDeal(params.id);
+function DealDetailsClientView({ dealId }: { dealId: string }) {
+  const actions = useDeal(dealId);
+  const { deal } = actions;
 
   useEffect(() => {
-    document.title = `${deal.title} - Deal Details`;
-  }, [deal.title]);
+    if (deal) {
+        document.title = `${deal.title} - Deal Details`;
+    }
+  }, [deal]);
+
+  if (!deal) {
+    return (
+        <div className="flex items-center justify-center h-full">
+            <Card className="w-full max-w-md p-8 text-center">
+                <CardTitle className="text-2xl font-headline">Deal Not Found</CardTitle>
+                <CardDescription>The deal you are looking for does not exist or has been removed.</CardDescription>
+                <Button asChild className="mt-4">
+                    <Link href="/dashboard/deals">Back to Deals</Link>
+                </Button>
+            </Card>
+        </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
-      <DealHeader deal={deal} params={params} />
+      <DealHeader deal={deal} dealId={dealId} />
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
           <DealImageCarousel deal={deal} />
@@ -437,23 +454,7 @@ function DealDetailsView({ deal, params }: { deal: Deal, params: { id: string }}
 }
 
 
-// --- Main Page Component ---
+// --- Main Page Component (Server Component) ---
 export default function DealDetailsPage({ params }: { params: { id: string } }) {
-  const { deal } = useDeal(params.id);
-
-  if (!deal) {
-    return (
-        <div className="flex items-center justify-center h-full">
-            <Card className="w-full max-w-md p-8 text-center">
-                <CardTitle className="text-2xl font-headline">Deal Not Found</CardTitle>
-                <CardDescription>The deal you are looking for does not exist or has been removed.</CardDescription>
-                <Button asChild className="mt-4">
-                    <Link href="/dashboard/deals">Back to Deals</Link>
-                </Button>
-            </Card>
-        </div>
-    );
-  }
-
-  return <DealDetailsView deal={deal} params={params} />;
+  return <DealDetailsClientView dealId={params.id} />;
 }
