@@ -24,6 +24,7 @@ import type { WalletTransaction, PaymentMethod } from '@/lib/data';
 import { getWalletTransactions } from '@/lib/services/wallet.service';
 import { getSavedPaymentMethods } from '@/lib/services/user.service';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
 export default function WalletPage() {
     const [transactions, setTransactions] = useState<WalletTransaction[]>([]);
@@ -32,6 +33,7 @@ export default function WalletPage() {
     const [isAddFundsDialogOpen, setIsAddFundsDialogOpen] = useState(false);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
     const [withdrawalType, setWithdrawalType] = useState('standard');
+    const [password, setPassword] = useState('');
     const { toast } = useToast();
 
     useEffect(() => {
@@ -51,6 +53,7 @@ export default function WalletPage() {
 
     const handleWithdraw = () => {
         setIsWithdrawDialogOpen(false);
+        setPassword('');
         toast({
             title: 'Withdrawal Initiated',
             description: 'Your request has been received and is being processed.',
@@ -191,7 +194,29 @@ export default function WalletPage() {
                     </div>
                     <DialogFooter>
                         <Button variant="outline" onClick={() => setIsWithdrawDialogOpen(false)}>Cancel</Button>
-                        <Button onClick={handleWithdraw} disabled={paymentMethods.length === 0}>Confirm Withdrawal</Button>
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button disabled={paymentMethods.length === 0}>Confirm Withdrawal</Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Confirm Withdrawal</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        For your security, please enter your password to confirm this withdrawal.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <div className="space-y-2 py-2">
+                                    <Label htmlFor="password-confirm-withdraw">Password</Label>
+                                    <Input id="password-confirm-withdraw" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" />
+                                </div>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel onClick={() => setPassword('')}>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction onClick={handleWithdraw} disabled={!password}>
+                                        Confirm
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

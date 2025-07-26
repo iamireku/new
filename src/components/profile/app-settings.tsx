@@ -18,9 +18,11 @@ import { Input } from '@/components/ui/input';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Sun, Moon, Monitor } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import React, { useState } from 'react';
 
 export function AppSettings() {
   const { theme, setTheme } = useTheme();
+  const [password, setPassword] = useState('');
 
   return (
     <div className="space-y-6">
@@ -94,12 +96,16 @@ export function AppSettings() {
                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                 <AlertDialogDescription>
                   This action cannot be undone. This will permanently delete your
-                  account and remove your data from our servers.
+                  account and remove your data from our servers. To confirm, please enter your password.
                 </AlertDialogDescription>
               </AlertDialogHeader>
+               <div className="space-y-2 py-2">
+                  <Label htmlFor="password-confirm-delete">Password</Label>
+                  <Input id="password-confirm-delete" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" />
+                </div>
               <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction>Continue</AlertDialogAction>
+                <AlertDialogCancel onClick={() => setPassword('')}>Cancel</AlertDialogCancel>
+                <AlertDialogAction disabled={!password}>Continue</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>

@@ -176,6 +176,7 @@ const AcceptanceCriteria = ({ deal, actions }: { deal: Deal, actions: ReturnType
     const { toast } = useToast();
     const [rejectionReason, setRejectionReason] = React.useState('');
     const [editRequest, setEditRequest] = React.useState('');
+    const [password, setPassword] = React.useState('');
   
     return (
       <Card>
@@ -225,8 +226,20 @@ const AcceptanceCriteria = ({ deal, actions }: { deal: Deal, actions: ReturnType
                 <AlertDialog>
                     <AlertDialogTrigger asChild><Button><CheckCircle className="mr-2"/>Accept & Release Money</Button></AlertDialogTrigger>
                     <AlertDialogContent>
-                        <AlertDialogHeader><AlertDialogTitle>Are you sure you want to release the money?</AlertDialogTitle><AlertDialogDescription>This action cannot be undone. The funds will be sent to the seller. Please ensure all acceptance criteria have been met to your satisfaction.</AlertDialogDescription></AlertDialogHeader>
-                        <AlertDialogFooter><AlertDialogCancel>Cancel</AlertDialogCancel><AlertDialogAction onClick={actions.releaseFunds}>Confirm & Release</AlertDialogAction></AlertDialogFooter>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure you want to release the money?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                This action cannot be undone. For your security, please enter your password to confirm.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <div className="space-y-2 py-2">
+                          <Label htmlFor="password-confirm-release">Password</Label>
+                          <Input id="password-confirm-release" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter your password" />
+                        </div>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={actions.releaseFunds} disabled={!password}>Confirm & Release</AlertDialogAction>
+                        </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
             )}
