@@ -14,12 +14,14 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
-import { PlusCircle, Building, Phone, Trash2, CreditCard } from 'lucide-react';
+import { PlusCircle, Building, Phone, Trash2, CreditCard, KeyRound, Fingerprint, Mail } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import type { PaymentMethod, MobileMoneyProvider, PaymentMethodType } from '@/lib/data';
 import { getSavedPaymentMethods } from '@/lib/services/user.service';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+
+type AuthMethod = 'password' | 'biometric' | 'otp';
 
 export function PaymentMethods() {
   const [isAddPaymentDialogOpen, setIsAddPaymentDialogOpen] = useState(false);
@@ -33,6 +35,10 @@ export function PaymentMethods() {
   const [bankAccountNumber, setBankAccountNumber] = useState('');
   const [bankAccountName, setBankAccountName] = useState('');
   const [isFetchingBankName, setIsFetchingBankName] = useState(false);
+  const [authMethod, setAuthMethod] = useState<AuthMethod>('password');
+  const [password, setPassword] = useState('');
+  const [otp, setOtp] = useState('');
+  const [isOtpSent, setIsOtpSent] = useState(false);
 
   const { toast } = useToast();
 
@@ -53,6 +59,14 @@ export function PaymentMethods() {
     setBankAccountNumber('');
     setBankAccountName('');
   }
+  
+  const handleSendOtp = () => {
+    setIsOtpSent(true);
+    toast({
+      title: "OTP Sent",
+      description: "A one-time code has been sent to your email.",
+    });
+  };
 
   const handleAddPaymentMethod = () => {
       let newMethod: PaymentMethod | null = null;
@@ -97,6 +111,9 @@ export function PaymentMethods() {
 
   const handleDeleteMethod = (id: string) => {
     setPaymentMethods(prev => prev.filter(method => method.id !== id));
+    setPassword('');
+    setOtp('');
+    setIsOtpSent(false);
     toast({
         title: 'Payment Method Removed',
         variant: 'destructive',
@@ -250,12 +267,46 @@ export function PaymentMethods() {
                     <AlertDialogHeader>
                         <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            This will permanently remove this payment method. This action cannot be undone.
+                            This will permanently remove this payment method. For your security, please confirm your identity to continue.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
+                    <div className="py-4 space-y-4">
+                        <RadioGroup value={authMethod} onValueChange={(val: any) => setAuthMethod(val)} className="grid grid-cols-3 gap-2">
+                            <Label htmlFor={`del-pm-password-auth-${method.id}`} className={cn('flex items-center justify-center gap-2 cursor-pointer rounded-md border p-2 hover:bg-accent hover:text-accent-foreground has-[:checked]:border-primary')}>
+                                <RadioGroupItem value="password" id={`del-pm-password-auth-${method.id}`} className="sr-only"/>
+                                <KeyRound className="h-4 w-4"/>
+                            </Label>
+                            <Label htmlFor={`del-pm-biometric-auth-${method.id}`} className={cn('flex items-center justify-center gap-2 cursor-pointer rounded-md border p-2 hover:bg-accent hover:text-accent-foreground has-[:checked]:border-primary')}>
+                                <RadioGroupItem value="biometric" id={`del-pm-biometric-auth-${method.id}`} className="sr-only"/>
+                                <Fingerprint className="h-4 w-4"/>
+                            </Label>
+                            <Label htmlFor={`del-pm-otp-auth-${method.id}`} className={cn('flex items-center justify-center gap-2 cursor-pointer rounded-md border p-2 hover:bg-accent hover:text-accent-foreground has-[:checked]:border-primary')}>
+                                <RadioGroupItem value="otp" id={`del-pm-otp-auth-${method.id}`} className="sr-only"/>
+                                <Mail className="h-4 w-4"/>
+                            </Label>
+                        </RadioGroup>
+                        {authMethod === 'password' && (
+                            <div className="space-y-2">
+                            <Label htmlFor="password-confirm-delete-pm">Password</Label>
+                            <Input id="password-confirm-delete-pm" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" />
+                            </div>
+                        )}
+                        {authMethod === 'biometric' && (
+                            <Button variant="outline" className="w-full justify-center gap-2"><Fingerprint />Confirm with Biometrics</Button>
+                        )}
+                        {authMethod === 'otp' && (
+                            <div className="space-y-2">
+                            <Label htmlFor="otp-confirm-delete-pm">Email OTP</Label>
+                            <div className="flex gap-2">
+                                <Input id="otp-confirm-delete-pm" type="text" value={otp} onChange={e => setOtp(e.target.value)} placeholder="Enter 6-digit code" />
+                                <Button type="button" variant="secondary" onClick={handleSendOtp} disabled={isOtpSent}>{isOtpSent ? 'Resend' : 'Send Code'}</Button>
+                            </div>
+                            </div>
+                        )}
+                      </div>
                     <AlertDialogFooter>
-                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => handleDeleteMethod(method.id)}>Delete</AlertDialogAction>
+                        <AlertDialogCancel onClick={() => {setPassword(''); setOtp(''); setIsOtpSent(false)}}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => handleDeleteMethod(method.id)} disabled={authMethod === 'password' && !password}>Delete</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>
