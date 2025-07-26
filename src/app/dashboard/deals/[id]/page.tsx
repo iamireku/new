@@ -47,6 +47,9 @@ import {
   CircleDollarSign,
   Send,
   ThumbsDown,
+  Fingerprint,
+  Mail,
+  KeyRound,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
@@ -61,9 +64,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { useDeal } from '@/hooks/use-deal';
 import { useToast } from '@/hooks/use-toast';
 import React from 'react';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 // Constants
 const BUYER_RESPONSE_PERIOD_DAYS = 7;
+type AuthMethod = 'password' | 'biometric' | 'otp';
 
 // Helper Functions
 const getStatusInfo = (status: string) => {
@@ -176,7 +181,18 @@ const AcceptanceCriteria = ({ deal, actions }: { deal: Deal, actions: ReturnType
     const { toast } = useToast();
     const [rejectionReason, setRejectionReason] = React.useState('');
     const [editRequest, setEditRequest] = React.useState('');
+    const [authMethod, setAuthMethod] = useState<AuthMethod>('password');
     const [password, setPassword] = React.useState('');
+    const [otp, setOtp] = React.useState('');
+    const [isOtpSent, setIsOtpSent] = React.useState(false);
+
+    const handleSendOtp = () => {
+        setIsOtpSent(true);
+        toast({
+          title: "OTP Sent",
+          description: "A one-time code has been sent to your email.",
+        });
+      };
   
     return (
       <Card>
@@ -229,16 +245,46 @@ const AcceptanceCriteria = ({ deal, actions }: { deal: Deal, actions: ReturnType
                         <AlertDialogHeader>
                             <AlertDialogTitle>Are you sure you want to release the money?</AlertDialogTitle>
                             <AlertDialogDescription>
-                                This action cannot be undone. For your security, please enter your password to confirm.
+                                This action cannot be undone. For your security, please confirm your identity to release the funds.
                             </AlertDialogDescription>
                         </AlertDialogHeader>
-                        <div className="space-y-2 py-2">
-                          <Label htmlFor="password-confirm-release">Password</Label>
-                          <Input id="password-confirm-release" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter your password" />
+                        <div className="py-4 space-y-4">
+                            <RadioGroup value={authMethod} onValueChange={(val: any) => setAuthMethod(val)} className="grid grid-cols-3 gap-2">
+                                <Label htmlFor="password-auth" className={cn('flex items-center justify-center gap-2 cursor-pointer rounded-md border p-2 hover:bg-accent hover:text-accent-foreground has-[:checked]:border-primary')}>
+                                    <RadioGroupItem value="password" id="password-auth" className="sr-only"/>
+                                    <KeyRound className="h-4 w-4"/>
+                                </Label>
+                                <Label htmlFor="biometric-auth" className={cn('flex items-center justify-center gap-2 cursor-pointer rounded-md border p-2 hover:bg-accent hover:text-accent-foreground has-[:checked]:border-primary')}>
+                                    <RadioGroupItem value="biometric" id="biometric-auth" className="sr-only"/>
+                                    <Fingerprint className="h-4 w-4"/>
+                                </Label>
+                                <Label htmlFor="otp-auth" className={cn('flex items-center justify-center gap-2 cursor-pointer rounded-md border p-2 hover:bg-accent hover:text-accent-foreground has-[:checked]:border-primary')}>
+                                    <RadioGroupItem value="otp" id="otp-auth" className="sr-only"/>
+                                    <Mail className="h-4 w-4"/>
+                                </Label>
+                            </RadioGroup>
+                            {authMethod === 'password' && (
+                                <div className="space-y-2">
+                                <Label htmlFor="password-confirm-release">Password</Label>
+                                <Input id="password-confirm-release" type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Enter your password" />
+                                </div>
+                            )}
+                            {authMethod === 'biometric' && (
+                                <Button variant="outline" className="w-full justify-center gap-2"><Fingerprint />Confirm with Biometrics</Button>
+                            )}
+                            {authMethod === 'otp' && (
+                                <div className="space-y-2">
+                                <Label htmlFor="otp-confirm-release">Email OTP</Label>
+                                <div className="flex gap-2">
+                                    <Input id="otp-confirm-release" type="text" value={otp} onChange={e => setOtp(e.target.value)} placeholder="Enter 6-digit code" />
+                                    <Button type="button" variant="secondary" onClick={handleSendOtp} disabled={isOtpSent}>{isOtpSent ? 'Resend' : 'Send Code'}</Button>
+                                </div>
+                                </div>
+                            )}
                         </div>
                         <AlertDialogFooter>
                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={actions.releaseFunds} disabled={!password}>Confirm & Release</AlertDialogAction>
+                            <AlertDialogAction onClick={actions.releaseFunds} disabled={authMethod === 'password' && !password}>Confirm & Release</AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>

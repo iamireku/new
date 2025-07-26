@@ -16,13 +16,28 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Sun, Moon, Monitor } from 'lucide-react';
+import { Sun, Moon, Monitor, KeyRound, Fingerprint, Mail } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import React, { useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
+
+type AuthMethod = 'password' | 'biometric' | 'otp';
 
 export function AppSettings() {
   const { theme, setTheme } = useTheme();
   const [password, setPassword] = useState('');
+  const [authMethod, setAuthMethod] = useState<AuthMethod>('password');
+  const [otp, setOtp] = useState('');
+  const [isOtpSent, setIsOtpSent] = useState(false);
+  const { toast } = useToast();
+
+  const handleSendOtp = () => {
+    setIsOtpSent(true);
+    toast({
+      title: "OTP Sent",
+      description: "A one-time code has been sent to your email.",
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -96,16 +111,46 @@ export function AppSettings() {
                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                 <AlertDialogDescription>
                   This action cannot be undone. This will permanently delete your
-                  account and remove your data from our servers. To confirm, please enter your password.
+                  account and remove your data from our servers. To confirm, please verify your identity.
                 </AlertDialogDescription>
               </AlertDialogHeader>
-               <div className="space-y-2 py-2">
-                  <Label htmlFor="password-confirm-delete">Password</Label>
-                  <Input id="password-confirm-delete" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" />
-                </div>
+              <div className="py-4 space-y-4">
+                <RadioGroup value={authMethod} onValueChange={(val: any) => setAuthMethod(val)} className="grid grid-cols-3 gap-2">
+                    <Label htmlFor="del-password-auth" className={cn('flex items-center justify-center gap-2 cursor-pointer rounded-md border p-2 hover:bg-accent hover:text-accent-foreground has-[:checked]:border-primary')}>
+                        <RadioGroupItem value="password" id="del-password-auth" className="sr-only"/>
+                        <KeyRound className="h-4 w-4"/>
+                    </Label>
+                    <Label htmlFor="del-biometric-auth" className={cn('flex items-center justify-center gap-2 cursor-pointer rounded-md border p-2 hover:bg-accent hover:text-accent-foreground has-[:checked]:border-primary')}>
+                        <RadioGroupItem value="biometric" id="del-biometric-auth" className="sr-only"/>
+                        <Fingerprint className="h-4 w-4"/>
+                    </Label>
+                    <Label htmlFor="del-otp-auth" className={cn('flex items-center justify-center gap-2 cursor-pointer rounded-md border p-2 hover:bg-accent hover:text-accent-foreground has-[:checked]:border-primary')}>
+                        <RadioGroupItem value="otp" id="del-otp-auth" className="sr-only"/>
+                        <Mail className="h-4 w-4"/>
+                    </Label>
+                </RadioGroup>
+                {authMethod === 'password' && (
+                    <div className="space-y-2">
+                    <Label htmlFor="password-confirm-delete">Password</Label>
+                    <Input id="password-confirm-delete" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" />
+                    </div>
+                )}
+                {authMethod === 'biometric' && (
+                    <Button variant="outline" className="w-full justify-center gap-2"><Fingerprint />Confirm with Biometrics</Button>
+                )}
+                {authMethod === 'otp' && (
+                    <div className="space-y-2">
+                    <Label htmlFor="otp-confirm-delete">Email OTP</Label>
+                    <div className="flex gap-2">
+                        <Input id="otp-confirm-delete" type="text" value={otp} onChange={e => setOtp(e.target.value)} placeholder="Enter 6-digit code" />
+                        <Button type="button" variant="secondary" onClick={handleSendOtp} disabled={isOtpSent}>{isOtpSent ? 'Resend' : 'Send Code'}</Button>
+                    </div>
+                    </div>
+                )}
+              </div>
               <AlertDialogFooter>
                 <AlertDialogCancel onClick={() => setPassword('')}>Cancel</AlertDialogCancel>
-                <AlertDialogAction disabled={!password}>Continue</AlertDialogAction>
+                <AlertDialogAction disabled={authMethod === 'password' && !password}>Continue</AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>

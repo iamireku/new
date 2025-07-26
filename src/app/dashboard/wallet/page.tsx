@@ -12,7 +12,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { PlusCircle, ArrowUpRight, ArrowDownLeft, Building, Phone, ChevronDown, Zap, Clock } from 'lucide-react';
+import { PlusCircle, ArrowUpRight, ArrowDownLeft, Building, Phone, ChevronDown, Zap, Clock, Fingerprint, Mail, KeyRound } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -26,6 +26,8 @@ import { getSavedPaymentMethods } from '@/lib/services/user.service';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
+type AuthMethod = 'password' | 'biometric' | 'otp';
+
 export default function WalletPage() {
     const [transactions, setTransactions] = useState<WalletTransaction[]>([]);
     const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
@@ -33,7 +35,10 @@ export default function WalletPage() {
     const [isAddFundsDialogOpen, setIsAddFundsDialogOpen] = useState(false);
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
     const [withdrawalType, setWithdrawalType] = useState('standard');
+    const [authMethod, setAuthMethod] = useState<AuthMethod>('password');
     const [password, setPassword] = useState('');
+    const [otp, setOtp] = useState('');
+    const [isOtpSent, setIsOtpSent] = useState(false);
     const { toast } = useToast();
 
     useEffect(() => {
@@ -50,10 +55,20 @@ export default function WalletPage() {
         }
         fetchData();
     }, []);
+    
+    const handleSendOtp = () => {
+        setIsOtpSent(true);
+        toast({
+          title: "OTP Sent",
+          description: "A one-time code has been sent to your email.",
+        });
+      };
 
     const handleWithdraw = () => {
         setIsWithdrawDialogOpen(false);
         setPassword('');
+        setOtp('');
+        setIsOtpSent(false);
         toast({
             title: 'Withdrawal Initiated',
             description: 'Your request has been received and is being processed.',
@@ -202,16 +217,46 @@ export default function WalletPage() {
                                 <AlertDialogHeader>
                                     <AlertDialogTitle>Confirm Withdrawal</AlertDialogTitle>
                                     <AlertDialogDescription>
-                                        For your security, please enter your password to confirm this withdrawal.
+                                        For your security, please confirm your identity to complete this withdrawal.
                                     </AlertDialogDescription>
                                 </AlertDialogHeader>
-                                <div className="space-y-2 py-2">
-                                    <Label htmlFor="password-confirm-withdraw">Password</Label>
-                                    <Input id="password-confirm-withdraw" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" />
+                                <div className="py-4 space-y-4">
+                                     <RadioGroup value={authMethod} onValueChange={(val: any) => setAuthMethod(val)} className="grid grid-cols-3 gap-2">
+                                        <Label htmlFor="password-auth" className={cn('flex items-center justify-center gap-2 cursor-pointer rounded-md border p-2 hover:bg-accent hover:text-accent-foreground has-[:checked]:border-primary')}>
+                                            <RadioGroupItem value="password" id="password-auth" className="sr-only"/>
+                                            <KeyRound className="h-4 w-4"/>
+                                        </Label>
+                                        <Label htmlFor="biometric-auth" className={cn('flex items-center justify-center gap-2 cursor-pointer rounded-md border p-2 hover:bg-accent hover:text-accent-foreground has-[:checked]:border-primary')}>
+                                            <RadioGroupItem value="biometric" id="biometric-auth" className="sr-only"/>
+                                            <Fingerprint className="h-4 w-4"/>
+                                        </Label>
+                                        <Label htmlFor="otp-auth" className={cn('flex items-center justify-center gap-2 cursor-pointer rounded-md border p-2 hover:bg-accent hover:text-accent-foreground has-[:checked]:border-primary')}>
+                                            <RadioGroupItem value="otp" id="otp-auth" className="sr-only"/>
+                                            <Mail className="h-4 w-4"/>
+                                        </Label>
+                                    </RadioGroup>
+                                    {authMethod === 'password' && (
+                                        <div className="space-y-2">
+                                        <Label htmlFor="password-confirm-withdraw">Password</Label>
+                                        <Input id="password-confirm-withdraw" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" />
+                                        </div>
+                                    )}
+                                    {authMethod === 'biometric' && (
+                                        <Button variant="outline" className="w-full justify-center gap-2"><Fingerprint />Confirm with Biometrics</Button>
+                                    )}
+                                    {authMethod === 'otp' && (
+                                        <div className="space-y-2">
+                                        <Label htmlFor="otp-confirm-withdraw">Email OTP</Label>
+                                        <div className="flex gap-2">
+                                            <Input id="otp-confirm-withdraw" type="text" value={otp} onChange={e => setOtp(e.target.value)} placeholder="Enter 6-digit code" />
+                                            <Button type="button" variant="secondary" onClick={handleSendOtp} disabled={isOtpSent}>{isOtpSent ? 'Resend' : 'Send Code'}</Button>
+                                        </div>
+                                        </div>
+                                    )}
                                 </div>
                                 <AlertDialogFooter>
                                     <AlertDialogCancel onClick={() => setPassword('')}>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction onClick={handleWithdraw} disabled={!password}>
+                                    <AlertDialogAction onClick={handleWithdraw} disabled={authMethod === 'password' && !password}>
                                         Confirm
                                     </AlertDialogAction>
                                 </AlertDialogFooter>
