@@ -146,6 +146,32 @@ export default function LandingPage() {
         <section className="bg-background py-20 md:py-32">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="text-center mb-16">
+                    <h2 className="text-3xl font-bold font-headline">Built for the Modern African Economy</h2>
+                    <p className="mt-2 text-lg text-muted-foreground">For sellers who want assurance, and buyers who want security.</p>
+                </div>
+                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                   <BenefitCard
+                        icon={<Paintbrush className="h-6 w-6"/>}
+                        title="Freelancers & Creatives"
+                        description="Stop chasing invoices. Secure your payment before you start work and get paid instantly upon approval. Focus on your craft, not your collections."
+                   />
+                   <BenefitCard
+                        icon={<Briefcase className="h-6 w-6"/>}
+                        title="Service Providers"
+                        description="Secure client projects and manage payments with confidence. Our clear audit trail simplifies accounting and builds trust with your clients."
+                   />
+                   <BenefitCard
+                        icon={<ShoppingCart className="h-6 w-6"/>}
+                        title="Online & Social Commerce"
+                        description="Buying or selling on Instagram, Facebook, or WhatsApp? Use Betweena to eliminate the risk of scams. Pay only when you get what you ordered."
+                   />
+                </div>
+            </div>
+        </section>
+
+        <section className="py-20 md:py-32">
+            <div className="container mx-auto px-4 md:px-6">
+                <div className="text-center mb-16">
                     <h2 className="text-3xl font-bold font-headline">Your Security is Our Priority</h2>
                     <p className="mt-2 text-lg text-muted-foreground">We are committed to making online transactions safe and transparent for everyone.</p>
                 </div>
@@ -169,32 +195,6 @@ export default function LandingPage() {
             </div>
         </section>
 
-
-        <section className="py-20 md:py-32">
-            <div className="container mx-auto px-4 md:px-6">
-                <div className="text-center mb-16">
-                    <h2 className="text-3xl font-bold font-headline">Built for the Modern African Economy</h2>
-                    <p className="mt-2 text-lg text-muted-foreground">For sellers who want assurance, and buyers who want security.</p>
-                </div>
-                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                   <BenefitCard
-                        icon={<Paintbrush className="h-6 w-6"/>}
-                        title="Freelancers & Creatives"
-                        description="Stop chasing invoices. Secure your payment before you start work and get paid instantly upon approval. Focus on your craft, not your collections."
-                   />
-                   <BenefitCard
-                        icon={<Briefcase className="h-6 w-6"/>}
-                        title="Service Providers"
-                        description="Secure client projects and manage payments with confidence. Our clear audit trail simplifies accounting and builds trust with your clients."
-                   />
-                   <BenefitCard
-                        icon={<ShoppingCart className="h-6 w-6"/>}
-                        title="Online & Social Commerce"
-                        description="Buying or selling on Instagram, Facebook, or WhatsApp? Use Betweena to eliminate the risk of scams. Pay only when you get what you ordered."
-                   />
-                </div>
-            </div>
-        </section>
 
          <section className="bg-background py-20 md:py-32">
             <div className="container mx-auto text-center">
