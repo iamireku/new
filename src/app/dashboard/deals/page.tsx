@@ -33,15 +33,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { PlusCircle, Search, ListFilter, ChevronDown, Building, Phone, Handshake, RefreshCw } from 'lucide-react';
+import { PlusCircle, Search, ListFilter, ChevronDown, Handshake, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { useToast } from '@/hooks/use-toast';
-import { statusOptions, roleOptions, PaymentMethod, Deal } from '@/lib/data';
+import { statusOptions, Deal } from '@/lib/data';
 import { getDeals } from '@/lib/services/deals.service';
-import { getSavedPaymentMethods } from '@/lib/services/user.service';
 import { format } from 'date-fns';
 
 
@@ -58,39 +53,21 @@ const DEALS_PER_PAGE = 5;
 export default function DealsPage() {
   const router = useRouter();
   const [deals, setDeals] = useState<Deal[]>([]);
-  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilters, setStatusFilters] = useState<string[]>([]);
   const [roleFilter, setRoleFilter] = useState('all');
   const [visibleDealsCount, setVisibleDealsCount] = useState(DEALS_PER_PAGE);
-
-  const [isAddFundsDialogOpen, setIsAddFundsDialogOpen] = useState(false);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
-  const { toast } = useToast();
   
   useEffect(() => {
     async function fetchData() {
       const dealsData = await getDeals();
-      const paymentMethodsData = await getSavedPaymentMethods();
       setDeals(dealsData);
-      setPaymentMethods(paymentMethodsData);
-      if (paymentMethodsData.length > 0) {
-        setSelectedPaymentMethod(paymentMethodsData[0].id);
-      }
     }
     fetchData();
   }, []);
 
   const handleRowClick = (dealId: string) => {
     router.push(`/dashboard/deals/${dealId}`);
-  }
-  
-  const handleAddFunds = () => {
-      setIsAddFundsDialogOpen(false);
-      toast({
-          title: 'Deposit Initialized',
-          description: 'Your request has been received. You will be prompted to confirm the transaction.',
-      });
   }
 
   const handleStatusFilterChange = (status: string) => {
@@ -122,60 +99,6 @@ export default function DealsPage() {
                         Start a New Deal
                     </Link>
                 </Button>
-                 <Dialog open={isAddFundsDialogOpen} onOpenChange={setIsAddFundsDialogOpen}>
-                    <DialogTrigger asChild>
-                        <Button variant="outline">
-                            <PlusCircle className="mr-2 h-4 w-4" />
-                            Add Funds
-                        </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                        <DialogHeader>
-                            <DialogTitle>Add Funds</DialogTitle>
-                            <DialogDescription>
-                                Select a payment method and enter the amount to add to your wallet. You will be prompted to confirm on your device.
-                            </DialogDescription>
-                        </DialogHeader>
-                        <div className="py-4 space-y-4">
-                            <div className="space-y-2">
-                                <Label htmlFor="amount">Amount (GHS)</Label>
-                                <Input id="amount" type="number" placeholder="500.00" />
-                            </div>
-                            <div className="space-y-2">
-                                <Label>Select Payment Method</Label>
-                                {paymentMethods.length > 0 ? (
-                                    <RadioGroup value={selectedPaymentMethod} onValueChange={setSelectedPaymentMethod} className="space-y-2">
-                                        {paymentMethods.map(method => (
-                                            <Label key={method.id} htmlFor={method.id} className={cn('flex items-center gap-4 rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground', selectedPaymentMethod === method.id && 'border-primary')}>
-                                                <RadioGroupItem value={method.id} id={method.id}/>
-                                                {method.type === 'bank' ? <Building className="h-6 w-6 text-muted-foreground" /> : <Phone className="h-6 w-6 text-muted-foreground" />}
-                                                <div className="flex-1">
-                                                    <p className="font-semibold">
-                                                        {method.type === 'bank' ? method.details.bankName : `Mobile Money (${method.details.provider?.toUpperCase()})`}
-                                                    </p>
-                                                    <p className="text-sm text-muted-foreground">
-                                                        {method.type === 'bank' ? method.details.accountNumber : method.details.phoneNumber}
-                                                    </p>
-                                                </div>
-                                            </Label>
-                                        ))}
-                                    </RadioGroup>
-                                ) : (
-                                    <div className="text-center text-muted-foreground py-4 border rounded-md">
-                                        <p>No payment methods found.</p>
-                                        <Button variant="link" asChild>
-                                            <Link href="/dashboard/profile?tab=payments" onClick={() => setIsAddFundsDialogOpen(false)}>Add a Method</Link>
-                                        </Button>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                        <CardFooter>
-                            <Button variant="outline" onClick={() => setIsAddFundsDialogOpen(false)}>Cancel</Button>
-                            <Button onClick={handleAddFunds} disabled={paymentMethods.length === 0}>Confirm Deposit</Button>
-                        </CardFooter>
-                    </DialogContent>
-                </Dialog>
             </div>
         </div>
       
@@ -307,5 +230,3 @@ export default function DealsPage() {
     </div>
   );
 }
-
-    

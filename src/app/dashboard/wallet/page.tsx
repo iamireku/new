@@ -10,289 +10,52 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { PlusCircle, ArrowUpRight, ArrowDownLeft, Building, Phone, ChevronDown, Zap, Clock, Fingerprint, Mail, KeyRound } from 'lucide-react';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { useToast } from '@/hooks/use-toast';
-import Link from 'next/link';
+import { ArrowUpRight, ArrowDownLeft, ChevronDown, Landmark } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
-import type { WalletTransaction, PaymentMethod } from '@/lib/data';
-import { getWalletTransactions } from '@/lib/services/wallet.service';
-import { getSavedPaymentMethods } from '@/lib/services/user.service';
+import type { WalletTransaction } from '@/lib/data';
+import { getRecentTransactions } from '@/lib/services/wallet.service';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-
-type AuthMethod = 'password' | 'biometric' | 'otp';
 
 export default function WalletPage() {
     const [transactions, setTransactions] = useState<WalletTransaction[]>([]);
-    const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
-    const [isWithdrawDialogOpen, setIsWithdrawDialogOpen] = useState(false);
-    const [isAddFundsDialogOpen, setIsAddFundsDialogOpen] = useState(false);
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState('');
-    const [withdrawalType, setWithdrawalType] = useState('standard');
-    const [authMethod, setAuthMethod] = useState<AuthMethod>('password');
-    const [password, setPassword] = useState('');
-    const [otp, setOtp] = useState('');
-    const [isOtpSent, setIsOtpSent] = useState(false);
-    const { toast } = useToast();
 
     useEffect(() => {
         async function fetchData() {
-            const [transactionsData, paymentMethodsData] = await Promise.all([
-                getWalletTransactions(),
-                getSavedPaymentMethods()
-            ]);
+            const transactionsData = await getRecentTransactions();
             setTransactions(transactionsData);
-            setPaymentMethods(paymentMethodsData);
-            if (paymentMethodsData.length > 0) {
-                setSelectedPaymentMethod(paymentMethodsData[0].id);
-            }
         }
         fetchData();
     }, []);
-    
-    const handleSendOtp = () => {
-        setIsOtpSent(true);
-        toast({
-          title: "OTP Sent",
-          description: "A one-time code has been sent to your email.",
-        });
-      };
 
-    const handleWithdraw = () => {
-        setIsWithdrawDialogOpen(false);
-        setPassword('');
-        setOtp('');
-        setIsOtpSent(false);
-        toast({
-            title: 'Withdrawal Initiated',
-            description: 'Your request has been received and is being processed.',
-        });
-    }
-
-    const handleAddFunds = () => {
-      setIsAddFundsDialogOpen(false);
-      toast({
-          title: 'Deposit Initialized',
-          description: 'Your request has been received. You will be prompted to confirm the transaction.',
-      });
-  }
+    const moneyOnHold = transactions
+        .filter(tx => tx.status === 'inHolding')
+        .reduce((sum, tx) => sum + tx.amount, 0);
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <h1 className="text-3xl font-bold font-headline">Wallet</h1>
-        <div className="flex flex-col sm:flex-row gap-2">
-            <Dialog open={isAddFundsDialogOpen} onOpenChange={setIsAddFundsDialogOpen}>
-                <DialogTrigger asChild>
-                    <Button>
-                        <PlusCircle className="mr-2 h-4 w-4" />
-                        Add Funds
-                    </Button>
-                </DialogTrigger>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Add Funds</DialogTitle>
-                        <DialogDescription>
-                            Select a payment method and enter the amount to add to your wallet. You will be prompted to confirm on your device.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="py-4 space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="amount-add">Amount (GHS)</Label>
-                            <Input id="amount-add" type="number" placeholder="500.00" />
-                        </div>
-                        <div className="space-y-2">
-                            <Label>Select Payment Method</Label>
-                            {paymentMethods.length > 0 ? (
-                                <RadioGroup value={selectedPaymentMethod} onValueChange={setSelectedPaymentMethod} className="space-y-2">
-                                    {paymentMethods.map(method => (
-                                        <Label key={method.id} htmlFor={`add-${method.id}`} className={cn('flex items-center gap-4 rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground', selectedPaymentMethod === method.id && 'border-primary')}>
-                                            <RadioGroupItem value={method.id} id={`add-${method.id}`}/>
-                                            {method.type === 'bank' ? <Building className="h-6 w-6 text-muted-foreground" /> : <Phone className="h-6 w-6 text-muted-foreground" />}
-                                            <div className="flex-1">
-                                                <p className="font-semibold">
-                                                    {method.type === 'bank' ? method.details.bankName : `Mobile Money (${method.details.provider?.toUpperCase()})`}
-                                                </p>
-                                                <p className="text-sm text-muted-foreground">
-                                                    {method.type === 'bank' ? method.details.accountNumber : method.details.phoneNumber}
-                                                </p>
-                                            </div>
-                                        </Label>
-                                    ))}
-                                </RadioGroup>
-                            ) : (
-                                <div className="text-center text-muted-foreground py-4 border rounded-md">
-                                    <p>No payment methods found.</p>
-                                    <Button variant="link" asChild>
-                                        <Link href="/dashboard/profile?tab=payments" onClick={() => setIsAddFundsDialogOpen(false)}>Add a Method</Link>
-                                    </Button>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsAddFundsDialogOpen(false)}>Cancel</Button>
-                        <Button onClick={handleAddFunds} disabled={paymentMethods.length === 0}>Confirm Deposit</Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-            <Dialog open={isWithdrawDialogOpen} onOpenChange={setIsWithdrawDialogOpen}>
-                <DialogTrigger asChild>
-                    <Button variant="outline">
-                      <ArrowUpRight className="mr-2 h-4 w-4" />
-                      Withdraw Funds
-                    </Button>
-                </DialogTrigger>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Withdraw Funds</DialogTitle>
-                        <DialogDescription>
-                          Select a payout method, speed, and amount to receive your funds.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="py-4 space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="amount-withdraw">Amount (GHS)</Label>
-                            <Input id="amount-withdraw" type="number" placeholder="500.00" />
-                        </div>
-                         <div className="space-y-2">
-                            <Label>Speed</Label>
-                             <RadioGroup value={withdrawalType} onValueChange={setWithdrawalType} className="grid grid-cols-2 gap-4">
-                                <Label htmlFor="standard-withdrawal" className={cn('flex flex-col items-center justify-center rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground', withdrawalType === 'standard' && 'border-primary')}>
-                                    <RadioGroupItem value="standard" id="standard-withdrawal" className="sr-only" />
-                                    <Clock className="h-6 w-6 mb-2" />
-                                    <span className="font-semibold">Standard</span>
-                                    <span className="text-xs text-muted-foreground">1-2 days (Free)</span>
-                                </Label>
-                                <Label htmlFor="instant-withdrawal" className={cn('flex flex-col items-center justify-center rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground', withdrawalType === 'instant' && 'border-primary')}>
-                                    <RadioGroupItem value="instant" id="instant-withdrawal" className="sr-only" />
-                                    <Zap className="h-6 w-6 mb-2" />
-                                    <span className="font-semibold">Instant</span>
-                                    <span className="text-xs text-muted-foreground">~5 mins (GHS 2.00)</span>
-                                </Label>
-                             </RadioGroup>
-                        </div>
-                        <div className="space-y-2">
-                             <Label>Select Payout Method</Label>
-                             {paymentMethods.length > 0 ? (
-                                <RadioGroup value={selectedPaymentMethod} onValueChange={setSelectedPaymentMethod} className="space-y-2">
-                                    {paymentMethods.map(method => (
-                                        <Label key={method.id} htmlFor={`withdraw-${method.id}`} className={cn('flex items-center gap-4 rounded-md border-2 p-4 cursor-pointer hover:bg-accent hover:text-accent-foreground', selectedPaymentMethod === method.id && 'border-primary')}>
-                                            <RadioGroupItem value={method.id} id={`withdraw-${method.id}`}/>
-                                            {method.type === 'bank' ? <Building className="h-6 w-6 text-muted-foreground" /> : <Phone className="h-6 w-6 text-muted-foreground" />}
-                                            <div className="flex-1">
-                                                <p className="font-semibold">
-                                                    {method.type === 'bank' ? method.details.bankName : `Mobile Money (${method.details.provider?.toUpperCase()})`}
-                                                </p>
-                                                <p className="text-sm text-muted-foreground">
-                                                    {method.type === 'bank' ? method.details.accountNumber : method.details.phoneNumber}
-                                                </p>
-                                            </div>
-                                        </Label>
-                                    ))}
-                                </RadioGroup>
-                             ) : (
-                                <div className="text-center text-muted-foreground py-4 border rounded-md">
-                                    <p>No payment methods found.</p>
-                                    <Button variant="link" asChild>
-                                        <Link href="/dashboard/profile?tab=payments" onClick={() => setIsWithdrawDialogOpen(false)}>Add a Method</Link>
-                                    </Button>
-                                </div>
-                             )}
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setIsWithdrawDialogOpen(false)}>Cancel</Button>
-                        <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <Button disabled={paymentMethods.length === 0}>Confirm Withdrawal</Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Confirm Withdrawal</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        For your security, please confirm your identity to complete this withdrawal.
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <div className="py-4 space-y-4">
-                                     <RadioGroup value={authMethod} onValueChange={(val: any) => setAuthMethod(val)} className="grid grid-cols-3 gap-2">
-                                        <Label htmlFor="password-auth" className={cn('flex items-center justify-center gap-2 cursor-pointer rounded-md border p-2 hover:bg-accent hover:text-accent-foreground has-[:checked]:border-primary')}>
-                                            <RadioGroupItem value="password" id="password-auth" className="sr-only"/>
-                                            <KeyRound className="h-4 w-4"/>
-                                        </Label>
-                                        <Label htmlFor="biometric-auth" className={cn('flex items-center justify-center gap-2 cursor-pointer rounded-md border p-2 hover:bg-accent hover:text-accent-foreground has-[:checked]:border-primary')}>
-                                            <RadioGroupItem value="biometric" id="biometric-auth" className="sr-only"/>
-                                            <Fingerprint className="h-4 w-4"/>
-                                        </Label>
-                                        <Label htmlFor="otp-auth" className={cn('flex items-center justify-center gap-2 cursor-pointer rounded-md border p-2 hover:bg-accent hover:text-accent-foreground has-[:checked]:border-primary')}>
-                                            <RadioGroupItem value="otp" id="otp-auth" className="sr-only"/>
-                                            <Mail className="h-4 w-4"/>
-                                        </Label>
-                                    </RadioGroup>
-                                    {authMethod === 'password' && (
-                                        <div className="space-y-2">
-                                        <Label htmlFor="password-confirm-withdraw">Password</Label>
-                                        <Input id="password-confirm-withdraw" type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Enter your password" />
-                                        </div>
-                                    )}
-                                    {authMethod === 'biometric' && (
-                                        <Button variant="outline" className="w-full justify-center gap-2"><Fingerprint />Confirm with Biometrics</Button>
-                                    )}
-                                    {authMethod === 'otp' && (
-                                        <div className="space-y-2">
-                                        <Label htmlFor="otp-confirm-withdraw">Email OTP</Label>
-                                        <div className="flex gap-2">
-                                            <Input id="otp-confirm-withdraw" type="text" value={otp} onChange={e => setOtp(e.target.value)} placeholder="Enter 6-digit code" />
-                                            <Button type="button" variant="secondary" onClick={handleSendOtp} disabled={isOtpSent}>{isOtpSent ? 'Resend' : 'Send Code'}</Button>
-                                        </div>
-                                        </div>
-                                    )}
-                                </div>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel onClick={() => setPassword('')}>Cancel</AlertDialogCancel>
-                                    <AlertDialogAction onClick={handleWithdraw} disabled={authMethod === 'password' && !password}>
-                                        Confirm
-                                    </AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
-        </div>
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Available Money</CardTitle>
-            <CardDescription>Money you can use now.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-4xl font-bold">GHS 12,345.67</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle>Money on Hold</CardTitle>
-            <CardDescription>Money in active deals.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-4xl font-bold">GHS 5,000.00</p>
-          </CardContent>
-        </Card>
+        <h1 className="text-3xl font-bold font-headline">Escrow &amp; Payouts</h1>
+        <p className="text-muted-foreground">Manage funds in active deals and view your transaction history.</p>
       </div>
 
       <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+            <div>
+              <CardTitle>Money on Hold</CardTitle>
+              <CardDescription>This is the total amount currently held in escrow for your active deals.</CardDescription>
+            </div>
+            <Landmark className="h-6 w-6 text-muted-foreground"/>
+        </CardHeader>
+        <CardContent>
+          <p className="text-4xl font-bold">GHS {moneyOnHold.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+        </CardContent>
+      </Card>
+
+      <Card>
         <CardHeader>
-          <CardTitle>Wallet History</CardTitle>
-          <CardDescription>A record of your money movements.</CardDescription>
+          <CardTitle>Transaction History</CardTitle>
+          <CardDescription>A record of your money movements related to deals.</CardDescription>
         </CardHeader>
         <CardContent>
            <div className="space-y-4">
@@ -302,7 +65,7 @@ export default function WalletPage() {
                   <CollapsibleTrigger asChild>
                     <button className="flex w-full items-center justify-between p-4 group">
                       <div className="flex items-center gap-4 text-left">
-                        {tx.amount > 0 ? (
+                        {tx.type === 'incoming' ? (
                           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/50">
                             <ArrowDownLeft className="h-5 w-5 text-green-500" />
                           </div>
@@ -312,8 +75,10 @@ export default function WalletPage() {
                           </div>
                         )}
                         <div>
-                          <p className="font-semibold">{tx.type}</p>
-                          <p className="text-sm text-muted-foreground">{tx.date}</p>
+                          <p className="font-semibold">{tx.description}</p>
+                           <p className="text-sm text-muted-foreground">
+                            {tx.type === 'incoming' ? 'From' : 'To'}: {tx.party}
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-4">
@@ -321,8 +86,8 @@ export default function WalletPage() {
                           <p className={cn("font-mono font-semibold", tx.amount > 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400")}>
                             {tx.amount > 0 ? '+' : '-'}GHS {Math.abs(tx.amount).toLocaleString()}
                           </p>
-                          <Badge variant={tx.status === 'Completed' ? 'default' : 'secondary'} className={cn("mt-1", {'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': tx.status === 'Completed', 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200': tx.status !== 'Completed'})}>
-                              {tx.status}
+                          <Badge variant={tx.status === 'completed' ? 'default' : 'secondary'} className={cn("mt-1", {'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': tx.status === 'completed', 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200': tx.status === 'pending', 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200': tx.status === 'inHolding'})}>
+                              {tx.status.charAt(0).toUpperCase() + tx.status.slice(1).replace('_', ' ')}
                           </Badge>
                         </div>
                         <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
@@ -332,7 +97,7 @@ export default function WalletPage() {
                   <CollapsibleContent>
                     <div className="px-4 pb-4 space-y-2">
                         <Separator/>
-                        <p className="text-sm text-muted-foreground pt-2">{tx.description}</p>
+                        <p className="text-sm text-muted-foreground pt-2">{tx.description} with {tx.party}.</p>
                     </div>
                   </CollapsibleContent>
                 </Card>
