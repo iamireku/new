@@ -3,7 +3,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush } from 'lucide-react';
+import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, SmartphoneNfc } from 'lucide-react';
 import Link from 'next/link';
 import { AppLogo } from '@/components/AppLogo';
 import Image from 'next/image';
@@ -12,13 +12,14 @@ import Autoplay from "embla-carousel-autoplay"
 import React from 'react';
 
 
-const ProcessStep = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => (
+const ProcessStep = ({ icon, title, description, children }: { icon: React.ReactNode; title: string; description: string, children?: React.ReactNode }) => (
     <div className="flex flex-col items-center text-center">
         <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
             {icon}
         </div>
         <h3 className="mb-2 text-lg font-semibold">{title}</h3>
         <p className="text-muted-foreground">{description}</p>
+        {children}
     </div>
 );
 
@@ -128,7 +129,14 @@ export default function LandingPage() {
                 icon={<ShieldCheck className="h-8 w-8" />}
                 title="2. Buyer Pays Securely"
                 description="The buyer funds the deal. We hold the money safely in the middle."
-              />
+              >
+                  <div className="mt-4 flex items-center gap-2 rounded-lg border bg-background p-3 text-left text-xs text-muted-foreground">
+                    <SmartphoneNfc className="h-8 w-8 flex-shrink-0 text-accent" />
+                    <div>
+                       <span className="font-bold text-foreground">Never share your PIN.</span> You will be prompted to enter your MoMo PIN on your OWN phone to approve the payment.
+                    </div>
+                  </div>
+              </ProcessStep>
               <ProcessStep
                 icon={<Briefcase className="h-8 w-8" />}
                 title="3. Seller Delivers"
