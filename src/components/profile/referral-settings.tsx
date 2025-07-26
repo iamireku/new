@@ -1,5 +1,4 @@
 // /src/components/profile/referral-settings.tsx
-// /src/components/profile/referral-settings.tsx
 'use client';
 
 import { useState } from 'react';
@@ -74,15 +73,6 @@ export function ReferralSettings() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {!isReferralCustomized && (
-          <div className="flex items-start gap-3 rounded-lg border border-destructive/50 bg-destructive/5 p-3 text-sm text-destructive">
-            <AlertTriangle className="h-5 w-5 mt-0.5 flex-shrink-0" />
-            <div>
-              <p className="font-semibold">Warning: This action cannot be undone.</p>
-              <p>Changing your code means you will no longer be credited for deals associated with your old code.</p>
-            </div>
-          </div>
-        )}
         <div className="space-y-2">
           <Label htmlFor="referral-code">Your Code</Label>
           <Input
@@ -113,11 +103,18 @@ export function ReferralSettings() {
             </AlertDialogTrigger>
             <AlertDialogContent>
               <AlertDialogHeader>
-                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  You can only customize your referral code once. Changing it means you will no longer be credited for deals associated with your old code. This action cannot be undone.
+                   You can only customize your referral code once. This action cannot be undone.
                 </AlertDialogDescription>
               </AlertDialogHeader>
+              <div className="flex items-start gap-3 rounded-lg border border-destructive/50 bg-destructive/5 p-3 text-sm text-destructive">
+                <AlertTriangle className="h-5 w-5 mt-0.5 flex-shrink-0" />
+                <div>
+                  <p className="font-semibold">Warning: This affects your earnings.</p>
+                  <p>Changing your code means you will no longer be credited for deals associated with your old code.</p>
+                </div>
+              </div>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction onClick={handleCustomizeReferral}>Confirm and Set Code</AlertDialogAction>
