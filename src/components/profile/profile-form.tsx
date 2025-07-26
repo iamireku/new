@@ -160,7 +160,6 @@ export function ProfileForm() {
                       <Input className="pl-9" readOnly={isIdCustomized} {...field} />
                     </div>
                   </FormControl>
-                  {!isIdCustomized && <p className="text-xs text-muted-foreground">You can set your unique Betweena ID once.</p>}
                   <FormMessage />
                 </FormItem>
               )}
@@ -190,7 +189,7 @@ export function ProfileForm() {
                   <AlertDialogHeader>
                     <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      You can only customize your Betweena ID once. This action cannot be undone.
+                      You can only customize your Betweena ID once. This is your unique username for receiving deals. This action cannot be undone.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
