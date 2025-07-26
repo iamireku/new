@@ -3,7 +3,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, SmartphoneNfc } from 'lucide-react';
+import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, SmartphoneNfc, KeyRound, Lock } from 'lucide-react';
 import Link from 'next/link';
 import { AppLogo } from '@/components/AppLogo';
 import Image from 'next/image';
@@ -12,14 +12,13 @@ import Autoplay from "embla-carousel-autoplay"
 import React from 'react';
 
 
-const ProcessStep = ({ icon, title, description, children }: { icon: React.ReactNode; title: string; description: string, children?: React.ReactNode }) => (
+const ProcessStep = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => (
     <div className="flex flex-col items-center text-center">
         <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
             {icon}
         </div>
         <h3 className="mb-2 text-lg font-semibold">{title}</h3>
         <p className="text-muted-foreground">{description}</p>
-        {children}
     </div>
 );
 
@@ -126,17 +125,10 @@ export default function LandingPage() {
                 description="You and the other party create a deal with clear terms and acceptance criteria."
               />
               <ProcessStep
-                icon={<ShieldCheck className="h-8 w-8" />}
+                icon={<DollarSign className="h-8 w-8" />}
                 title="2. Buyer Pays Securely"
                 description="The buyer funds the deal. We hold the money safely in the middle."
-              >
-                  <div className="mt-4 flex items-center gap-2 rounded-lg border bg-background p-3 text-left text-xs text-muted-foreground">
-                    <SmartphoneNfc className="h-8 w-8 flex-shrink-0 text-accent" />
-                    <div>
-                       <span className="font-bold text-foreground">Never share your PIN.</span> You will be prompted to enter your MoMo PIN on your OWN phone to approve the payment.
-                    </div>
-                  </div>
-              </ProcessStep>
+              />
               <ProcessStep
                 icon={<Briefcase className="h-8 w-8" />}
                 title="3. Seller Delivers"
@@ -152,6 +144,33 @@ export default function LandingPage() {
         </section>
 
         <section className="bg-background py-20 md:py-32">
+            <div className="container mx-auto px-4 md:px-6">
+                <div className="text-center mb-16">
+                    <h2 className="text-3xl font-bold font-headline">Your Security is Our Priority</h2>
+                    <p className="mt-2 text-lg text-muted-foreground">We are committed to making online transactions safe and transparent for everyone.</p>
+                </div>
+                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                   <BenefitCard
+                        icon={<KeyRound className="h-6 w-6"/>}
+                        title="Your PIN is Private"
+                        description="We will never ask for your MoMo PIN. Payments are approved securely on your own phone via a prompt from your provider."
+                   />
+                   <BenefitCard
+                        icon={<Lock className="h-6 w-6"/>}
+                        title="Secure Escrow"
+                        description="Your money is held safely in a secure, regulated account until you confirm you're satisfied with the deal. No surprises."
+                   />
+                   <BenefitCard
+                        icon={<ShieldCheck className="h-6 w-6"/>}
+                        title="Data Privacy"
+                        description="We use bank-grade security and data encryption to protect your personal and financial information at all times."
+                   />
+                </div>
+            </div>
+        </section>
+
+
+        <section className="py-20 md:py-32">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="text-center mb-16">
                     <h2 className="text-3xl font-bold font-headline">Built for the Modern African Economy</h2>
@@ -177,7 +196,7 @@ export default function LandingPage() {
             </div>
         </section>
 
-         <section className="py-20 md:py-32">
+         <section className="bg-background py-20 md:py-32">
             <div className="container mx-auto text-center">
                 <h2 className="text-3xl font-bold font-headline">Ready to Transact with Confidence?</h2>
                 <p className="mt-4 text-lg text-muted-foreground">Join thousands of savvy individuals and businesses across Africa securing their payments.</p>
