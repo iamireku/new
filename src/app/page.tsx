@@ -2,14 +2,69 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, SmartphoneNfc, KeyRound, Lock } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound } from 'lucide-react';
 import Link from 'next/link';
 import { AppLogo } from '@/components/AppLogo';
 import Image from 'next/image';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import Autoplay from "embla-carousel-autoplay"
-import React from 'react';
+import Autoplay from "embla-carousel-autoplay";
+import React, { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
+import { addToWaitlist, AddToWaitlistInput } from '@/ai/flows/waitlist-flow';
+
+const WaitlistForm = () => {
+  const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) {
+      toast({
+        variant: 'destructive',
+        title: 'Email is required',
+        description: 'Please enter your email address.',
+      });
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const input: AddToWaitlistInput = { email };
+      await addToWaitlist(input);
+      toast({
+        title: 'You\'re on the list!',
+        description: 'Thanks for joining the Betweena waitlist. We\'ll be in touch!',
+      });
+      setEmail('');
+    } catch (error) {
+      toast({
+        variant: 'destructive',
+        title: 'Submission failed',
+        description: 'Could not add you to the waitlist. Please try again.',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="mt-8 flex flex-col sm:flex-row w-full max-w-lg mx-auto md:mx-0 gap-2">
+      <Input
+        type="email"
+        placeholder="Enter your email address"
+        className="flex-1 text-base"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        disabled={isLoading}
+      />
+      <Button type="submit" size="lg" disabled={isLoading}>
+        {isLoading ? 'Joining...' : 'Join the Waitlist'}
+      </Button>
+    </form>
+  );
+};
 
 
 const ProcessStep = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => (
@@ -46,37 +101,30 @@ export default function LandingPage() {
         <AppLogo />
         <nav className="flex items-center gap-4">
           <Button variant="ghost" asChild>
-            <Link href="/login">Login</Link>
+            <Link href="#features">How it Works</Link>
           </Button>
           <Button asChild>
-            <Link href="/signup">Get Started</Link>
+            <Link href="#waitlist">Join Waitlist</Link>
           </Button>
         </nav>
       </header>
 
       <main className="flex-1">
-        <section className="bg-background py-20 md:py-32">
+        <section id="waitlist" className="bg-background py-20 md:py-32">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="grid gap-12 md:grid-cols-2 md:items-center">
                     <div className="text-center md:text-left">
                         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl font-headline">
-                            Safe Deals for Social Commerce & Freelancers
+                           The Future of Secure Transactions is Coming Soon
                         </h1>
                         <p className="mt-4 max-w-2xl text-lg text-muted-foreground md:text-xl">
-                           Buying on Instagram or selling your services? Betweena holds the payment securely. No more scams. The seller only gets paid when the buyer is happy.
+                           Betweena is building the safest way for freelancers and social media sellers in Africa to do business. Join our waitlist to get early access and be the first to know when we launch.
                         </p>
-                        <div className="mt-8 flex flex-wrap justify-center md:justify-start gap-4">
-                          <Button size="lg" asChild>
-                            <Link href="/signup">Start a Secure Deal</Link>
-                          </Button>
-                          <Button size="lg" variant="secondary" asChild>
-                            <a href="#features">Learn More</a>
-                          </Button>
-                        </div>
+                        <WaitlistForm />
                     </div>
                     <div>
-                        <Carousel 
-                            className="w-full max-w-xl mx-auto" 
+                        <Carousel
+                            className="w-full max-w-xl mx-auto"
                             opts={{ loop: true }}
                             plugins={[plugin.current]}
                             onMouseEnter={plugin.current.stop}
@@ -146,32 +194,6 @@ export default function LandingPage() {
         <section className="bg-background py-20 md:py-32">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl font-bold font-headline">Built for the Modern African Economy</h2>
-                    <p className="mt-2 text-lg text-muted-foreground">For sellers who want assurance, and buyers who want security.</p>
-                </div>
-                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                   <BenefitCard
-                        icon={<Paintbrush className="h-6 w-6"/>}
-                        title="Freelancers & Creatives"
-                        description="Stop chasing invoices. Secure your payment before you start work and get paid instantly upon approval. Focus on your craft, not your collections."
-                   />
-                   <BenefitCard
-                        icon={<Briefcase className="h-6 w-6"/>}
-                        title="Service Providers"
-                        description="Secure client projects and manage payments with confidence. Our clear audit trail simplifies accounting and builds trust with your clients."
-                   />
-                   <BenefitCard
-                        icon={<ShoppingCart className="h-6 w-6"/>}
-                        title="Online & Social Commerce"
-                        description="Buying or selling on Instagram, Facebook, or WhatsApp? Use Betweena to eliminate the risk of scams. Pay only when you get what you ordered."
-                   />
-                </div>
-            </div>
-        </section>
-
-        <section className="py-20 md:py-32">
-            <div className="container mx-auto px-4 md:px-6">
-                <div className="text-center mb-16">
                     <h2 className="text-3xl font-bold font-headline">Your Security is Our Priority</h2>
                     <p className="mt-2 text-lg text-muted-foreground">We are committed to making online transactions safe and transparent for everyone.</p>
                 </div>
@@ -195,6 +217,31 @@ export default function LandingPage() {
             </div>
         </section>
 
+        <section className="py-20 md:py-32">
+            <div className="container mx-auto px-4 md:px-6">
+                <div className="text-center mb-16">
+                    <h2 className="text-3xl font-bold font-headline">Built for the Modern African Economy</h2>
+                    <p className="mt-2 text-lg text-muted-foreground">For sellers who want assurance, and buyers who want security.</p>
+                </div>
+                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                   <BenefitCard
+                        icon={<Paintbrush className="h-6 w-6"/>}
+                        title="Freelancers & Creatives"
+                        description="Stop chasing invoices. Secure your payment before you start work and get paid instantly upon approval. Focus on your craft, not your collections."
+                   />
+                   <BenefitCard
+                        icon={<Briefcase className="h-6 w-6"/>}
+                        title="Service Providers"
+                        description="Secure client projects and manage payments with confidence. Our clear audit trail simplifies accounting and builds trust with your clients."
+                   />
+                   <BenefitCard
+                        icon={<ShoppingCart className="h-6 w-6"/>}
+                        title="Online & Social Commerce"
+                        description="Buying or selling on Instagram, Facebook, or WhatsApp? Use Betweena to eliminate the risk of scams. Pay only when you get what you ordered."
+                   />
+                </div>
+            </div>
+        </section>
 
          <section className="bg-background py-20 md:py-32">
             <div className="container mx-auto text-center">
@@ -202,7 +249,7 @@ export default function LandingPage() {
                 <p className="mt-4 text-lg text-muted-foreground">Join thousands of savvy individuals and businesses across Africa securing their payments.</p>
                 <div className="mt-8">
                     <Button size="lg" asChild>
-                        <Link href="/signup">Create Your Free Account</Link>
+                        <Link href="#waitlist">Join the Waitlist</Link>
                     </Button>
                 </div>
             </div>

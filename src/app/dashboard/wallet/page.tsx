@@ -13,12 +13,12 @@ import { Badge } from '@/components/ui/badge';
 import { ArrowUpRight, ArrowDownLeft, ChevronDown, Landmark } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
-import type { WalletTransaction } from '@/lib/data';
+import type { Transaction } from '@/lib/data';
 import { getRecentTransactions } from '@/lib/services/wallet.service';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 export default function WalletPage() {
-    const [transactions, setTransactions] = useState<WalletTransaction[]>([]);
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
 
     useEffect(() => {
         async function fetchData() {
