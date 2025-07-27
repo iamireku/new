@@ -71,10 +71,7 @@ export default function LandingPage() {
             <Link href="#features">How it Works</Link>
           </Button>
           <Button asChild>
-            <Link href="/login">Login</Link>
-          </Button>
-           <Button asChild>
-            <Link href="/signup">Get Started</Link>
+            <Link href="#waitlist">Join Waitlist</Link>
           </Button>
         </nav>
       </header>
