@@ -14,8 +14,8 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 
 const WaitlistForm = () => {
-  // IMPORTANT: Replace with your actual Formspree form ID
-  const FORMSPREE_FORM_ID = 'YOUR_FORM_ID_HERE';
+  // IMPORTANT: This is your actual Formspree form ID
+  const FORMSPREE_FORM_ID = "manbjyja";
 
   return (
     <form action={`https://formspree.io/f/${FORMSPREE_FORM_ID}`} method="POST" className="mt-8 flex flex-col sm:flex-row w-full max-w-lg mx-auto md:mx-0 gap-2">
@@ -71,7 +71,10 @@ export default function LandingPage() {
             <Link href="#features">How it Works</Link>
           </Button>
           <Button asChild>
-            <Link href="#waitlist">Join Waitlist</Link>
+            <Link href="/login">Login</Link>
+          </Button>
+           <Button asChild>
+            <Link href="/signup">Get Started</Link>
           </Button>
         </nav>
       </header>
