@@ -18,22 +18,32 @@ const WaitlistForm = () => {
   const FORMSPREE_FORM_ID = "manbjyja";
 
   return (
-    <form action={`https://formspree.io/f/${FORMSPREE_FORM_ID}`} method="POST" className="mt-8 flex flex-col w-full max-w-lg mx-auto md:mx-0 gap-4">
+    <form action={`https://formspree.io/f/${FORMSPREE_FORM_ID}`} method="POST" className="mt-8 flex flex-col w-full max-w-2xl mx-auto md:mx-0 gap-4">
+      <Input
+        type="email"
+        name="email"
+        placeholder="Enter your email address"
+        className="flex-1 text-base"
+        required
+      />
       <div className="flex flex-col sm:flex-row gap-2">
-        <Input
-          type="email"
-          name="email"
-          placeholder="Enter your email address"
-          className="flex-1 text-base"
-          required
-        />
          <Select name="role" required>
-            <SelectTrigger className="w-full sm:w-[180px] text-base">
+            <SelectTrigger className="w-full text-base">
               <SelectValue placeholder="I am a..." />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Buyer">Buyer</SelectItem>
               <SelectItem value="Seller">Seller</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select name="platform" required>
+            <SelectTrigger className="w-full text-base">
+                <SelectValue placeholder="Preferred Platform..." />
+            </SelectTrigger>
+            <SelectContent>
+                <SelectItem value="Web">Web</SelectItem>
+                <SelectItem value="Android">Android</SelectItem>
+                <SelectItem value="iOS">iOS</SelectItem>
             </SelectContent>
           </Select>
       </div>
