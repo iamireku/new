@@ -3,7 +3,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound, Mail } from 'lucide-react';
+import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound, Mail, Menu } from 'lucide-react';
 import Link from 'next/link';
 import { AppLogo } from '@/components/AppLogo';
 import Image from 'next/image';
@@ -12,9 +12,10 @@ import Autoplay from "embla-carousel-autoplay";
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 const WaitlistForm = () => {
-  // This is your actual Formspree form ID
+  // Formspree form ID
   const FORMSPREE_FORM_ID = "manbjyja";
 
   return (
@@ -87,7 +88,7 @@ export default function LandingPage() {
     <div className="flex min-h-screen flex-col bg-secondary">
       <header className="container mx-auto flex h-20 items-center justify-between px-4 md:px-6 bg-secondary">
         <AppLogo />
-        <nav className="flex items-center gap-4">
+        <nav className="hidden md:flex items-center gap-4">
           <Button variant="ghost" asChild>
             <Link href="#features">How it Works</Link>
           </Button>
@@ -95,6 +96,28 @@ export default function LandingPage() {
             <Link href="#waitlist">Join Waitlist</Link>
           </Button>
         </nav>
+        <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon" className="shrink-0 md:hidden">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Toggle navigation menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left">
+                <nav className="grid gap-6 text-lg font-medium mt-8">
+                    <AppLogo />
+                    <Link href="#features" className="text-muted-foreground hover:text-foreground">
+                        How it Works
+                    </Link>
+                    <Link href="#waitlist" className="text-muted-foreground hover:text-foreground">
+                        Join Waitlist
+                    </Link>
+                     <Link href="/login" className="text-muted-foreground hover:text-foreground">
+                        Login
+                    </Link>
+                </nav>
+            </SheetContent>
+        </Sheet>
       </header>
 
       <main className="flex-1">
