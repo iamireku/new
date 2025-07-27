@@ -12,55 +12,22 @@ import Autoplay from "embla-carousel-autoplay";
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { addToWaitlist, AddToWaitlistInput } from '@/ai/flows/waitlist-flow';
 
 const WaitlistForm = () => {
-  const [email, setEmail] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const { toast } = useToast();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) {
-      toast({
-        variant: 'destructive',
-        title: 'Email is required',
-        description: 'Please enter your email address.',
-      });
-      return;
-    }
-    setIsLoading(true);
-    try {
-      const input: AddToWaitlistInput = { email };
-      await addToWaitlist(input);
-      toast({
-        title: 'You\'re on the list!',
-        description: 'Thanks for joining the Betweena waitlist. We\'ll be in touch!',
-      });
-      setEmail('');
-    } catch (error) {
-      toast({
-        variant: 'destructive',
-        title: 'Submission failed',
-        description: 'Could not add you to the waitlist. Please try again.',
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // IMPORTANT: Replace with your actual Formspree form ID
+  const FORMSPREE_FORM_ID = 'YOUR_FORM_ID_HERE';
 
   return (
-    <form onSubmit={handleSubmit} className="mt-8 flex flex-col sm:flex-row w-full max-w-lg mx-auto md:mx-0 gap-2">
+    <form action={`https://formspree.io/f/${FORMSPREE_FORM_ID}`} method="POST" className="mt-8 flex flex-col sm:flex-row w-full max-w-lg mx-auto md:mx-0 gap-2">
       <Input
         type="email"
+        name="email"
         placeholder="Enter your email address"
         className="flex-1 text-base"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        disabled={isLoading}
+        required
       />
-      <Button type="submit" size="lg" disabled={isLoading}>
-        {isLoading ? 'Joining...' : 'Join the Waitlist'}
+      <Button type="submit" size="lg">
+        Join the Waitlist
       </Button>
     </form>
   );
