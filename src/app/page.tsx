@@ -3,29 +3,40 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound } from 'lucide-react';
+import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound, Mail } from 'lucide-react';
 import Link from 'next/link';
 import { AppLogo } from '@/components/AppLogo';
 import Image from 'next/image';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import Autoplay from "embla-carousel-autoplay";
-import React, { useState } from 'react';
+import React from 'react';
 import { Input } from '@/components/ui/input';
-import { useToast } from '@/hooks/use-toast';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const WaitlistForm = () => {
-  // IMPORTANT: This is your actual Formspree form ID
+  // This is your actual Formspree form ID
   const FORMSPREE_FORM_ID = "manbjyja";
 
   return (
-    <form action={`https://formspree.io/f/${FORMSPREE_FORM_ID}`} method="POST" className="mt-8 flex flex-col sm:flex-row w-full max-w-lg mx-auto md:mx-0 gap-2">
-      <Input
-        type="email"
-        name="email"
-        placeholder="Enter your email address"
-        className="flex-1 text-base"
-        required
-      />
+    <form action={`https://formspree.io/f/${FORMSPREE_FORM_ID}`} method="POST" className="mt-8 flex flex-col w-full max-w-lg mx-auto md:mx-0 gap-4">
+      <div className="flex flex-col sm:flex-row gap-2">
+        <Input
+          type="email"
+          name="email"
+          placeholder="Enter your email address"
+          className="flex-1 text-base"
+          required
+        />
+         <Select name="role" required>
+            <SelectTrigger className="w-full sm:w-[180px] text-base">
+              <SelectValue placeholder="I am a..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Buyer">Buyer</SelectItem>
+              <SelectItem value="Seller">Seller</SelectItem>
+            </SelectContent>
+          </Select>
+      </div>
       <Button type="submit" size="lg">
         Join the Waitlist
       </Button>
@@ -231,6 +242,10 @@ export default function LandingPage() {
             <span className="text-muted-foreground">Betweena &copy; {new Date().getFullYear()}</span>
           </div>
           <div className="mt-4 flex gap-4 md:mt-0">
+             <a href="mailto:partnerships@betweena.app" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+                <Mail className="h-4 w-4"/>
+                Partnerships
+             </a>
             <Link href="/terms-of-service" className="text-sm text-muted-foreground hover:text-foreground">
               Terms of Service
             </Link>
