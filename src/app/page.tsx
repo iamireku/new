@@ -111,6 +111,9 @@ export default function LandingPage() {
           <Button variant="ghost" asChild>
             <Link href="#features">How it Works</Link>
           </Button>
+          <Button variant="ghost" asChild>
+            <Link href="#faq">FAQ</Link>
+          </Button>
           <Button asChild>
             <Link href="#waitlist">Join Waitlist</Link>
           </Button>
@@ -127,6 +130,9 @@ export default function LandingPage() {
                     <AppLogo />
                     <Link href="#features" className="text-muted-foreground hover:text-foreground">
                         How it Works
+                    </Link>
+                    <Link href="#faq" className="text-muted-foreground hover:text-foreground">
+                        FAQ
                     </Link>
                     <Link href="#waitlist" className="text-muted-foreground hover:text-foreground">
                         Join Waitlist
@@ -270,7 +276,7 @@ export default function LandingPage() {
             </div>
         </section>
         
-        <section className="bg-background py-20 md:py-32">
+        <section id="faq" className="bg-background py-20 md:py-32">
             <div className="container mx-auto px-4 md:px-6 max-w-4xl">
                 <div className="text-center mb-16">
                     <h2 className="text-3xl font-bold font-headline">Frequently Asked Questions</h2>
