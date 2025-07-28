@@ -78,7 +78,26 @@ const BenefitCard = ({ icon, title, description }: { icon: React.ReactNode, titl
             <p className="text-muted-foreground">{description}</p>
         </CardContent>
     </Card>
-)
+);
+
+const faqs = [
+    {
+        question: "How does Betweena make money?",
+        answer: "Betweena charges a small, transparent service fee for each successfully completed deal. There are no hidden charges or monthly subscriptions for our standard service. You only pay for what you use."
+    },
+    {
+        question: "Is my money really safe?",
+        answer: "Yes. When a buyer pays, the funds are held in a secure, separate account with a regulated financial partner. We only release the money to the seller after the buyer confirms they have received the goods or services as agreed. This eliminates the risk of scams for both parties."
+    },
+    {
+        question: "What happens if there's a disagreement?",
+        answer: "If there's an issue with a deal, either party can raise a dispute. This pauses the transaction, and our dedicated resolution team will step in to mediate and ensure a fair outcome for everyone involved."
+    },
+    {
+        question: "When do you plan to launch?",
+        answer: "We are working hard to launch in the coming months. By joining the waitlist, you'll be the first to know about our launch date and get exclusive early access."
+    }
+]
 
 export default function LandingPage() {
     const plugin = React.useRef(
@@ -129,7 +148,7 @@ export default function LandingPage() {
                            The Future of Secure Transactions is Coming Soon
                         </h1>
                         <p className="mt-4 max-w-2xl text-lg text-muted-foreground md:text-xl">
-                           Betweena is building the safest way for freelancers and social media sellers in Africa to do business. Join our waitlist to get early access and be the first to know when we launch.
+                           Betweena is building the safest way for freelancers and online sellers and buyers in Ghana and across Africa to do business. Join our waitlist to get early access and be the first to know when we launch.
                         </p>
                         <WaitlistForm />
                     </div>
@@ -253,11 +272,32 @@ export default function LandingPage() {
                 </div>
             </div>
         </section>
+        
+        <section className="bg-background py-20 md:py-32">
+            <div className="container mx-auto px-4 md:px-6 max-w-4xl">
+                <div className="text-center mb-16">
+                    <h2 className="text-3xl font-bold font-headline">Frequently Asked Questions</h2>
+                    <p className="mt-2 text-lg text-muted-foreground">Got questions? We've got answers.</p>
+                </div>
+                <div className="space-y-6">
+                    {faqs.map((faq, index) => (
+                         <Card key={index}>
+                            <CardHeader>
+                                <CardTitle className="text-lg">{faq.question}</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-muted-foreground">{faq.answer}</p>
+                            </CardContent>
+                        </Card>
+                    ))}
+                </div>
+            </div>
+        </section>
 
-         <section className="bg-background py-20 md:py-32">
+         <section className="py-20 md:py-32">
             <div className="container mx-auto text-center">
                 <h2 className="text-3xl font-bold font-headline">Ready to Transact with Confidence?</h2>
-                <p className="mt-4 text-lg text-muted-foreground">Join thousands of savvy individuals and businesses across Africa securing their payments.</p>
+                <p className="mt-4 text-lg text-muted-foreground">Join thousands of savvy individuals and businesses In Ghana and across Africa securing their payments.</p>
                 <div className="mt-8">
                     <Button size="lg" asChild>
                         <Link href="#waitlist">Join the Waitlist</Link>
@@ -275,7 +315,7 @@ export default function LandingPage() {
             <span className="text-muted-foreground">Betweena &copy; {new Date().getFullYear()}</span>
           </div>
           <div className="mt-4 flex gap-4 md:mt-0">
-             <a href="mailto:partnerships@betweena.app" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+             <a href="mailto:asante.isaac@gmail.com" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
                 <Mail className="h-4 w-4"/>
                 Partnerships
              </a>
