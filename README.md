@@ -1,5 +1,4 @@
 <!-- /README.md -->
-<!-- /README.md -->
 # Betweena: Secure Escrow for Social Commerce & Freelancers
 
 Welcome to the Betweena project repository. This document outlines the project's current status, roadmap to a Minimum Viable Product (MVP), and instructions for getting started.
@@ -90,3 +89,46 @@ To handle real money, we must integrate a secure payment provider.
     ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+---
+
+## Deployment to Firebase
+
+This project is configured for one-command deployment to **Firebase App Hosting**. Follow these steps to go live.
+
+### Prerequisites
+
+1.  **Install Firebase CLI:** If you don't have it, install it globally.
+    ```bash
+    npm install -g firebase-tools
+    ```
+2.  **Firebase Project:** Make sure you have created a Firebase project on the [Firebase Console](https://console.firebase.google.com/).
+
+### Deployment Steps
+
+1.  **Login to Firebase:**
+    ```bash
+    firebase login
+    ```
+    This will open a browser window for you to authenticate your account.
+
+2.  **Connect to Your Firebase Project:**
+    Run the following command and select your project from the list.
+    ```bash
+    firebase use --add
+    ```
+
+3.  **Build the Application:**
+    Create a production-ready build of your Next.js app.
+    ```bash
+    npm run build
+    ```
+
+4.  **Deploy!**
+    This one command will upload your build and deploy it to Firebase App Hosting.
+    ```bash
+    firebase apphosting:backends:deploy --id betweena-backend --region us-central1
+    ```
+    *Note: The first deployment might take a few minutes as Firebase provisions resources.*
+
+After the command finishes, it will give you the live URL for your application. You can now share it with the world!
