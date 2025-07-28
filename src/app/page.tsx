@@ -131,9 +131,6 @@ export default function LandingPage() {
                     <Link href="#waitlist" className="text-muted-foreground hover:text-foreground">
                         Join Waitlist
                     </Link>
-                     <Link href="/login" className="text-muted-foreground hover:text-foreground">
-                        Login
-                    </Link>
                 </nav>
             </SheetContent>
         </Sheet>
