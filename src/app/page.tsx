@@ -3,7 +3,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound, Mail, Menu } from 'lucide-react';
+import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound, Mail, Menu, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import { AppLogo } from '@/components/AppLogo';
 import Image from 'next/image';
@@ -13,6 +13,8 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { cn } from '@/lib/utils';
 
 const WaitlistForm = () => {
   // Formspree form ID
@@ -111,7 +113,7 @@ export default function LandingPage() {
           <Button variant="ghost" asChild>
             <Link href="#features">How it Works</Link>
           </Button>
-          <Button variant="ghost" asChild>
+           <Button variant="ghost" asChild>
             <Link href="#faq">FAQ</Link>
           </Button>
           <Button asChild>
@@ -282,16 +284,23 @@ export default function LandingPage() {
                     <h2 className="text-3xl font-bold font-headline">Frequently Asked Questions</h2>
                     <p className="mt-2 text-lg text-muted-foreground">Got questions? We've got answers.</p>
                 </div>
-                <div className="space-y-6">
+                <div className="space-y-4">
                     {faqs.map((faq, index) => (
-                         <Card key={index}>
-                            <CardHeader>
-                                <CardTitle className="text-lg">{faq.question}</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-muted-foreground">{faq.answer}</p>
-                            </CardContent>
-                        </Card>
+                         <Collapsible key={index} asChild>
+                            <Card>
+                                <CollapsibleTrigger asChild>
+                                    <button className="flex w-full items-center justify-between p-4 group">
+                                        <CardTitle className="text-lg text-left">{faq.question}</CardTitle>
+                                        <ChevronDown className="h-5 w-5 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
+                                    </button>
+                                </CollapsibleTrigger>
+                                <CollapsibleContent>
+                                    <CardContent>
+                                        <p className="text-muted-foreground">{faq.answer}</p>
+                                    </CardContent>
+                                </CollapsibleContent>
+                            </Card>
+                         </Collapsible>
                     ))}
                 </div>
             </div>
