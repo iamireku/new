@@ -148,7 +148,7 @@ export default function LandingPage() {
         <section id="waitlist" className="bg-background py-20 md:py-32">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="grid gap-12 md:grid-cols-2 md:items-center">
-                    <div className="text-center md:text-left">
+                    <div className="text-center md:text-left animate-in fade-in slide-in-from-bottom-4 duration-1000">
                         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl font-headline">
                            The Future of Secure Transactions is Coming Soon
                         </h1>
@@ -157,7 +157,7 @@ export default function LandingPage() {
                         </p>
                         <WaitlistForm />
                     </div>
-                    <div>
+                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
                         <Carousel
                             className="w-full max-w-xl mx-auto"
                             opts={{ loop: true }}
