@@ -132,3 +132,37 @@ This project is configured for one-command deployment to **Firebase App Hosting*
     *Note: The first deployment might take a few minutes as Firebase provisions resources.*
 
 After the command finishes, it will give you the live URL for your application. You can now share it with the world!
+
+---
+
+## Connecting a Custom Domain
+
+To make your application accessible at your own domain name (e.g., `www.your-app.com`), follow these steps in the Firebase Console.
+
+1.  **Go to the Firebase Console:**
+    Navigate to the [Firebase Console](https://console.firebase.google.com/) and select your project.
+
+2.  **Open the Hosting Dashboard:**
+    In the left-hand menu, under the "Build" section, click on **Hosting**.
+
+3.  **Start the "Add Custom Domain" Wizard:**
+    Click the **"Add custom domain"** button.
+
+4.  **Enter Your Domain:**
+    Type the domain name you own (e.g., `your-domain.com`) and click "Continue". You can also choose to set up a redirect from `your-domain.com` to `www.your-domain.com`.
+
+5.  **Verify Ownership:**
+    *   Firebase will give you a **TXT record** (a line of text).
+    *   You need to go to your domain registrar's website (e.g., Google Domains, Namecheap, GoDaddy).
+    *   In your registrar's DNS management panel, add this TXT record. This proves to Firebase that you own the domain.
+    *   DNS changes can take some time to propagate (from a few minutes to a few hours). You can use a tool like [whatsmydns.net](https://whatsmydns.net/) to check the status.
+
+6.  **Add A Records:**
+    *   Once your ownership is verified, Firebase will provide you with one or more **IP addresses**.
+    *   Go back to your domain registrar's DNS settings.
+    *   Create **A records** that point your domain (e.g., `your-domain.com` and `www.your-domain.com`) to the IP addresses provided by Firebase.
+
+7.  **Wait for Provisioning:**
+    After you've added the A records, Firebase will begin provisioning an SSL certificate for your domain to ensure it's secure (HTTPS). This process is automatic and can take up to a few hours.
+
+Once complete, your site will be live on your custom domain!
