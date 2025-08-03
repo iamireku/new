@@ -8,36 +8,13 @@
       "**/node_modules/**"
     ],
     "frameworksBackend": {
-      "region": "us-central1"
+      "region": "us-central1",
+      "id": "betweena-backend"
     },
     "rewrites": [
       {
-        "source": "/_next/static/**",
-        "destination": "/_next/static/**"
-      },
-      {
-        "source": "/favicon.ico",
-        "destination": "/favicon.ico"
-      },
-      {
-        "source": "/logo.png",
-        "destination": "/logo.png"
-      },
-      {
-        "source": "/hero.png",
-        "destination": "/hero.png"
-      },
-      {
-        "source": "/hero2.png",
-        "destination": "/hero2.png"
-      },
-      {
-        "source": "/",
-        "destination": "/index.html"
-      },
-      {
         "source": "**",
-        "destination": "/"
+        "apphosting": "betweena-backend"
       }
     ]
   }
