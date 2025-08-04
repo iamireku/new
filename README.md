@@ -115,8 +115,7 @@ This project is configured for one-command deployment to **Firebase App Hosting*
 2.  **Connect to Your Firebase Project:**
     Run the following command and select your project from the list.
     ```bash
-    firebase use --add
-    ```
+    firebase use --add    ```
 
 3.  **Build the Application:**
     Create a production-ready build of your Next.js app.
