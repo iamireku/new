@@ -11,7 +11,7 @@
 
 **Target Audience:**
 *   Freelancers (designers, developers, writers).
-*   Social media vendors (selling on Instagram, Facebook, WhatsApp).
+*   Social media vendors (selling on Instagram, Facebook, WhatsApp etc).
 *   Their clients and customers.
 
 ### Core Pillars
@@ -52,6 +52,7 @@ Our deal lifecycle is designed to be clear and secure:
 5.  **`completed`**: The buyer accepts the delivery, and funds are released to the seller.
 6.  **`dispute`**: If there's a disagreement, the deal is paused for manual intervention.
 7.  **`cancelled`**: The deal is terminated before completion.
+8. 
 
 ### 3.2. Authentication & Onboarding
 *   **Pages:** `login`, `signup`, and a multi-step `onboarding` page.
@@ -107,7 +108,7 @@ Our deal lifecycle is designed to be clear and secure:
 *   **UI:** React with shadcn/ui components and Tailwind CSS
 *   **Authentication:** Firebase Authentication
 *   **Database (for mock services):** In-memory data in `src/lib/data.ts`.
-*   **AI Functionality:** Genkit
+*   **AI Functionality:** Genkit/OpenAI
 *   **Icons:** `lucide-react`
 
 ### Code Quality
@@ -123,18 +124,17 @@ Our deal lifecycle is designed to be clear and secure:
 This section outlines the critical tasks for transitioning from mock data to a live, market-ready product.
 
 ### 5.1. Priority 1: Backend & Database Integration
-*   [ ] **Set up Firestore:** Configure Firestore as the primary database.
-*   [ ] **Refactor Service Layer:** Rewrite all functions in `src/lib/services/*.ts` to perform real CRUD operations against Firestore collections (`deals`, `users`, `transactions`, etc.).
-*   [ ] **User Data Persistence:** Ensure user profile and onboarding data are saved to and fetched from the database, keyed by the user's Firebase Auth UID.
+*   [ ] **Set up Database:** Configure the primary database.
+*   [ ] **Refactor Service Layer:** Rewrite all functions in `src/lib/services/*.ts` to perform real CRUD operations against database collections (`deals`, `users`, `transactions`, etc.).
+*   [ ] **User Data Persistence:** Ensure user profile and onboarding data are saved to and fetched from the database, keyed by the user's Auth UID.
 
 ### 5.2. Priority 2: Payment Gateway Integration
 *   [ ] **Choose a Provider:** Select a payment gateway (e.g., Paystack, Stripe).
 *   [ ] **Implement "Add Funds":** Connect the "Add Funds" dialog to the payment provider.
-*   [ ] **Implement Withdrawals:** Build backend logic for "Standard" and "Instant" withdrawals.
-*   [ ] **Subscription Billing:** Integrate the "Upgrade to Pro" feature.
+*   [ ] **Implement Withdrawals:** Build backend logic withdrawals.
 *   [ ] **Webhooks:** Create secure webhook endpoints to listen for events from the payment provider (e.g., `payment.successful`).
 
 ### 5.3. Priority 3: Core Feature Implementation
-*   [ ] **Implement AI "Smart Start":** Connect the Genkit AI placeholder in the "Create Deal" flow.
-*   [ ] **Real-time Notifications:** Implement a notification system (e.g., Firebase Cloud Messaging).
-*   [ ] **Messaging System:** Connect the in-deal messaging UI to a real-time database like Firestore.
+*   [ ] **Implement AI "Smart Start":** Connect the Genkit AI placeholder in the "Create Deal" flow. (this can wait)
+*   [ ] **Real-time Notifications:** Implement a notification system.
+*   [ ] **Messaging System:** Connect the in-deal messaging UI to a real-time database.
