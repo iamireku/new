@@ -9,12 +9,9 @@ export default function TermsOfServicePage() {
        <header className="container mx-auto flex h-20 items-center justify-between px-4 md:px-6 bg-secondary">
         <AppLogo />
         <nav className="flex items-center gap-4">
-          <Button variant="ghost" asChild>
-            <Link href="/login">Login</Link>
-          </Button>
-          <Button asChild>
-            <Link href="/signup">Get Started</Link>
-          </Button>
+            <Button variant="ghost" asChild>
+                <Link href="/">Back to Home</Link>
+            </Button>
         </nav>
       </header>
 

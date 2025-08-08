@@ -80,7 +80,7 @@ const BenefitCard = ({ icon, title, description }: { icon: React.ReactNode, titl
             <p className="text-muted-foreground">{description}</p>
         </CardContent>
     </Card>
-);
+)
 
 const faqs = [
     {
