@@ -138,3 +138,4 @@ This section outlines the critical tasks for transitioning from mock data to a l
 *   [ ] **Implement AI "Smart Start":** Connect the Genkit AI placeholder in the "Create Deal" flow. (this can wait)
 *   [ ] **Real-time Notifications:** Implement a notification system.
 *   [ ] **Messaging System:** Connect the in-deal messaging UI to a real-time database.
+
