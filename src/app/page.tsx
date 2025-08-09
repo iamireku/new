@@ -9,7 +9,7 @@ import { AppLogo } from '@/components/AppLogo';
 import Image from 'next/image';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import Autoplay from "embla-carousel-autoplay";
-import React from 'react';
+import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -105,6 +105,24 @@ export default function LandingPage() {
     const plugin = React.useRef(
         Autoplay({ delay: 4000, stopOnInteraction: true })
     )
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+    const handleMobileLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+        e.preventDefault();
+        setIsMobileMenuOpen(false);
+
+        // Allow time for menu to close before scrolling
+        setTimeout(() => {
+            const element = document.querySelector(href);
+            if (element) {
+                element.scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        }, 100);
+    };
+
+
   return (
     <div className="flex min-h-screen flex-col bg-secondary">
       <header className="container mx-auto flex h-20 items-center justify-between px-4 md:px-6 bg-secondary">
@@ -120,7 +138,7 @@ export default function LandingPage() {
             <Link href="#waitlist">Join Waitlist</Link>
           </Button>
         </nav>
-        <Sheet>
+        <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon" className="shrink-0 md:hidden">
                 <Menu className="h-5 w-5" />
@@ -130,13 +148,25 @@ export default function LandingPage() {
             <SheetContent side="left">
                 <nav className="grid gap-6 text-lg font-medium mt-8">
                     <AppLogo />
-                    <Link href="#features" className="text-muted-foreground hover:text-foreground">
+                    <Link 
+                        href="#features" 
+                        onClick={(e) => handleMobileLinkClick(e, '#features')}
+                        className="text-muted-foreground hover:text-foreground"
+                    >
                         How it Works
                     </Link>
-                    <Link href="#faq" className="text-muted-foreground hover:text-foreground">
+                    <Link 
+                        href="#faq"
+                        onClick={(e) => handleMobileLinkClick(e, '#faq')} 
+                        className="text-muted-foreground hover:text-foreground"
+                    >
                         FAQ
                     </Link>
-                    <Link href="#waitlist" className="text-muted-foreground hover:text-foreground">
+                    <Link 
+                        href="#waitlist"
+                        onClick={(e) => handleMobileLinkClick(e, '#waitlist')}
+                        className="text-muted-foreground hover:text-foreground"
+                    >
                         Join Waitlist
                     </Link>
                 </nav>
