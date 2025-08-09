@@ -9,12 +9,13 @@ import { AppLogo } from '@/components/AppLogo';
 import Image from 'next/image';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import Autoplay from "embla-carousel-autoplay";
-import React, { useState } from 'react';
+import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
+import { useState } from 'react';
 
 const WaitlistForm = () => {
   // Formspree form ID
@@ -107,21 +108,6 @@ export default function LandingPage() {
     )
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    const handleMobileLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-        e.preventDefault();
-        setIsMobileMenuOpen(false);
-
-        // Allow time for menu to close before scrolling
-        setTimeout(() => {
-            const element = document.querySelector(href);
-            if (element) {
-                element.scrollIntoView({
-                    behavior: 'smooth'
-                });
-            }
-        }, 100);
-    };
-
 
   return (
     <div className="flex min-h-screen flex-col bg-secondary">
@@ -150,21 +136,21 @@ export default function LandingPage() {
                     <AppLogo />
                     <Link 
                         href="#features" 
-                        onClick={(e) => handleMobileLinkClick(e, '#features')}
+                        onClick={() => setIsMobileMenuOpen(false)}
                         className="text-muted-foreground hover:text-foreground"
                     >
                         How it Works
                     </Link>
                     <Link 
                         href="#faq"
-                        onClick={(e) => handleMobileLinkClick(e, '#faq')} 
+                        onClick={() => setIsMobileMenuOpen(false)}
                         className="text-muted-foreground hover:text-foreground"
                     >
                         FAQ
                     </Link>
                     <Link 
                         href="#waitlist"
-                        onClick={(e) => handleMobileLinkClick(e, '#waitlist')}
+                        onClick={() => setIsMobileMenuOpen(false)}
                         className="text-muted-foreground hover:text-foreground"
                     >
                         Join Waitlist
