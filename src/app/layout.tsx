@@ -1,17 +1,16 @@
-// /src/app/layout.tsx
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Toaster } from '@/components/ui/toaster';
 import { ThemeProvider } from '@/components/ThemeProvider';
-import { AuthProvider } from '@/contexts/auth-context';
-import { cn } from '@/lib/utils';
 import './globals.css';
+import { cn } from '@/lib/utils';
+import { AuthProvider } from '@/contexts/auth-context';
+import { NavProvider } from '@/contexts/nav-context'; // New context for nav state
 
-// Font configurations (optimized to avoid duplication)
 const inter = Inter({ 
   subsets: ['latin'], 
   variable: '--font-sans',
-  display: 'swap', // Optional: improves font loading performance
+  display: 'swap',
 });
 
 const headlineFont = Inter({
@@ -22,28 +21,22 @@ const headlineFont = Inter({
 });
 
 export const metadata: Metadata = {
-  title: {
-    default: 'Betweena',
-    template: '%s | Betweena', // Better for dynamic titles (e.g., per-page)
-  },
+  title: 'Betweena',
   description: 'Safe Payments for Your Business',
-  metadataBase: new URL('https://yourdomain.com'), // Required for OG tags
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
 };
 
-interface RootLayoutProps {
+export default function RootLayout({
+  children,
+}: Readonly<{
   children: React.ReactNode;
-}
-
-export default function RootLayout({ children }: RootLayoutProps) {
+}>) {
   return (
-    <html 
-      lang="en" 
-      suppressHydrationWarning 
-      className={cn(inter.variable, headlineFont.variable)}
-    >
+    <html lang="en" suppressHydrationWarning className="scroll-smooth">
       <body className={cn(
-        "min-h-screen font-sans antialiased bg-background text-foreground",
-        inter.className // Ensures fallback font is applied
+        "font-sans antialiased min-h-screen",
+        inter.variable,
+        headlineFont.variable
       )}>
         <ThemeProvider
           attribute="class"
@@ -52,9 +45,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
           disableTransitionOnChange
         >
           <AuthProvider>
-            {children}
-            <Toaster /> {/* Moved inside AuthProvider for potential toast auth checks */}
+            <NavProvider> {/* Wrap with NavProvider */}
+              {children}
+            </NavProvider>
           </AuthProvider>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
