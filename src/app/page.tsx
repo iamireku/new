@@ -1,4 +1,4 @@
-// /src/app/page.tsx
+
 'use client';
 
 import { Button, buttonVariants } from '@/components/ui/button';
