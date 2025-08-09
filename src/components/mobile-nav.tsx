@@ -8,13 +8,13 @@ export function MobileNav() {
 
   const handleLinkClick = () => {
     closeMobileNav();
-    // Small delay to ensure nav closes before scroll happens
+    // Small delay ensures nav closes before scroll
     setTimeout(() => {
       if (window.location.hash) {
         const element = document.querySelector(window.location.hash);
         element?.scrollIntoView({ behavior: 'smooth' });
       }
-    }, 20);
+    }, 50);
   };
 
   return (
@@ -25,28 +25,28 @@ export function MobileNav() {
             <Link 
               href="#features" 
               onClick={handleLinkClick}
-              className="text-2xl font-headline"
+              className="text-2xl font-headline hover:text-primary transition-colors"
             >
-              Features
+              How it Works
             </Link>
             <Link 
-              href="#pricing" 
+              href="#faqs" 
               onClick={handleLinkClick}
-              className="text-2xl font-headline"
+              className="text-2xl font-headline hover:text-primary transition-colors"
             >
-              Pricing
+              FAQs
             </Link>
             <Link 
-              href="#contact" 
+              href="#waitlist" 
               onClick={handleLinkClick}
-              className="text-2xl font-headline"
+              className="text-2xl font-headline hover:text-primary transition-colors"
             >
-              Contact
+              Join Waitlist
             </Link>
           </div>
           <button
             onClick={closeMobileNav}
-            className="absolute top-4 right-4 p-2 text-2xl"
+            className="absolute top-4 right-4 p-2 text-2xl hover:text-primary transition-colors"
             aria-label="Close menu"
           >
             ✕
