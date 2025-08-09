@@ -14,7 +14,7 @@ export function MobileNav() {
         const element = document.querySelector(window.location.hash);
         element?.scrollIntoView({ behavior: 'smooth' });
       }
-    }, 50);
+    }, 20);
   };
 
   return (
