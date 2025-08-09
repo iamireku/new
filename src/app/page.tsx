@@ -1,7 +1,7 @@
 // /src/app/page.tsx
 'use client';
 
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound, Mail, Menu, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
@@ -9,13 +9,12 @@ import { AppLogo } from '@/components/AppLogo';
 import Image from 'next/image';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import Autoplay from "embla-carousel-autoplay";
-import React from 'react';
+import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
 
 const WaitlistForm = () => {
   // Formspree form ID
@@ -114,12 +113,8 @@ export default function LandingPage() {
       <header className="container mx-auto flex h-20 items-center justify-between px-4 md:px-6 bg-secondary">
         <AppLogo />
         <nav className="hidden md:flex items-center gap-4">
-          <Button variant="ghost" asChild>
-            <Link href="#features">How it Works</Link>
-          </Button>
-           <Button variant="ghost" asChild>
-            <Link href="#faq">FAQ</Link>
-          </Button>
+           <a href="#features" className={cn(buttonVariants({ variant: "ghost" }))}>How it Works</a>
+           <a href="#faq" className={cn(buttonVariants({ variant: "ghost" }))}>FAQ</a>
           <Button asChild>
             <Link href="#waitlist">Join Waitlist</Link>
           </Button>
