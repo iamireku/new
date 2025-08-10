@@ -16,6 +16,7 @@ import { Separator } from '@/components/ui/separator';
 import type { Transaction } from '@/lib/data';
 import { getRecentTransactions } from '@/lib/services/wallet.service';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { format } from 'date-fns';
 
 export default function FundsPage() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -77,7 +78,7 @@ export default function FundsPage() {
                         <div>
                           <p className="font-semibold">{tx.description}</p>
                            <p className="text-sm text-muted-foreground">
-                            {tx.type === 'incoming' ? 'From' : 'To'}: {tx.party}
+                            {format(new Date(tx.date), "PPP 'at' h:mm a")}
                           </p>
                         </div>
                       </div>

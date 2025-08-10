@@ -54,6 +54,7 @@ export interface Transaction {
   amount: number;
   type: TransactionType;
   status: TransactionStatus;
+  date: string;
 }
 
 
@@ -231,13 +232,13 @@ export let dealsData: Deal[] = [
 ];
 
 export const recentTransactions: Transaction[] = [
-  { id: 'T001', description: 'Website Design', party: 'ClientCorp', amount: 2500, type: 'incoming', status: 'completed' },
-  { id: 'T002', description: 'Marketing Services', party: 'AdVantage', amount: -1200, type: 'outgoing', status: 'pending' },
-  { id: 'T003', description: 'Logo Design', party: 'Creative LLC', amount: 750, type: 'incoming', status: 'completed' },
-  { id: 'T004', description: 'Software Subscription', party: 'SaaS Inc.', amount: -99, type: 'outgoing', status: 'completed' },
-  { id: 'T005', description: 'Consulting Fee', party: 'Appify Inc.', amount: 5000, type: 'incoming', status: 'inHolding' },
-  { id: 'T006', description: 'Hardware Purchase', party: 'Tech Supply Co.', amount: -850, type: 'outgoing', status: 'completed' },
-  { id: 'T007', description: 'Royalty Payment', party: 'Art House', amount: 450, type: 'incoming', status: 'completed' },
+  { id: 'T001', description: 'Website Design', party: 'ClientCorp', amount: 2500, type: 'incoming', status: 'completed', date: '2025-11-26T14:30:00.000Z' },
+  { id: 'T002', description: 'Marketing Services', party: 'AdVantage', amount: -1200, type: 'outgoing', status: 'pending', date: '2025-11-25T11:00:00.000Z' },
+  { id: 'T003', description: 'Logo Design', party: 'Creative LLC', amount: 750, type: 'incoming', status: 'completed', date: '2025-11-24T10:15:00.000Z' },
+  { id: 'T004', description: 'Software Subscription', party: 'SaaS Inc.', amount: -99, type: 'outgoing', status: 'completed', date: '2025-11-23T09:00:00.000Z' },
+  { id: 'T005', description: 'Consulting Fee', party: 'Appify Inc.', amount: 5000, type: 'incoming', status: 'inHolding', date: '2025-11-22T16:45:00.000Z' },
+  { id: 'T006', description: 'Hardware Purchase', party: 'Tech Supply Co.', amount: -850, type: 'outgoing', status: 'completed', date: '2025-11-21T13:20:00.000Z' },
+  { id: 'T007', description: 'Royalty Payment', party: 'Art House', amount: 450, type: 'incoming', status: 'completed', date: '2025-11-20T18:00:00.000Z' },
 ];
 
 export const leaderboard: LeaderboardUser[] = [
