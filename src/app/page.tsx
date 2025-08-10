@@ -1,4 +1,4 @@
-// /src/app/page.tsx
+
 'use client';
 
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -139,24 +139,24 @@ export default function LandingPage() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [api, setApi] = useState<CarouselApi>()
     const [current, setCurrent] = useState(0)
+    const [testimonialsApi, setTestimonialsApi] = useState<CarouselApi>()
+    const [testimonialsCurrent, setTestimonialsCurrent] = useState(0)
 
     useEffect(() => {
-        if (!api) {
-            return
-        }
-
+        if (!api) { return }
         setCurrent(api.selectedScrollSnap())
-
-        const handleSelect = (api: CarouselApi) => {
-            setCurrent(api.selectedScrollSnap())
-        }
-
+        const handleSelect = (api: CarouselApi) => setCurrent(api.selectedScrollSnap())
         api.on("select", handleSelect)
-
-        return () => {
-            api.off("select", handleSelect)
-        }
+        return () => { api.off("select", handleSelect) }
     }, [api])
+    
+    useEffect(() => {
+        if (!testimonialsApi) { return }
+        setTestimonialsCurrent(testimonialsApi.selectedScrollSnap())
+        const handleSelect = (api: CarouselApi) => setTestimonialsCurrent(api.selectedScrollSnap())
+        testimonialsApi.on("select", handleSelect)
+        return () => { testimonialsApi.off("select", handleSelect) }
+    }, [testimonialsApi])
 
 
   return (
@@ -354,6 +354,7 @@ export default function LandingPage() {
                 <Carousel
                   opts={{ align: "start", loop: true }}
                   className="w-full"
+                  setApi={setTestimonialsApi}
                 >
                   <CarouselContent className="-ml-4">
                     {testimonials.map((testimonial, index) => (
@@ -381,6 +382,18 @@ export default function LandingPage() {
                    <CarouselPrevious className="hidden sm:flex" />
                   <CarouselNext className="hidden sm:flex" />
                 </Carousel>
+                <div className="py-2 text-center text-sm text-muted-foreground">
+                    <div className="flex justify-center gap-2 mt-4">
+                        {testimonials.map((_, index) => (
+                            <button
+                                key={index}
+                                onClick={() => testimonialsApi?.scrollTo(index)}
+                                className={cn("h-2 w-2 rounded-full", testimonialsCurrent === index ? "bg-primary" : "bg-primary/20")}
+                                aria-label={`Go to slide ${index + 1}`}
+                            />
+                        ))}
+                    </div>
+                </div>
             </div>
         </section>
 
