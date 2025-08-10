@@ -165,6 +165,7 @@ export default function LandingPage() {
         <AppLogo />
         <nav className="hidden md:flex items-center gap-4">
            <a href="#features" className={cn(buttonVariants({ variant: "ghost" }))}>How it Works</a>
+           <a href="#testimonials" className={cn(buttonVariants({ variant: "ghost" }))}>Testimonials</a>
            <a href="#faq" className={cn(buttonVariants({ variant: "ghost" }))}>FAQ</a>
           <Button asChild>
             <Link href="#waitlist">Join Waitlist</Link>
@@ -186,6 +187,13 @@ export default function LandingPage() {
                         className="text-muted-foreground hover:text-foreground"
                     >
                         How it Works
+                    </Link>
+                    <Link 
+                        href="#testimonials" 
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="text-muted-foreground hover:text-foreground"
+                    >
+                        Testimonials
                     </Link>
                     <Link 
                         href="#faq"
@@ -345,7 +353,7 @@ export default function LandingPage() {
             </div>
         </section>
         
-        <section className="bg-background py-20 md:py-32">
+        <section id="testimonials" className="bg-background py-20 md:py-32">
             <div className="container mx-auto px-4 md:px-6">
                  <div className="text-center mb-16">
                     <h2 className="text-3xl font-bold font-headline">Don't Just Take Our Word For It</h2>
