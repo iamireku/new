@@ -60,7 +60,7 @@ const WaitlistForm = () => {
 
 
 const ProcessStep = ({ icon, title, description, image, imageSide = 'right' }: { icon: React.ReactNode; title: string; description: string, image: React.ReactNode, imageSide?: 'left' | 'right' }) => (
-    <div className={`grid md:grid-cols-2 gap-12 items-center ${imageSide === 'left' ? 'md:grid-flow-col-dense' : ''}`}>
+    <div className={`grid md:grid-cols-2 gap-12 items-center`}>
         <div className={cn("rounded-lg", imageSide === 'left' ? 'md:order-last' : '')}>
             {image}
         </div>
@@ -179,11 +179,20 @@ export default function LandingPage() {
     
     useEffect(() => {
         if (!testimonialsApi) { return }
-        setTestimonialsCurrent(testimonialsApi.selectedScrollSnap())
-        const handleSelect = (api: CarouselApi) => setTestimonialsCurrent(api.selectedScrollSnap())
-        testimonialsApi.on("select", handleSelect)
-        return () => { testimonialsApi.off("select", handleSelect) }
-    }, [testimonialsApi])
+        const scrollSnaps = testimonialsApi.scrollSnapList().length;
+        const slidesToScroll = testimonialsApi.internalEngine().options.slidesToScroll;
+        const maxScrolls = Math.ceil(scrollSnaps / slidesToScroll);
+
+        const handleSelect = (api: CarouselApi) => {
+            const selected = api.selectedScrollSnap();
+            const currentScroll = Math.floor(selected / slidesToScroll);
+            setTestimonialsCurrent(currentScroll);
+        };
+        
+        setTestimonialsCurrent(0);
+        testimonialsApi.on("select", handleSelect);
+        return () => { testimonialsApi.off("select", handleSelect); };
+    }, [testimonialsApi]);
 
     useEffect(() => {
         if (!benefitsApi) { return }
@@ -305,73 +314,89 @@ export default function LandingPage() {
             </div>
         </section>
 
-        <section id="features" className="py-20 md:py-32">
-          <div className="container mx-auto px-4 md:px-6">
-            <div className="text-center mb-16">
+        <section id="features">
+            <div className="text-center pt-20 md:pt-32">
                 <h2 className="text-3xl font-bold font-headline">From Chat to Secure Deal</h2>
                 <p className="mt-2 text-lg text-muted-foreground">See how Betweena turns your everyday negotiations into protected transactions.</p>
             </div>
-            <div className="space-y-20">
-                <ProcessStep
-                    icon={<Handshake className="h-6 w-6" />}
-                    title="1. Agree on Terms"
-                    description="You negotiate the deal as usual in your favorite chat app. Once you agree, just move the details to Betweena."
-                    image={
-                        <Image 
-                            src="/whatsapp_chat.png" 
-                            width={1200}
-                            height={1200}
-                            alt="A screenshot of a WhatsApp chat where a buyer and seller agree on terms."
-                            className="rounded-lg shadow-md border"
-                        />
-                    }
-                />
-                <ProcessStep
-                    icon={<DollarSign className="h-6 w-6" />}
-                    title="2. Buyer Pays Securely"
-                    description="The buyer receives the deal and pays. We hold the money safely, so the seller can start work without worry."
-                    image={
-                        <Image 
-                            src="/accept_and_fund.png" 
-                            width={1200}
-                            height={1200}
-                            alt="A screenshot of the Betweena app showing the 'Accept & Fund' screen for a deal."
-                            className="rounded-lg shadow-md border"
-                        />
-                    }
-                    imageSide='left'
-                />
-                <ProcessStep
-                    icon={<Briefcase className="h-6 w-6" />}
-                    title="3. Seller Delivers"
-                    description="Once the money is secured, the seller delivers the goods or services as agreed upon in the deal."
-                     image={
-                        <Image 
-                            src="/funds_secured.png" 
-                            width={1200}
-                            height={1200}
-                            alt="A UI element from the Betweena app indicating that funds are secured and it's safe to deliver."
-                            className="rounded-lg shadow-md border"
-                        />
-                    }
-                />
-                 <ProcessStep
-                    icon={<Users className="h-6 w-6" />}
-                    title="4. Funds are Released"
-                    description="The buyer confirms they're happy, and we release the money instantly to the seller's account. Simple, safe, done."
-                     image={
-                        <Image 
-                            src="/deal_completed.png" 
-                            width={1200}
-                            height={1200}
-                            alt="A UI element from the Betweena app showing a 'Deal Completed' confirmation message."
-                            className="rounded-lg shadow-md border"
-                        />
-                    }
-                    imageSide='left'
-                />
+
+            <div className="py-10 md:py-16">
+                 <div className="container mx-auto px-4 md:px-6">
+                    <ProcessStep
+                        icon={<Handshake className="h-6 w-6" />}
+                        title="1. Agree on Terms"
+                        description="You negotiate the deal as usual in your favorite chat app. Once you agree, just move the details to Betweena."
+                        image={
+                            <Image 
+                                src="/whatsapp_chat.png" 
+                                width={1200}
+                                height={1200}
+                                alt="A screenshot of a WhatsApp chat where a buyer and seller agree on terms."
+                                className="rounded-lg shadow-md border"
+                            />
+                        }
+                    />
+                </div>
             </div>
-          </div>
+
+            <div className="py-10 md:py-16 bg-background">
+                <div className="container mx-auto px-4 md:px-6">
+                    <ProcessStep
+                        icon={<DollarSign className="h-6 w-6" />}
+                        title="2. Buyer Pays Securely"
+                        description="The buyer receives the deal and pays. We hold the money safely, so the seller can start work without worry."
+                        image={
+                            <Image 
+                                src="/accept_and_fund.png" 
+                                width={1200}
+                                height={1200}
+                                alt="A screenshot of the Betweena app showing the 'Accept & Fund' screen for a deal."
+                                className="rounded-lg shadow-md border"
+                            />
+                        }
+                        imageSide='left'
+                    />
+                </div>
+            </div>
+
+            <div className="py-10 md:py-16">
+                <div className="container mx-auto px-4 md:px-6">
+                    <ProcessStep
+                        icon={<Briefcase className="h-6 w-6" />}
+                        title="3. Seller Delivers"
+                        description="Once the money is secured, the seller delivers the goods or services as agreed upon in the deal."
+                        image={
+                            <Image 
+                                src="/funds_secured.png" 
+                                width={1200}
+                                height={1200}
+                                alt="A UI element from the Betweena app indicating that funds are secured and it's safe to deliver."
+                                className="rounded-lg shadow-md border"
+                            />
+                        }
+                    />
+                </div>
+            </div>
+            
+            <div className="py-10 md:py-16 bg-background">
+                <div className="container mx-auto px-4 md:px-6">
+                    <ProcessStep
+                        icon={<Users className="h-6 w-6" />}
+                        title="4. Funds are Released"
+                        description="The buyer confirms they're happy, and we release the money instantly to the seller's account. Simple, safe, done."
+                        image={
+                            <Image 
+                                src="/deal_completed.png" 
+                                width={1200}
+                                height={1200}
+                                alt="A UI element from the Betweena app showing a 'Deal Completed' confirmation message."
+                                className="rounded-lg shadow-md border"
+                            />
+                        }
+                        imageSide='left'
+                    />
+                </div>
+            </div>
         </section>
 
         <section className="bg-background py-20 md:py-32">
@@ -452,10 +477,6 @@ export default function LandingPage() {
                     align: "start", 
                     loop: true,
                     slidesToScroll: 1,
-                    breakpoints: {
-                        '(min-width: 768px)': { slidesToScroll: 2, },
-                        '(min-width: 1024px)': { slidesToScroll: 3, },
-                    }
                   }}
                   className="w-full"
                   setApi={setTestimonialsApi}
@@ -488,7 +509,7 @@ export default function LandingPage() {
                 </Carousel>
                 <div className="py-2 text-center text-sm text-muted-foreground">
                     <div className="flex justify-center gap-2 mt-4">
-                        {Array.from({ length: Math.ceil(testimonials.length / (testimonialsApi?.scrollSnapList().length || 1) )}).map((_, index) => (
+                        {Array.from({ length: testimonials.length }).map((_, index) => (
                             <button
                                 key={index}
                                 onClick={() => testimonialsApi?.scrollTo(index)}
@@ -566,3 +587,5 @@ export default function LandingPage() {
     </div>
   );
 }
+
+    
