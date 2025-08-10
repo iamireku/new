@@ -1,4 +1,4 @@
-// /src/components/UserNav.tsx
+
 'use client';
 
 import Link from 'next/link';
@@ -20,7 +20,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { LogOut, User, Settings, CreditCard, Sun, Moon, Monitor, Crown } from 'lucide-react';
+import { LogOut, User, Settings, Sun, Moon, Monitor, Crown, Wallet } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { Badge } from './ui/badge';
 import { getCurrentUser } from '@/lib/services/user.service';
@@ -79,8 +79,8 @@ export function UserNav() {
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href="/dashboard/wallet">
-              <CreditCard className="mr-2 h-4 w-4" />
-              <span>Wallet</span>
+              <Wallet className="mr-2 h-4 w-4" />
+              <span>Funds</span>
             </Link>
           </DropdownMenuItem>
            <DropdownMenuSub>

@@ -6,7 +6,7 @@ import { AppSettings } from '@/components/profile/app-settings';
 import { PaymentMethods } from '@/components/profile/payment-methods';
 import { ProfileForm } from '@/components/profile/profile-form';
 import { ReferralSettings } from '@/components/profile/referral-settings';
-import { SubscriptionPlan } from '@/components/profile/subscription-plan';
+import { LimitsAndFees } from '@/components/profile/limits-and-fees';
 
 export default function ProfilePage() {
   return (
@@ -17,7 +17,7 @@ export default function ProfilePage() {
           <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="payments">Payments</TabsTrigger>
           <TabsTrigger value="referral">Referrals</TabsTrigger>
-          <TabsTrigger value="subscription">Subscription</TabsTrigger>
+          <TabsTrigger value="limits">Limits & Fees</TabsTrigger>
           <TabsTrigger value="settings">Settings</TabsTrigger>
         </TabsList>
         <TabsContent value="profile">
@@ -29,8 +29,8 @@ export default function ProfilePage() {
         <TabsContent value="referral">
           <ReferralSettings />
         </TabsContent>
-        <TabsContent value="subscription">
-          <SubscriptionPlan />
+        <TabsContent value="limits">
+          <LimitsAndFees />
         </TabsContent>
         <TabsContent value="settings">
           <AppSettings />

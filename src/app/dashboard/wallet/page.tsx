@@ -1,4 +1,4 @@
-// /src/app/dashboard/wallet/page.tsx
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -6,19 +6,25 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowUpRight, ArrowDownLeft, ChevronDown, Landmark } from 'lucide-react';
+import { ArrowUpRight, ArrowDownLeft, ChevronDown, Landmark, RefreshCw } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Separator } from '@/components/ui/separator';
 import type { Transaction } from '@/lib/data';
 import { getRecentTransactions } from '@/lib/services/wallet.service';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { format } from 'date-fns';
+import { Button } from '@/components/ui/button';
 
-export default function WalletPage() {
+const TRANSACTIONS_PER_PAGE = 3;
+
+export default function FundsPage() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [visibleTransactionsCount, setVisibleTransactionsCount] = useState(TRANSACTIONS_PER_PAGE);
 
     useEffect(() => {
         async function fetchData() {
@@ -32,10 +38,12 @@ export default function WalletPage() {
         .filter(tx => tx.status === 'inHolding')
         .reduce((sum, tx) => sum + tx.amount, 0);
 
+    const transactionsToShow = transactions.slice(0, visibleTransactionsCount);
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <h1 className="text-3xl font-bold font-headline">Escrow &amp; Payouts</h1>
+        <h1 className="text-3xl font-bold font-headline">Funds</h1>
         <p className="text-muted-foreground">Manage funds in active deals and view your transaction history.</p>
       </div>
 
@@ -59,7 +67,7 @@ export default function WalletPage() {
         </CardHeader>
         <CardContent>
            <div className="space-y-4">
-            {transactions.map((tx) => (
+            {transactionsToShow.map((tx) => (
               <Collapsible key={tx.id} asChild>
                 <Card>
                   <CollapsibleTrigger asChild>
@@ -77,7 +85,7 @@ export default function WalletPage() {
                         <div>
                           <p className="font-semibold">{tx.description}</p>
                            <p className="text-sm text-muted-foreground">
-                            {tx.type === 'incoming' ? 'From' : 'To'}: {tx.party}
+                            {format(new Date(tx.date), "PPP 'at' h:mm a")}
                           </p>
                         </div>
                       </div>
@@ -105,6 +113,17 @@ export default function WalletPage() {
             ))}
           </div>
         </CardContent>
+        {transactions.length > visibleTransactionsCount && (
+            <CardFooter className="justify-center border-t pt-4">
+                <Button 
+                    variant="outline" 
+                    onClick={() => setVisibleTransactionsCount(prev => prev + TRANSACTIONS_PER_PAGE)}
+                >
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Load More
+                </Button>
+            </CardFooter>
+        )}
       </Card>
     </div>
   );

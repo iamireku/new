@@ -61,8 +61,12 @@ export default function DashboardPage() {
       </div>
       
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <SummaryCards />
-        <ReferralRanks leaderboard={leaderboard} currentUser={currentUser} />
+        <div className="md:col-span-1 lg:col-span-1">
+          <SummaryCards />
+        </div>
+        <div className="md:col-span-1 lg:col-span-2">
+          <ReferralRanks leaderboard={leaderboard} currentUser={currentUser} />
+        </div>
       </div>
       
       <AttentionDeals deals={dealsNeedingAttention} />

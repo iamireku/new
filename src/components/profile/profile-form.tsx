@@ -1,5 +1,4 @@
 // /src/components/profile/profile-form.tsx
-// /src/components/profile/profile-form.tsx
 'use client';
 
 import { useState } from 'react';
@@ -95,8 +94,8 @@ export function ProfileForm() {
       <form onSubmit={form.handleSubmit(handleProfileSave)} className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle>Personal Information</CardTitle>
-            <CardDescription>Update your personal details here.</CardDescription>
+            <CardTitle>Profile & Business Information</CardTitle>
+            <CardDescription>Update your personal and business details here.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center gap-4">
@@ -154,12 +153,31 @@ export function ProfileForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Betweena ID</FormLabel>
-                  <FormControl>
-                    <div className="relative">
+                  <div className="flex gap-2">
+                    <div className="relative flex-grow">
                       <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input className="pl-9" readOnly={isIdCustomized} {...field} />
                     </div>
-                  </FormControl>
+                     {!isIdCustomized && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button type="button" variant="outline">Set ID</Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              You can only customize your Betweena ID once. This is your unique username for receiving deals. This action cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction onClick={handleIdCustomize}>Confirm and Set ID</AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    )}
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -177,37 +195,7 @@ export function ProfileForm() {
                 </FormItem>
               )}
             />
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <Button type="submit">Save Changes</Button>
-            {!isIdCustomized && (
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button type="button" variant="outline">Set and Lock ID</Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      You can only customize your Betweena ID once. This is your unique username for receiving deals. This action cannot be undone.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleIdCustomize}>Confirm and Set ID</AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            )}
-          </CardFooter>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Business Information</CardTitle>
-            <CardDescription>Update your business details here.</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
+            
             <FormField
               control={form.control}
               name="businessName"
@@ -289,7 +277,7 @@ export function ProfileForm() {
             />
           </CardContent>
           <CardFooter>
-            <Button type="submit">Save Business Info</Button>
+            <Button type="submit">Save Changes</Button>
           </CardFooter>
         </Card>
       </form>

@@ -70,7 +70,7 @@ export function ReferralRanks({ leaderboard, currentUser }: ReferralRanksProps) 
     }
 
     return (
-        <Card className="md:col-span-2 lg:col-span-1">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium font-headline">Referral Ranks</CardTitle>
              <Users className="h-4 w-4 text-muted-foreground" />

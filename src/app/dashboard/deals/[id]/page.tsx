@@ -29,8 +29,6 @@ import {
   Users,
   Calendar,
   Lock,
-  MessageSquare,
-  FileText,
   AlertTriangle,
   CheckCircle,
   Truck,
@@ -39,7 +37,6 @@ import {
   BellRing,
   AlarmClock,
   Info,
-  UserCheck,
   FilePenLine,
   Eye,
   MapPin,
@@ -50,6 +47,7 @@ import {
   Fingerprint,
   Mail,
   KeyRound,
+  MessageSquare,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
