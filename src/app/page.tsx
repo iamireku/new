@@ -9,13 +9,14 @@ import { AppLogo } from '@/components/AppLogo';
 import Image from 'next/image';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import Autoplay from "embla-carousel-autoplay";
-import React, { useState } from 'react';
+import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useState } from 'react';
 
 const WaitlistForm = () => {
   // Formspree form ID
@@ -320,9 +321,15 @@ export default function LandingPage() {
                     <h2 className="text-3xl font-bold font-headline">Don't Just Take Our Word For It</h2>
                     <p className="mt-2 text-lg text-muted-foreground">See how Betweena is helping business owners like you.</p>
                 </div>
-                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                <Carousel
+                  opts={{ align: "start", loop: true }}
+                  className="w-full"
+                >
+                  <CarouselContent className="-ml-4">
                     {testimonials.map((testimonial, index) => (
-                        <Card key={index} className="flex flex-col">
+                      <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                        <div className="p-1 h-full">
+                           <Card className="flex flex-col h-full">
                             <CardContent className="pt-6 flex-grow">
                                 <p className="text-muted-foreground">"{testimonial.quote}"</p>
                             </CardContent>
@@ -336,9 +343,14 @@ export default function LandingPage() {
                                     <p className="text-sm text-muted-foreground">{testimonial.role}</p>
                                 </div>
                             </CardHeader>
-                        </Card>
+                          </Card>
+                        </div>
+                      </CarouselItem>
                     ))}
-                </div>
+                  </CarouselContent>
+                   <CarouselPrevious className="hidden sm:flex" />
+                  <CarouselNext className="hidden sm:flex" />
+                </Carousel>
             </div>
         </section>
 
