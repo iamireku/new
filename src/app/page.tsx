@@ -77,7 +77,7 @@ const ProcessStep = ({ icon, title, description, image, imageSide = 'right' }: {
 );
 
 const BenefitCard = ({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) => (
-    <Card>
+    <Card className="h-full">
         <CardHeader className="flex flex-row items-center gap-4">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
                 {icon}
@@ -132,6 +132,25 @@ const testimonials = [
       hint: "woman shopping"
     }
 ];
+
+const benefits = [
+    {
+        icon: <Paintbrush className="h-6 w-6"/>,
+        title: "Freelancers & Creatives",
+        description: "Stop chasing invoices. Secure your payment before you start work and get paid instantly upon approval. Focus on your craft, not your collections."
+    },
+    {
+        icon: <Briefcase className="h-6 w-6"/>,
+        title: "Service Providers",
+        description: "Secure client projects and manage payments with confidence. Our clear audit trail simplifies accounting and builds trust with your clients."
+    },
+    {
+        icon: <ShoppingCart className="h-6 w-6"/>,
+        title: "Online & Social Commerce",
+        description: "Buying or selling on Instagram, Facebook, or WhatsApp? Use Betweena to eliminate the risk of scams. Pay only when you get what you ordered."
+    }
+];
+
 
 const heroImages = [
     { src: "/hero.png", alt: "A fashion designer at her shop", hint: "doing transaction on phone" },
@@ -391,22 +410,24 @@ export default function LandingPage() {
                     <h2 className="text-3xl font-bold font-headline">Built for the Modern African Economy</h2>
                     <p className="mt-2 text-lg text-muted-foreground">For sellers who want assurance, and buyers who want security.</p>
                 </div>
-                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                   <BenefitCard
-                        icon={<Paintbrush className="h-6 w-6"/>}
-                        title="Freelancers & Creatives"
-                        description="Stop chasing invoices. Secure your payment before you start work and get paid instantly upon approval. Focus on your craft, not your collections."
-                   />
-                   <BenefitCard
-                        icon={<Briefcase className="h-6 w-6"/>}
-                        title="Service Providers"
-                        description="Secure client projects and manage payments with confidence. Our clear audit trail simplifies accounting and builds trust with your clients."
-                   />
-                   <BenefitCard
-                        icon={<ShoppingCart className="h-6 w-6"/>}
-                        title="Online & Social Commerce"
-                        description="Buying or selling on Instagram, Facebook, or WhatsApp? Use Betweena to eliminate the risk of scams. Pay only when you get what you ordered."
-                   />
+                <Carousel
+                    opts={{ align: "start" }}
+                    className="w-full md:hidden"
+                >
+                    <CarouselContent className="-ml-4">
+                        {benefits.map((benefit, index) => (
+                            <CarouselItem key={index} className="pl-4">
+                                <div className="p-1 h-full">
+                                    <BenefitCard icon={benefit.icon} title={benefit.title} description={benefit.description} />
+                                </div>
+                            </CarouselItem>
+                        ))}
+                    </CarouselContent>
+                </Carousel>
+                <div className="hidden md:grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                   {benefits.map((benefit, index) => (
+                        <BenefitCard key={index} icon={benefit.icon} title={benefit.title} description={benefit.description} />
+                   ))}
                 </div>
             </div>
         </section>
