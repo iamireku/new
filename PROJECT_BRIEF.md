@@ -104,16 +104,16 @@ Our deal lifecycle is designed to be clear and secure:
 *   **Framework:** Next.js (App Router)
 *   **Language:** TypeScript
 *   **UI:** React with shadcn/ui components and Tailwind CSS
-*   **Authentication:** Firebase Authentication
+*   **Authentication:** Customized Authentication
 *   **Database (for mock services):** In-memory data in `src/lib/data.ts`.
-*   **AI Functionality:** Genkit/OpenAI
+*   **AI Functionality:** Genkit/OpenAI (later implementation)
 *   **Icons:** `lucide-react`
 
 ### Code Quality
 *   **Component Modularity:** Create small, reusable components.
 *   **Services Layer:** Abstract mock data access into a `services` layer (`src/lib/services/*.ts`).
 *   **Error Handling:** Gracefully handle cases where data is not found.
-*   **Environment Variables:** Use `.env.local` for all Firebase credentials.
+*   **Environment Variables:** Use `.env.local` for all credentials.
 
 ---
 
@@ -127,13 +127,11 @@ This section outlines the critical tasks for transitioning from mock data to a l
 *   [ ] **User Data Persistence:** Ensure user profile and onboarding data are saved to and fetched from the database, keyed by the user's Auth UID.
 
 ### 5.2. Priority 2: Payment Gateway Integration
-*   [ ] **Choose a Provider:** Select a payment gateway (e.g., Paystack, Stripe).
-*   [ ] **Implement "Add Funds":** Connect the "Add Funds" dialog to the payment provider.
-*   [ ] **Implement Withdrawals:** Build backend logic withdrawals.
+*   [ ] **Choose a Provider:** Select a payment gateway (e.g., MTN MoMo API, Paystack, Stripe etc.).
 *   [ ] **Webhooks:** Create secure webhook endpoints to listen for events from the payment provider (e.g., `payment.successful`).
 
 ### 5.3. Priority 3: Core Feature Implementation
 *   [ ] **Implement AI "Smart Start":** Connect the Genkit AI placeholder in the "Create Deal" flow. (this can wait)
 *   [ ] **Real-time Notifications:** Implement a notification system.
-*   [ ] **Messaging System:** Connect the in-deal messaging UI to a real-time database.
+*   [ ] **Messaging System:** Connect the in-deal messaging UI to a real-time database.(this can wait)
 
