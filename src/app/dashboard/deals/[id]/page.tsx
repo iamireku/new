@@ -1,7 +1,7 @@
-// /src/app/dashboard/deals/[id]/page.tsx
+
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, use } from 'react';
 import type { LucideIcon } from 'lucide-react';
 import {
   Card,
@@ -513,5 +513,6 @@ function DealDetailsClientView({ dealId }: { dealId: string }) {
 
 // --- Main Page Component (Server Component) ---
 export default function DealDetailsPage({ params }: { params: { id: string } }) {
-  return <DealDetailsClientView dealId={params.id} />;
+  const { id } = params;
+  return <DealDetailsClientView dealId={id} />;
 }

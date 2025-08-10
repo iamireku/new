@@ -166,6 +166,8 @@ export default function LandingPage() {
     const [current, setCurrent] = useState(0)
     const [testimonialsApi, setTestimonialsApi] = useState<CarouselApi>()
     const [testimonialsCurrent, setTestimonialsCurrent] = useState(0)
+    const [benefitsApi, setBenefitsApi] = useState<CarouselApi>()
+    const [benefitsCurrent, setBenefitsCurrent] = useState(0)
 
     useEffect(() => {
         if (!api) { return }
@@ -182,6 +184,14 @@ export default function LandingPage() {
         testimonialsApi.on("select", handleSelect)
         return () => { testimonialsApi.off("select", handleSelect) }
     }, [testimonialsApi])
+
+    useEffect(() => {
+        if (!benefitsApi) { return }
+        setBenefitsCurrent(benefitsApi.selectedScrollSnap())
+        const handleSelect = (api: CarouselApi) => setBenefitsCurrent(api.selectedScrollSnap())
+        benefitsApi.on("select", handleSelect)
+        return () => { benefitsApi.off("select", handleSelect) }
+    }, [benefitsApi])
 
 
   return (
@@ -245,7 +255,7 @@ export default function LandingPage() {
                 <div className="grid gap-12 md:grid-cols-2 md:items-center">
                     <div className="text-center md:text-left animate-in fade-in slide-in-from-bottom-4 duration-1000">
                         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl font-headline">
-                           The Future of Secure Transactions is Coming Soon
+                           Secure Your Sale. Guarantee Your Payment.
                         </h1>
                         <p className="mt-4 max-w-2xl text-lg text-muted-foreground md:text-xl">
                            Betweena is building the safest way for freelancers and online sellers and buyers in Ghana and across Africa to do business. Join our waitlist to get early access and be the first to know when we launch.
@@ -275,8 +285,8 @@ export default function LandingPage() {
                                     </CarouselItem>
                                 ))}
                               </CarouselContent>
-                            <CarouselPrevious />
-                            <CarouselNext />
+                            <CarouselPrevious className="hidden sm:flex" />
+                            <CarouselNext className="hidden sm:flex" />
                         </Carousel>
                         <div className="py-2 text-center text-sm text-muted-foreground">
                             <div className="flex justify-center gap-2 mt-4">
@@ -399,6 +409,7 @@ export default function LandingPage() {
                 <Carousel
                     opts={{ align: "start" }}
                     className="w-full md:hidden"
+                    setApi={setBenefitsApi}
                 >
                     <CarouselContent className="-ml-4">
                         {benefits.map((benefit, index) => (
@@ -410,6 +421,18 @@ export default function LandingPage() {
                         ))}
                     </CarouselContent>
                 </Carousel>
+                <div className="py-2 text-center text-sm text-muted-foreground md:hidden">
+                    <div className="flex justify-center gap-2 mt-4">
+                        {benefits.map((_, index) => (
+                            <button
+                                key={index}
+                                onClick={() => benefitsApi?.scrollTo(index)}
+                                className={cn("h-2 w-2 rounded-full", benefitsCurrent === index ? "bg-primary" : "bg-primary/20")}
+                                aria-label={`Go to slide ${index + 1}`}
+                            />
+                        ))}
+                    </div>
+                </div>
                 <div className="hidden md:grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                    {benefits.map((benefit, index) => (
                         <BenefitCard key={index} icon={benefit.icon} title={benefit.title} description={benefit.description} />
@@ -428,6 +451,7 @@ export default function LandingPage() {
                   opts={{ 
                     align: "start", 
                     loop: true,
+                    slidesToScroll: 1,
                     breakpoints: {
                         '(min-width: 768px)': { slidesToScroll: 2, },
                         '(min-width: 1024px)': { slidesToScroll: 3, },
@@ -464,7 +488,7 @@ export default function LandingPage() {
                 </Carousel>
                 <div className="py-2 text-center text-sm text-muted-foreground">
                     <div className="flex justify-center gap-2 mt-4">
-                        {testimonials.map((_, index) => (
+                        {Array.from({ length: Math.ceil(testimonials.length / (testimonialsApi?.scrollSnapList().length || 1) )}).map((_, index) => (
                             <button
                                 key={index}
                                 onClick={() => testimonialsApi?.scrollTo(index)}
