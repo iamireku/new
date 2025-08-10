@@ -7,9 +7,9 @@ import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Pai
 import Link from 'next/link';
 import { AppLogo } from '@/components/AppLogo';
 import Image from 'next/image';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import Autoplay from "embla-carousel-autoplay";
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -127,11 +127,36 @@ const testimonials = [
     }
 ];
 
+const heroImages = [
+    { src: "/hero.png", alt: "A fashion designer at her shop", hint: "doing transaction on phone" },
+    { src: "/hero2.png", alt: "Freelancer working on a laptop", hint: "freelancer laptop" },
+];
+
 export default function LandingPage() {
     const plugin = React.useRef(
         Autoplay({ delay: 3000, stopOnInteraction: true })
     )
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [api, setApi] = useState<CarouselApi>()
+    const [current, setCurrent] = useState(0)
+
+    useEffect(() => {
+        if (!api) {
+            return
+        }
+
+        setCurrent(api.selectedScrollSnap())
+
+        const handleSelect = (api: CarouselApi) => {
+            setCurrent(api.selectedScrollSnap())
+        }
+
+        api.on("select", handleSelect)
+
+        return () => {
+            api.off("select", handleSelect)
+        }
+    }, [api])
 
 
   return (
@@ -201,32 +226,37 @@ export default function LandingPage() {
                             plugins={[plugin.current]}
                             onMouseEnter={plugin.current.stop}
                             onMouseLeave={plugin.current.reset}
+                            setApi={setApi}
                         >
                             <CarouselContent>
-                                <CarouselItem>
-                                    <Image
-                                        src="/hero.png"
-                                        width={600}
-                                        height={400}
-                                        alt="A fashion desighner at her shop"
-                                        className="rounded-lg shadow-lg"
-                                        data-ai-hint="doing transaction on phone"
-                                    />
-                                </CarouselItem>
-                                <CarouselItem>
-                                    <Image
-                                        src="/hero2.png"
-                                        width={600}
-                                        height={400}
-                                        alt="Freelancer working on a laptop"
-                                        className="rounded-lg shadow-lg"
-                                        data-ai-hint="freelancer laptop"
-                                    />
-                                </CarouselItem>
+                                {heroImages.map((image, index) => (
+                                    <CarouselItem key={index}>
+                                        <Image
+                                            src={image.src}
+                                            width={600}
+                                            height={400}
+                                            alt={image.alt}
+                                            className="rounded-lg shadow-lg"
+                                            data-ai-hint={image.hint}
+                                        />
+                                    </CarouselItem>
+                                ))}
                               </CarouselContent>
-                            <CarouselPrevious className="left-4" />
-                            <CarouselNext className="right-4" />
+                            <CarouselPrevious />
+                            <CarouselNext />
                         </Carousel>
+                        <div className="py-2 text-center text-sm text-muted-foreground">
+                            <div className="flex justify-center gap-2 mt-4">
+                                {heroImages.map((_, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => api?.scrollTo(index)}
+                                        className={cn("h-2 w-2 rounded-full", current === index ? "bg-primary" : "bg-primary/20")}
+                                        aria-label={`Go to slide ${index + 1}`}
+                                    />
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
