@@ -2,21 +2,20 @@
 'use client';
 
 import { Button, buttonVariants } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound, Mail, Menu, ChevronDown } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound, Mail, Menu, ChevronDown, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { AppLogo } from '@/components/AppLogo';
 import Image from 'next/image';
 import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import Autoplay from "embla-carousel-autoplay";
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useState } from 'react';
 
 const WaitlistForm = () => {
   // Formspree form ID
@@ -60,13 +59,20 @@ const WaitlistForm = () => {
 };
 
 
-const ProcessStep = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => (
-    <div className="flex flex-col items-center text-center">
-        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
-            {icon}
+const ProcessStep = ({ icon, title, description, image, imageSide = 'right' }: { icon: React.ReactNode; title: string; description: string, image: React.ReactNode, imageSide?: 'left' | 'right' }) => (
+    <div className={`grid md:grid-cols-2 gap-12 items-center ${imageSide === 'left' ? 'md:grid-flow-col-dense' : ''}`}>
+        <div className={cn("rounded-lg", imageSide === 'left' ? 'md:order-last' : '')}>
+            {image}
         </div>
-        <h3 className="mb-2 text-lg font-semibold">{title}</h3>
-        <p className="text-muted-foreground">{description}</p>
+        <div>
+            <div className="flex items-center gap-3 mb-4">
+                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    {icon}
+                </div>
+                <h3 className="text-2xl font-bold font-headline">{title}</h3>
+            </div>
+            <p className="text-lg text-muted-foreground">{description}</p>
+        </div>
     </div>
 );
 
@@ -273,30 +279,82 @@ export default function LandingPage() {
         <section id="features" className="py-20 md:py-32">
           <div className="container mx-auto px-4 md:px-6">
             <div className="text-center mb-16">
-                <h2 className="text-3xl font-bold font-headline">A Simple, Secure Process</h2>
-                <p className="mt-2 text-lg text-muted-foreground">Trade with confidence in just four easy steps.</p>
+                <h2 className="text-3xl font-bold font-headline">From Chat to Secure Deal</h2>
+                <p className="mt-2 text-lg text-muted-foreground">See how Betweena turns your everyday negotiations into protected transactions.</p>
             </div>
-            <div className="grid gap-12 md:grid-cols-4">
-              <ProcessStep
-                icon={<Handshake className="h-8 w-8" />}
-                title="1. Agree on Terms"
-                description="You and the other party create a deal with clear terms and acceptance criteria."
-              />
-              <ProcessStep
-                icon={<DollarSign className="h-8 w-8" />}
-                title="2. Buyer Pays Securely"
-                description="The buyer funds the deal. We hold the money safely in the middle."
-              />
-              <ProcessStep
-                icon={<Briefcase className="h-8 w-8" />}
-                title="3. Seller Delivers"
-                description="The seller provides the goods or services as agreed upon in the deal."
-              />
-               <ProcessStep
-                icon={<Users className="h-8 w-8" />}
-                title="4. Funds are Released"
-                description="The buyer confirms they are happy, and we release the money to the seller. Simple!"
-              />
+            <div className="space-y-20">
+                <ProcessStep
+                    icon={<Handshake className="h-6 w-6" />}
+                    title="1. Agree on Terms"
+                    description="You negotiate the deal as usual in your favorite chat app. Once you agree, just move the details to Betweena."
+                    image={
+                        <div className="bg-card p-4 sm:p-6 rounded-lg shadow-md border">
+                            <div className="bg-muted p-4 rounded-lg space-y-3">
+                                <div className="p-3 rounded-lg bg-green-200/50 dark:bg-green-900/30 max-w-[80%] self-start">
+                                    <p className="font-semibold text-sm">Seller</p>
+                                    <p>Hi! Yes, the custom leather bag is GHS 450.</p>
+                                </div>
+                                <div className="p-3 rounded-lg bg-background max-w-[80%] self-end ml-auto">
+                                    <p className="font-semibold text-sm text-primary">You (Buyer)</p>
+                                    <p>Sounds great, I'll take it. Can we use Betweena for payment?</p>
+                                </div>
+                                 <div className="p-3 rounded-lg bg-green-200/50 dark:bg-green-900/30 max-w-[80%] self-start">
+                                    <p className="font-semibold text-sm">Seller</p>
+                                    <p>Perfect! I'll create the deal now.</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                />
+                <ProcessStep
+                    icon={<DollarSign className="h-6 w-6" />}
+                    title="2. Buyer Pays Securely"
+                    description="The buyer receives the deal and pays. We hold the money safely, so the seller can start work without worry."
+                    image={
+                         <Card className="shadow-md">
+                            <CardHeader>
+                                <CardTitle>Hand-crafted Leather Bag</CardTitle>
+                                <p className="text-muted-foreground">From: Artisan Goods</p>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-3xl font-bold font-mono">GHS 450.00</p>
+                            </CardContent>
+                            <CardFooter>
+                                <Button className="w-full" size="lg"><Lock className="mr-2"/> Accept & Fund Deal</Button>
+                            </CardFooter>
+                        </Card>
+                    }
+                    imageSide='left'
+                />
+                <ProcessStep
+                    icon={<Briefcase className="h-6 w-6" />}
+                    title="3. Seller Delivers"
+                    description="Once the money is secured, the seller delivers the goods or services as agreed upon in the deal."
+                     image={
+                        <Card className="shadow-md text-center p-8">
+                             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-blue-600 mx-auto mb-4">
+                                <Lock className="h-8 w-8" />
+                            </div>
+                            <h3 className="text-xl font-bold">Funds Secured</h3>
+                            <p className="text-muted-foreground">GHS 450.00 is on hold. You can now safely deliver the item to the buyer.</p>
+                        </Card>
+                    }
+                />
+                 <ProcessStep
+                    icon={<Users className="h-6 w-6" />}
+                    title="4. Funds are Released"
+                    description="The buyer confirms they're happy, and we release the money instantly to the seller's account. Simple, safe, done."
+                     image={
+                        <Card className="shadow-md text-center p-8">
+                             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-600 mx-auto mb-4">
+                                <CheckCircle className="h-8 w-8" />
+                            </div>
+                            <h3 className="text-xl font-bold">Deal Completed!</h3>
+                            <p className="text-muted-foreground">Funds have been released to the seller. Thank you for using Betweena!</p>
+                        </Card>
+                    }
+                    imageSide='left'
+                />
             </div>
           </div>
         </section>
