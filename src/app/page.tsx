@@ -1,4 +1,4 @@
-// /src/app/page.tsx
+
 'use client';
 
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -7,14 +7,16 @@ import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Pai
 import Link from 'next/link';
 import { AppLogo } from '@/components/AppLogo';
 import Image from 'next/image';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import Autoplay from "embla-carousel-autoplay";
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useState } from 'react';
 
 const WaitlistForm = () => {
   // Formspree form ID
@@ -101,11 +103,60 @@ const faqs = [
     }
 ]
 
+const testimonials = [
+    {
+      quote: "Betweena has been a game-changer for my business. I no longer worry about getting paid for my designs. It's simple, secure, and gives my clients confidence.",
+      name: "Amina Yusuf",
+      role: "Fashion Designer, Accra",
+      avatar: "https://placehold.co/100x100.png",
+      hint: "woman fashion designer"
+    },
+    {
+      quote: "As a freelancer, chasing payments was my biggest headache. With Betweena, I secure the project funds upfront. I can now focus completely on coding.",
+      name: "Kwame Addo",
+      role: "Web Developer, Kumasi",
+      avatar: "https://placehold.co/100x100.png",
+      hint: "man developer"
+    },
+    {
+      quote: "I was scammed once buying a phone on Instagram. Never again. Using Betweena for my online purchases is the only way I shop on social media now.",
+      name: "Chidinma Okafor",
+      role: "Social Media Shopper, Lagos",
+      avatar: "https://placehold.co/100x100.png",
+      hint: "woman shopping"
+    }
+];
+
+const heroImages = [
+    { src: "/hero.png", alt: "A fashion designer at her shop", hint: "doing transaction on phone" },
+    { src: "/hero2.png", alt: "Freelancer working on a laptop", hint: "freelancer laptop" },
+];
+
 export default function LandingPage() {
     const plugin = React.useRef(
-        Autoplay({ delay: 4000, stopOnInteraction: true })
+        Autoplay({ delay: 3000, stopOnInteraction: true })
     )
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [api, setApi] = useState<CarouselApi>()
+    const [current, setCurrent] = useState(0)
+    const [testimonialsApi, setTestimonialsApi] = useState<CarouselApi>()
+    const [testimonialsCurrent, setTestimonialsCurrent] = useState(0)
+
+    useEffect(() => {
+        if (!api) { return }
+        setCurrent(api.selectedScrollSnap())
+        const handleSelect = (api: CarouselApi) => setCurrent(api.selectedScrollSnap())
+        api.on("select", handleSelect)
+        return () => { api.off("select", handleSelect) }
+    }, [api])
+    
+    useEffect(() => {
+        if (!testimonialsApi) { return }
+        setTestimonialsCurrent(testimonialsApi.selectedScrollSnap())
+        const handleSelect = (api: CarouselApi) => setTestimonialsCurrent(api.selectedScrollSnap())
+        testimonialsApi.on("select", handleSelect)
+        return () => { testimonialsApi.off("select", handleSelect) }
+    }, [testimonialsApi])
 
 
   return (
@@ -175,32 +226,37 @@ export default function LandingPage() {
                             plugins={[plugin.current]}
                             onMouseEnter={plugin.current.stop}
                             onMouseLeave={plugin.current.reset}
+                            setApi={setApi}
                         >
                             <CarouselContent>
-                                <CarouselItem>
-                                    <Image
-                                        src="/hero.png"
-                                        width={600}
-                                        height={400}
-                                        alt="A fashion desighner at her shop"
-                                        className="rounded-lg shadow-lg"
-                                        data-ai-hint="doing transaction on phone"
-                                    />
-                                </CarouselItem>
-                                <CarouselItem>
-                                    <Image
-                                        src="/hero2.png"
-                                        width={600}
-                                        height={400}
-                                        alt="Freelancer working on a laptop"
-                                        className="rounded-lg shadow-lg"
-                                        data-ai-hint="freelancer laptop"
-                                    />
-                                </CarouselItem>
+                                {heroImages.map((image, index) => (
+                                    <CarouselItem key={index}>
+                                        <Image
+                                            src={image.src}
+                                            width={600}
+                                            height={400}
+                                            alt={image.alt}
+                                            className="rounded-lg shadow-lg"
+                                            data-ai-hint={image.hint}
+                                        />
+                                    </CarouselItem>
+                                ))}
                               </CarouselContent>
-                            <CarouselPrevious className="left-4" />
-                            <CarouselNext className="right-4" />
+                            <CarouselPrevious />
+                            <CarouselNext />
                         </Carousel>
+                        <div className="py-2 text-center text-sm text-muted-foreground">
+                            <div className="flex justify-center gap-2 mt-4">
+                                {heroImages.map((_, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => api?.scrollTo(index)}
+                                        className={cn("h-2 w-2 rounded-full", current === index ? "bg-primary" : "bg-primary/20")}
+                                        aria-label={`Go to slide ${index + 1}`}
+                                    />
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -289,7 +345,59 @@ export default function LandingPage() {
             </div>
         </section>
         
-        <section id="faq" className="bg-background py-20 md:py-32">
+        <section className="bg-background py-20 md:py-32">
+            <div className="container mx-auto px-4 md:px-6">
+                 <div className="text-center mb-16">
+                    <h2 className="text-3xl font-bold font-headline">Don't Just Take Our Word For It</h2>
+                    <p className="mt-2 text-lg text-muted-foreground">See how Betweena is helping business owners like you.</p>
+                </div>
+                <Carousel
+                  opts={{ align: "start", loop: true }}
+                  className="w-full"
+                  setApi={setTestimonialsApi}
+                >
+                  <CarouselContent className="-ml-4">
+                    {testimonials.map((testimonial, index) => (
+                      <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                        <div className="p-1 h-full">
+                           <Card className="flex flex-col h-full">
+                            <CardContent className="pt-6 flex-grow">
+                                <p className="text-muted-foreground">"{testimonial.quote}"</p>
+                            </CardContent>
+                            <CardHeader className="flex flex-row items-center gap-4">
+                                <Avatar className="h-12 w-12">
+                                    <AvatarImage src={testimonial.avatar} alt={testimonial.name} data-ai-hint={testimonial.hint} />
+                                    <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
+                                </Avatar>
+                                <div>
+                                    <CardTitle className="text-base">{testimonial.name}</CardTitle>
+                                    <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                                </div>
+                            </CardHeader>
+                          </Card>
+                        </div>
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                   <CarouselPrevious className="hidden sm:flex" />
+                  <CarouselNext className="hidden sm:flex" />
+                </Carousel>
+                <div className="py-2 text-center text-sm text-muted-foreground">
+                    <div className="flex justify-center gap-2 mt-4">
+                        {testimonials.map((_, index) => (
+                            <button
+                                key={index}
+                                onClick={() => testimonialsApi?.scrollTo(index)}
+                                className={cn("h-2 w-2 rounded-full", testimonialsCurrent === index ? "bg-primary" : "bg-primary/20")}
+                                aria-label={`Go to slide ${index + 1}`}
+                            />
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" className="py-20 md:py-32">
             <div className="container mx-auto px-4 md:px-6 max-w-4xl">
                 <div className="text-center mb-16">
                     <h2 className="text-3xl font-bold font-headline">Frequently Asked Questions</h2>
