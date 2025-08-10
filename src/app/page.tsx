@@ -129,7 +129,7 @@ const testimonials = [
 
 export default function LandingPage() {
     const plugin = React.useRef(
-        Autoplay({ delay: 4000, stopOnInteraction: true })
+        Autoplay({ delay: 3000, stopOnInteraction: true })
     )
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
