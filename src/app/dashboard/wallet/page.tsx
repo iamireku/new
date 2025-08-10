@@ -1,4 +1,4 @@
-// /src/app/dashboard/wallet/page.tsx
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -17,7 +17,7 @@ import type { Transaction } from '@/lib/data';
 import { getRecentTransactions } from '@/lib/services/wallet.service';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
-export default function WalletPage() {
+export default function FundsPage() {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
 
     useEffect(() => {
@@ -35,7 +35,7 @@ export default function WalletPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <h1 className="text-3xl font-bold font-headline">Escrow &amp; Payouts</h1>
+        <h1 className="text-3xl font-bold font-headline">Funds</h1>
         <p className="text-muted-foreground">Manage funds in active deals and view your transaction history.</p>
       </div>
 

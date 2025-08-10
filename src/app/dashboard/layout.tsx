@@ -1,5 +1,4 @@
-// /src/app/dashboard/layout.tsx
-// /src/app/dashboard/layout.tsx
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -12,7 +11,6 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 import {
   LayoutDashboard,
-  ArrowLeftRight,
   Wallet,
   User,
   LogOut,
@@ -28,7 +26,7 @@ import { useAuth } from '@/contexts/auth-context';
 const navItems = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
   { href: '/dashboard/deals', icon: Handshake, label: 'Deals' },
-  { href: '/dashboard/wallet', icon: Wallet, label: 'Wallet' },
+  { href: '/dashboard/wallet', icon: Wallet, label: 'Funds' },
   { href: '/dashboard/profile', icon: User, label: 'Profile' },
 ];
 
@@ -36,6 +34,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [deals, setDeals] = useState<Deal[]>([]);
   const { signOut } = useAuth();
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
 
   useEffect(() => {
     async function fetchData() {
@@ -44,6 +43,10 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
     }
     fetchData();
   }, []);
+
+  const handleLinkClick = () => {
+    setIsSheetOpen(false);
+  };
 
   const dealsNeedingAttentionCount = deals.filter(
     deal => deal.status === 'in_review' || deal.status === 'dispute'
@@ -54,7 +57,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
       {navItems.map((item) => {
         const isActive = item.href === '/dashboard' ? pathname === item.href : pathname.startsWith(item.href);
         return (
-          <Link key={item.href} href={item.href}>
+          <Link key={item.href} href={item.href} onClick={handleLinkClick}>
             <Button
               variant={isActive ? 'default' : 'ghost'}
               className="w-full justify-start gap-2"
@@ -91,7 +94,7 @@ function DashboardLayoutContent({ children }: { children: React.ReactNode }) {
       </div>
       <div className="flex flex-col">
         <header className="flex h-20 items-center gap-4 border-b bg-card px-6">
-          <Sheet>
+          <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon" className="shrink-0 lg:hidden">
                 <Menu className="h-5 w-5" />
