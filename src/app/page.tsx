@@ -15,6 +15,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const WaitlistForm = () => {
   // Formspree form ID
@@ -100,6 +101,30 @@ const faqs = [
         answer: "We are working hard to launch in the coming months. By joining the waitlist, you'll be the first to know about our launch date and get exclusive early access."
     }
 ]
+
+const testimonials = [
+    {
+      quote: "Betweena has been a game-changer for my business. I no longer worry about getting paid for my designs. It's simple, secure, and gives my clients confidence.",
+      name: "Amina Yusuf",
+      role: "Fashion Designer, Accra",
+      avatar: "https://placehold.co/100x100.png",
+      hint: "woman fashion designer"
+    },
+    {
+      quote: "As a freelancer, chasing payments was my biggest headache. With Betweena, I secure the project funds upfront. I can now focus completely on coding.",
+      name: "Kwame Addo",
+      role: "Web Developer, Kumasi",
+      avatar: "https://placehold.co/100x100.png",
+      hint: "man developer"
+    },
+    {
+      quote: "I was scammed once buying a phone on Instagram. Never again. Using Betweena for my online purchases is the only way I shop on social media now.",
+      name: "Chidinma Okafor",
+      role: "Social Media Shopper, Lagos",
+      avatar: "https://placehold.co/100x100.png",
+      hint: "woman shopping"
+    }
+];
 
 export default function LandingPage() {
     const plugin = React.useRef(
@@ -289,7 +314,35 @@ export default function LandingPage() {
             </div>
         </section>
         
-        <section id="faq" className="bg-background py-20 md:py-32">
+        <section className="bg-background py-20 md:py-32">
+            <div className="container mx-auto px-4 md:px-6">
+                 <div className="text-center mb-16">
+                    <h2 className="text-3xl font-bold font-headline">Don't Just Take Our Word For It</h2>
+                    <p className="mt-2 text-lg text-muted-foreground">See how Betweena is helping business owners like you.</p>
+                </div>
+                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                    {testimonials.map((testimonial, index) => (
+                        <Card key={index} className="flex flex-col">
+                            <CardContent className="pt-6 flex-grow">
+                                <p className="text-muted-foreground">"{testimonial.quote}"</p>
+                            </CardContent>
+                            <CardHeader className="flex flex-row items-center gap-4">
+                                <Avatar className="h-12 w-12">
+                                    <AvatarImage src={testimonial.avatar} alt={testimonial.name} data-ai-hint={testimonial.hint} />
+                                    <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
+                                </Avatar>
+                                <div>
+                                    <CardTitle className="text-base">{testimonial.name}</CardTitle>
+                                    <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                                </div>
+                            </CardHeader>
+                        </Card>
+                    ))}
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" className="py-20 md:py-32">
             <div className="container mx-auto px-4 md:px-6 max-w-4xl">
                 <div className="text-center mb-16">
                     <h2 className="text-3xl font-bold font-headline">Frequently Asked Questions</h2>
