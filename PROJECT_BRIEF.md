@@ -84,11 +84,9 @@ Our deal lifecycle is designed to be clear and secure:
     *   Use `AlertDialog` for critical confirmation actions.
     *   Display a vertical timeline of the deal's history.
 
-### 3.5. Wallet (`/dashboard/wallet`)
+### 3.5. Funds (`/dashboard/wallet`)
 *   Display "Available Money" and "Money on Hold" cards.
-*   Include "Add Funds" and "Withdraw Funds" buttons that open `Dialog` modals.
-*   The "Withdraw" dialog has "Standard" and "Instant" payout options (freemium placeholder).
-*   Show a list of all wallet transactions.
+*   Show a list of all transactions.
 
 ### 3.6. Profile (`/dashboard/profile`)
 *   Use a `Tabs` component with the following sections:
