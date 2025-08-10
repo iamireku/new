@@ -2,21 +2,20 @@
 'use client';
 
 import { Button, buttonVariants } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound, Mail, Menu, ChevronDown } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound, Mail, Menu, ChevronDown, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { AppLogo } from '@/components/AppLogo';
 import Image from 'next/image';
 import { Carousel, CarouselApi, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import Autoplay from "embla-carousel-autoplay";
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useState } from 'react';
 
 const WaitlistForm = () => {
   // Formspree form ID
@@ -60,18 +59,25 @@ const WaitlistForm = () => {
 };
 
 
-const ProcessStep = ({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) => (
-    <div className="flex flex-col items-center text-center">
-        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
-            {icon}
+const ProcessStep = ({ icon, title, description, image, imageSide = 'right' }: { icon: React.ReactNode; title: string; description: string, image: React.ReactNode, imageSide?: 'left' | 'right' }) => (
+    <div className={`grid md:grid-cols-2 gap-12 items-center`}>
+        <div className={cn("rounded-lg", imageSide === 'left' ? 'md:order-last' : '')}>
+            {image}
         </div>
-        <h3 className="mb-2 text-lg font-semibold">{title}</h3>
-        <p className="text-muted-foreground">{description}</p>
+        <div>
+            <div className="flex items-center gap-3 mb-4">
+                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                    {icon}
+                </div>
+                <h3 className="text-2xl font-bold font-headline">{title}</h3>
+            </div>
+            <p className="text-lg text-muted-foreground">{description}</p>
+        </div>
     </div>
 );
 
 const BenefitCard = ({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) => (
-    <Card>
+    <Card className="h-full">
         <CardHeader className="flex flex-row items-center gap-4">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
                 {icon}
@@ -127,6 +133,25 @@ const testimonials = [
     }
 ];
 
+const benefits = [
+    {
+        icon: <Paintbrush className="h-6 w-6"/>,
+        title: "Freelancers & Creatives",
+        description: "Stop chasing invoices. Secure your payment before you start work and get paid instantly upon approval. Focus on your craft, not your collections."
+    },
+    {
+        icon: <Briefcase className="h-6 w-6"/>,
+        title: "Service Providers",
+        description: "Secure client projects and manage payments with confidence. Our clear audit trail simplifies accounting and builds trust with your clients."
+    },
+    {
+        icon: <ShoppingCart className="h-6 w-6"/>,
+        title: "Online & Social Commerce",
+        description: "Buying or selling on Instagram, Facebook, or WhatsApp? Use Betweena to eliminate the risk of scams. Pay only when you get what you ordered."
+    }
+];
+
+
 const heroImages = [
     { src: "/hero.png", alt: "A fashion designer at her shop", hint: "doing transaction on phone" },
     { src: "/hero2.png", alt: "Freelancer working on a laptop", hint: "freelancer laptop" },
@@ -141,6 +166,8 @@ export default function LandingPage() {
     const [current, setCurrent] = useState(0)
     const [testimonialsApi, setTestimonialsApi] = useState<CarouselApi>()
     const [testimonialsCurrent, setTestimonialsCurrent] = useState(0)
+    const [benefitsApi, setBenefitsApi] = useState<CarouselApi>()
+    const [benefitsCurrent, setBenefitsCurrent] = useState(0)
 
     useEffect(() => {
         if (!api) { return }
@@ -152,11 +179,28 @@ export default function LandingPage() {
     
     useEffect(() => {
         if (!testimonialsApi) { return }
-        setTestimonialsCurrent(testimonialsApi.selectedScrollSnap())
-        const handleSelect = (api: CarouselApi) => setTestimonialsCurrent(api.selectedScrollSnap())
-        testimonialsApi.on("select", handleSelect)
-        return () => { testimonialsApi.off("select", handleSelect) }
-    }, [testimonialsApi])
+        const scrollSnaps = testimonialsApi.scrollSnapList().length;
+        const slidesToScroll = testimonialsApi.internalEngine().options.slidesToScroll;
+        const maxScrolls = Math.ceil(scrollSnaps / slidesToScroll);
+
+        const handleSelect = (api: CarouselApi) => {
+            const selected = api.selectedScrollSnap();
+            const currentScroll = Math.floor(selected / slidesToScroll);
+            setTestimonialsCurrent(currentScroll);
+        };
+        
+        setTestimonialsCurrent(0);
+        testimonialsApi.on("select", handleSelect);
+        return () => { testimonialsApi.off("select", handleSelect); };
+    }, [testimonialsApi]);
+
+    useEffect(() => {
+        if (!benefitsApi) { return }
+        setBenefitsCurrent(benefitsApi.selectedScrollSnap())
+        const handleSelect = (api: CarouselApi) => setBenefitsCurrent(api.selectedScrollSnap())
+        benefitsApi.on("select", handleSelect)
+        return () => { benefitsApi.off("select", handleSelect) }
+    }, [benefitsApi])
 
 
   return (
@@ -165,6 +209,7 @@ export default function LandingPage() {
         <AppLogo />
         <nav className="hidden md:flex items-center gap-4">
            <a href="#features" className={cn(buttonVariants({ variant: "ghost" }))}>How it Works</a>
+           <a href="#testimonials" className={cn(buttonVariants({ variant: "ghost" }))}>Testimonials</a>
            <a href="#faq" className={cn(buttonVariants({ variant: "ghost" }))}>FAQ</a>
           <Button asChild>
             <Link href="#waitlist">Join Waitlist</Link>
@@ -186,6 +231,13 @@ export default function LandingPage() {
                         className="text-muted-foreground hover:text-foreground"
                     >
                         How it Works
+                    </Link>
+                    <Link 
+                        href="#testimonials" 
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="text-muted-foreground hover:text-foreground"
+                    >
+                        Testimonials
                     </Link>
                     <Link 
                         href="#faq"
@@ -212,7 +264,7 @@ export default function LandingPage() {
                 <div className="grid gap-12 md:grid-cols-2 md:items-center">
                     <div className="text-center md:text-left animate-in fade-in slide-in-from-bottom-4 duration-1000">
                         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl font-headline">
-                           The Future of Secure Transactions is Coming Soon
+                           Secure Your Sale. Guarantee Your Payment.
                         </h1>
                         <p className="mt-4 max-w-2xl text-lg text-muted-foreground md:text-xl">
                            Betweena is building the safest way for freelancers and online sellers and buyers in Ghana and across Africa to do business. Join our waitlist to get early access and be the first to know when we launch.
@@ -242,8 +294,8 @@ export default function LandingPage() {
                                     </CarouselItem>
                                 ))}
                               </CarouselContent>
-                            <CarouselPrevious />
-                            <CarouselNext />
+                            <CarouselPrevious className="hidden sm:flex" />
+                            <CarouselNext className="hidden sm:flex" />
                         </Carousel>
                         <div className="py-2 text-center text-sm text-muted-foreground">
                             <div className="flex justify-center gap-2 mt-4">
@@ -262,35 +314,89 @@ export default function LandingPage() {
             </div>
         </section>
 
-        <section id="features" className="py-20 md:py-32">
-          <div className="container mx-auto px-4 md:px-6">
-            <div className="text-center mb-16">
-                <h2 className="text-3xl font-bold font-headline">A Simple, Secure Process</h2>
-                <p className="mt-2 text-lg text-muted-foreground">Trade with confidence in just four easy steps.</p>
+        <section id="features">
+            <div className="text-center pt-20 md:pt-32">
+                <h2 className="text-3xl font-bold font-headline">From Chat to Secure Deal</h2>
+                <p className="mt-2 text-lg text-muted-foreground">See how Betweena turns your everyday negotiations into protected transactions.</p>
             </div>
-            <div className="grid gap-12 md:grid-cols-4">
-              <ProcessStep
-                icon={<Handshake className="h-8 w-8" />}
-                title="1. Agree on Terms"
-                description="You and the other party create a deal with clear terms and acceptance criteria."
-              />
-              <ProcessStep
-                icon={<DollarSign className="h-8 w-8" />}
-                title="2. Buyer Pays Securely"
-                description="The buyer funds the deal. We hold the money safely in the middle."
-              />
-              <ProcessStep
-                icon={<Briefcase className="h-8 w-8" />}
-                title="3. Seller Delivers"
-                description="The seller provides the goods or services as agreed upon in the deal."
-              />
-               <ProcessStep
-                icon={<Users className="h-8 w-8" />}
-                title="4. Funds are Released"
-                description="The buyer confirms they are happy, and we release the money to the seller. Simple!"
-              />
+
+            <div className="py-10 md:py-16">
+                 <div className="container mx-auto px-4 md:px-6">
+                    <ProcessStep
+                        icon={<Handshake className="h-6 w-6" />}
+                        title="1. Agree on Terms"
+                        description="You negotiate the deal as usual in your favorite chat app. Once you agree, just move the details to Betweena."
+                        image={
+                            <Image 
+                                src="/whatsapp_chat.png" 
+                                width={1200}
+                                height={1200}
+                                alt="A screenshot of a WhatsApp chat where a buyer and seller agree on terms."
+                                className="rounded-lg shadow-md border"
+                            />
+                        }
+                    />
+                </div>
             </div>
-          </div>
+
+            <div className="py-10 md:py-16 bg-background">
+                <div className="container mx-auto px-4 md:px-6">
+                    <ProcessStep
+                        icon={<DollarSign className="h-6 w-6" />}
+                        title="2. Buyer Pays Securely"
+                        description="The buyer receives the deal and pays. We hold the money safely, so the seller can start work without worry."
+                        image={
+                            <Image 
+                                src="/accept_and_fund.png" 
+                                width={1200}
+                                height={1200}
+                                alt="A screenshot of the Betweena app showing the 'Accept & Fund' screen for a deal."
+                                className="rounded-lg shadow-md border"
+                            />
+                        }
+                        imageSide='left'
+                    />
+                </div>
+            </div>
+
+            <div className="py-10 md:py-16">
+                <div className="container mx-auto px-4 md:px-6">
+                    <ProcessStep
+                        icon={<Briefcase className="h-6 w-6" />}
+                        title="3. Seller Delivers"
+                        description="Once the money is secured, the seller delivers the goods or services as agreed upon in the deal."
+                        image={
+                            <Image 
+                                src="/funds_secured.png" 
+                                width={1200}
+                                height={1200}
+                                alt="A UI element from the Betweena app indicating that funds are secured and it's safe to deliver."
+                                className="rounded-lg shadow-md border"
+                            />
+                        }
+                    />
+                </div>
+            </div>
+            
+            <div className="py-10 md:py-16 bg-background">
+                <div className="container mx-auto px-4 md:px-6">
+                    <ProcessStep
+                        icon={<Users className="h-6 w-6" />}
+                        title="4. Funds are Released"
+                        description="The buyer confirms they're happy, and we release the money instantly to the seller's account. Simple, safe, done."
+                        image={
+                            <Image 
+                                src="/deal_completed.png" 
+                                width={1200}
+                                height={1200}
+                                alt="A UI element from the Betweena app showing a 'Deal Completed' confirmation message."
+                                className="rounded-lg shadow-md border"
+                            />
+                        }
+                        imageSide='left'
+                    />
+                </div>
+            </div>
         </section>
 
         <section className="bg-background py-20 md:py-32">
@@ -325,34 +431,53 @@ export default function LandingPage() {
                     <h2 className="text-3xl font-bold font-headline">Built for the Modern African Economy</h2>
                     <p className="mt-2 text-lg text-muted-foreground">For sellers who want assurance, and buyers who want security.</p>
                 </div>
-                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                   <BenefitCard
-                        icon={<Paintbrush className="h-6 w-6"/>}
-                        title="Freelancers & Creatives"
-                        description="Stop chasing invoices. Secure your payment before you start work and get paid instantly upon approval. Focus on your craft, not your collections."
-                   />
-                   <BenefitCard
-                        icon={<Briefcase className="h-6 w-6"/>}
-                        title="Service Providers"
-                        description="Secure client projects and manage payments with confidence. Our clear audit trail simplifies accounting and builds trust with your clients."
-                   />
-                   <BenefitCard
-                        icon={<ShoppingCart className="h-6 w-6"/>}
-                        title="Online & Social Commerce"
-                        description="Buying or selling on Instagram, Facebook, or WhatsApp? Use Betweena to eliminate the risk of scams. Pay only when you get what you ordered."
-                   />
+                <Carousel
+                    opts={{ align: "start" }}
+                    className="w-full md:hidden"
+                    setApi={setBenefitsApi}
+                >
+                    <CarouselContent className="-ml-4">
+                        {benefits.map((benefit, index) => (
+                            <CarouselItem key={index} className="pl-4">
+                                <div className="p-1 h-full">
+                                    <BenefitCard icon={benefit.icon} title={benefit.title} description={benefit.description} />
+                                </div>
+                            </CarouselItem>
+                        ))}
+                    </CarouselContent>
+                </Carousel>
+                <div className="py-2 text-center text-sm text-muted-foreground md:hidden">
+                    <div className="flex justify-center gap-2 mt-4">
+                        {benefits.map((_, index) => (
+                            <button
+                                key={index}
+                                onClick={() => benefitsApi?.scrollTo(index)}
+                                className={cn("h-2 w-2 rounded-full", benefitsCurrent === index ? "bg-primary" : "bg-primary/20")}
+                                aria-label={`Go to slide ${index + 1}`}
+                            />
+                        ))}
+                    </div>
+                </div>
+                <div className="hidden md:grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                   {benefits.map((benefit, index) => (
+                        <BenefitCard key={index} icon={benefit.icon} title={benefit.title} description={benefit.description} />
+                   ))}
                 </div>
             </div>
         </section>
         
-        <section className="bg-background py-20 md:py-32">
+        <section id="testimonials" className="bg-background py-20 md:py-32">
             <div className="container mx-auto px-4 md:px-6">
                  <div className="text-center mb-16">
                     <h2 className="text-3xl font-bold font-headline">Don't Just Take Our Word For It</h2>
                     <p className="mt-2 text-lg text-muted-foreground">See how Betweena is helping business owners like you.</p>
                 </div>
                 <Carousel
-                  opts={{ align: "start", loop: true }}
+                  opts={{ 
+                    align: "start", 
+                    loop: true,
+                    slidesToScroll: 1,
+                  }}
                   className="w-full"
                   setApi={setTestimonialsApi}
                 >
@@ -384,7 +509,7 @@ export default function LandingPage() {
                 </Carousel>
                 <div className="py-2 text-center text-sm text-muted-foreground">
                     <div className="flex justify-center gap-2 mt-4">
-                        {testimonials.map((_, index) => (
+                        {Array.from({ length: testimonials.length }).map((_, index) => (
                             <button
                                 key={index}
                                 onClick={() => testimonialsApi?.scrollTo(index)}
@@ -462,3 +587,5 @@ export default function LandingPage() {
     </div>
   );
 }
+
+    
