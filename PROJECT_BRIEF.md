@@ -57,7 +57,7 @@ Our deal lifecycle is designed to be clear and secure:
 ### 3.2. Authentication & Onboarding
 *   **Pages:** `login`, `signup`, and a multi-step `onboarding` page.
 *   **Functionality:**
-    *   Firebase Authentication (Email/Password & Google Sign-In).
+    *   Authentication (Email/Password & Google Sign-In).
     *   `AuthContext` manages global user state.
     *   A `ProtectedRoute` wraps the `/dashboard` layout.
     *   The `/onboarding` page collects user/business details after the first sign-up.
@@ -65,10 +65,10 @@ Our deal lifecycle is designed to be clear and secure:
 ### 3.3. Dashboard (`/dashboard`)
 *   **Layout:** Main layout with a sidebar (desktop) and a top nav with a hamburger menu (mobile).
 *   **Main Page (`/dashboard/page.tsx`):**
-    *   **Summary Cards:** "Your Balance" and "Money on Hold".
-    *   **Referral Ranks:** A leaderboard of top referrers.
+    *   **Summary Cards:** "Money on Hold".
+    *   **Referral Ranks:** A leaderboard of top referrers.(later implementation)
     *   **Deals Needing Attention:** A prominent section highlighting deals with `in_review` or `dispute` status.
-    *   **Recent Transactions:** A list of the latest wallet activities.
+    *   **Recent Transactions:** A list of the latest fund activities.
 
 ### 3.4. Deals Management (`/dashboard/deals`)
 *   **List View (`/page.tsx`):**
@@ -85,7 +85,7 @@ Our deal lifecycle is designed to be clear and secure:
     *   Display a vertical timeline of the deal's history.
 
 ### 3.5. Funds (`/dashboard/wallet`)
-*   Display "Available Money" and "Money on Hold" cards.
+*   Display "Money on Hold" cards.
 *   Show a list of all transactions.
 
 ### 3.6. Profile (`/dashboard/profile`)
@@ -93,7 +93,7 @@ Our deal lifecycle is designed to be clear and secure:
     *   **Profile:** Manage personal/business info. Allow the user to set their unique "Betweena ID" *only once*.
     *   **Payments:** Manage withdrawal methods (Mobile Money, Bank Account).
     *   **Referrals:** Allow the user to customize their referral code *only once*.
-    *   **Subscription:** Show the user's current plan ("Free" or "Pro") and allow upgrades.
+    *   **Subscription:** (later implementation).
     *   **Settings:** Manage app theme, password, and account deletion.
 
 ---
@@ -105,7 +105,7 @@ Our deal lifecycle is designed to be clear and secure:
 *   **Language:** TypeScript
 *   **UI:** React with shadcn/ui components and Tailwind CSS
 *   **Authentication:** Customized Authentication
-*   **Database (for mock services):** In-memory data in `src/lib/data.ts`.
+*   **Database (for mock services):** In-memory data in `src/lib/data.ts`. use PostgresDB finally
 *   **AI Functionality:** Genkit/OpenAI (later implementation)
 *   **Icons:** `lucide-react`
 
@@ -122,7 +122,7 @@ Our deal lifecycle is designed to be clear and secure:
 This section outlines the critical tasks for transitioning from mock data to a live, market-ready product.
 
 ### 5.1. Priority 1: Backend & Database Integration
-*   [ ] **Set up Database:** Configure the primary database.
+*   [ ] **Set up Database:** Configure the primary database using PostgresSQL DB.
 *   [ ] **Refactor Service Layer:** Rewrite all functions in `src/lib/services/*.ts` to perform real CRUD operations against database collections (`deals`, `users`, `transactions`, etc.).
 *   [ ] **User Data Persistence:** Ensure user profile and onboarding data are saved to and fetched from the database, keyed by the user's Auth UID.
 
