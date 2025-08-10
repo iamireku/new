@@ -330,18 +330,13 @@ export default function LandingPage() {
                     title="2. Buyer Pays Securely"
                     description="The buyer receives the deal and pays. We hold the money safely, so the seller can start work without worry."
                     image={
-                         <Card className="shadow-md">
-                            <CardHeader>
-                                <CardTitle>Hand-crafted Leather Bag</CardTitle>
-                                <p className="text-muted-foreground">From: Artisan Goods</p>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-3xl font-bold font-mono">GHS 450.00</p>
-                            </CardContent>
-                            <CardFooter>
-                                <Button className="w-full" size="lg"><Lock className="mr-2"/> Accept & Fund Deal</Button>
-                            </CardFooter>
-                        </Card>
+                        <Image 
+                            src="/accept_and_fund.png" 
+                            width={1200}
+                            height={1200}
+                            alt="A screenshot of the Betweena app showing the 'Accept & Fund' screen for a deal."
+                            className="rounded-lg shadow-md border"
+                        />
                     }
                     imageSide='left'
                 />
@@ -439,7 +434,14 @@ export default function LandingPage() {
                     <p className="mt-2 text-lg text-muted-foreground">See how Betweena is helping business owners like you.</p>
                 </div>
                 <Carousel
-                  opts={{ align: "start", loop: true }}
+                  opts={{ 
+                    align: "start", 
+                    loop: true,
+                    breakpoints: {
+                        '(min-width: 768px)': { slidesToScroll: 2, },
+                        '(min-width: 1024px)': { slidesToScroll: 3, },
+                    }
+                  }}
                   className="w-full"
                   setApi={setTestimonialsApi}
                 >
