@@ -307,22 +307,13 @@ export default function LandingPage() {
                     title="1. Agree on Terms"
                     description="You negotiate the deal as usual in your favorite chat app. Once you agree, just move the details to Betweena."
                     image={
-                        <div className="bg-card p-4 sm:p-6 rounded-lg shadow-md border">
-                            <div className="bg-muted p-4 rounded-lg space-y-3">
-                                <div className="p-3 rounded-lg bg-green-200/50 dark:bg-green-900/30 max-w-[80%] self-start">
-                                    <p className="font-semibold text-sm">Seller</p>
-                                    <p>Hi! Yes, the custom leather bag is GHS 450.</p>
-                                </div>
-                                <div className="p-3 rounded-lg bg-background max-w-[80%] self-end ml-auto">
-                                    <p className="font-semibold text-sm text-primary">You (Buyer)</p>
-                                    <p>Sounds great, I'll take it. Can we use Betweena for payment?</p>
-                                </div>
-                                 <div className="p-3 rounded-lg bg-green-200/50 dark:bg-green-900/30 max-w-[80%] self-start">
-                                    <p className="font-semibold text-sm">Seller</p>
-                                    <p>Perfect! I'll create the deal now.</p>
-                                </div>
-                            </div>
-                        </div>
+                        <Image 
+                            src="/whatsapp_chat.png" 
+                            width={1200}
+                            height={1200}
+                            alt="A screenshot of a WhatsApp chat where a buyer and seller agree on terms."
+                            className="rounded-lg shadow-md border"
+                        />
                     }
                 />
                 <ProcessStep
@@ -345,13 +336,13 @@ export default function LandingPage() {
                     title="3. Seller Delivers"
                     description="Once the money is secured, the seller delivers the goods or services as agreed upon in the deal."
                      image={
-                        <Card className="shadow-md text-center p-8">
-                             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-blue-600 mx-auto mb-4">
-                                <Lock className="h-8 w-8" />
-                            </div>
-                            <h3 className="text-xl font-bold">Funds Secured</h3>
-                            <p className="text-muted-foreground">GHS 450.00 is on hold. You can now safely deliver the item to the buyer.</p>
-                        </Card>
+                        <Image 
+                            src="/funds_secured.png" 
+                            width={1200}
+                            height={1200}
+                            alt="A UI element from the Betweena app indicating that funds are secured and it's safe to deliver."
+                            className="rounded-lg shadow-md border"
+                        />
                     }
                 />
                  <ProcessStep
@@ -359,13 +350,13 @@ export default function LandingPage() {
                     title="4. Funds are Released"
                     description="The buyer confirms they're happy, and we release the money instantly to the seller's account. Simple, safe, done."
                      image={
-                        <Card className="shadow-md text-center p-8">
-                             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-600 mx-auto mb-4">
-                                <CheckCircle className="h-8 w-8" />
-                            </div>
-                            <h3 className="text-xl font-bold">Deal Completed!</h3>
-                            <p className="text-muted-foreground">Funds have been released to the seller. Thank you for using Betweena!</p>
-                        </Card>
+                        <Image 
+                            src="/deal_completed.png" 
+                            width={1200}
+                            height={1200}
+                            alt="A UI element from the Betweena app showing a 'Deal Completed' confirmation message."
+                            className="rounded-lg shadow-md border"
+                        />
                     }
                     imageSide='left'
                 />
