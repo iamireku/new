@@ -3,7 +3,7 @@
 
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound, Mail, Menu, ChevronDown, CheckCircle, Landmark } from 'lucide-react';
+import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound, Mail, Menu, ChevronDown, CheckCircle, Landmark, Send, Package } from 'lucide-react';
 import Link from 'next/link';
 import { AppLogo } from '@/components/AppLogo';
 import Image from 'next/image';
@@ -248,100 +248,120 @@ export default function LandingPage() {
                     >
                         FAQ
                     </Link>
-                    <Link 
-                        href="#waitlist"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className={cn(buttonVariants({ variant: 'default', size: 'lg' }), "w-full mt-4")}
-                    >
-                        Join the Waitlist
-                    </Link>
+                    <Button asChild size="lg" className="w-full mt-4">
+                        <a href="#waitlist" onClick={() => setIsMobileMenuOpen(false)}>Join Waitlist</a>
+                    </Button>
                 </nav>
             </SheetContent>
         </Sheet>
     </header>
         <main className="flex-1">
-            <section id="waitlist" className="bg-background py-20 md:py-32">
-                <div className="container mx-auto px-4 md:px-6">
-                <div className="grid gap-12 md:grid-cols-2 md:items-center">
-                    <div className="text-center md:text-left animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                    <h1 className="text-4xl font-bold tracking-tight sm:text-5xl font-headline">
-                        Secure Your Sale. Guarantee Your Payment.
-                    </h1>
-                    <p className="mt-4 max-w-2xl text-lg text-muted-foreground md:text-xl">
-                        Betweena protects buyers and sellers — so freelancers, small
-                        businesses, and online traders in Ghana and across Africa can trust
-                        every deal.
-                    </p>
-                    <div className="mt-6">
-                        <WaitlistForm />
-                        <p className="mt-2 text-sm text-muted-foreground">
-                        🚀 Join now to be first when we launch.
-                        </p>
-                    </div>
+  <section id="waitlist" className="bg-background py-20 md:py-32">
+    <div className="container mx-auto px-4 md:px-6">
+      <div className="grid gap-12 md:grid-cols-2 md:items-center">
+        <div className="text-center md:text-left animate-in fade-in slide-in-from-bottom-4 duration-1000">
+          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl font-headline">
+            Get Paid. Get Peace of Mind.
+          </h1>
+          <p className="mt-4 max-w-2xl text-lg text-muted-foreground md:text-xl">
+            Tired of being scammed online? Maybe you’ve delivered a product and
+            never got paid. Or sent money and never got what you bought.
+            <br />
+            <br />
+            <strong>Betweena</strong> protects both sides: Buyer deposits via
+            Mobile Money → We hold the funds → Seller delivers → We release the
+            payment.
+          </p>
 
-                    <div className="mt-8 text-center md:text-left">
-                        <p className="text-sm font-medium text-muted-foreground">
-                        WORKS WITH YOUR FAVOURITE NETWORK
-                        </p>
-                        <div className="mt-2 flex items-center justify-center md:justify-start gap-4">
-                        <Image
-                            src="/mtn.png"
-                            alt="MTN Mobile Money"
-                            width={48}
-                            height={32}
-                            className="h-8 w-auto object-contain"
-                        />
-                        <Image
-                            src="/telecel.png"
-                            alt="Telecel Cash"
-                            width={48}
-                            height={32}
-                            className="h-8 w-auto object-contain"
-                        />
-                        <Image
-                            src="/airteltigo.png"
-                            alt="AirtelTigo Money"
-                            width={48}
-                            height={32}
-                            className="h-8 w-auto object-contain"
-                        />
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                            <Landmark className="h-5 w-5" />
-                            <span className="text-sm font-semibold">Bank</span>
-                        </div>
-                        </div>
+          {/* How It Works Icons */}
+          <div className="mt-6 grid grid-cols-3 gap-4 max-w-md mx-auto md:mx-0">
+            <div className="flex flex-col items-center text-center">
+              <Send className="h-8 w-8 text-primary mb-2" />
+              <p className="text-sm font-medium">Deposit</p>
+              <p className="text-xs text-muted-foreground">Buyer sends payment</p>
+            </div>
+            <div className="flex flex-col items-center text-center">
+              <Package className="h-8 w-8 text-primary mb-2" />
+              <p className="text-sm font-medium">Delivery</p>
+              <p className="text-xs text-muted-foreground">Seller delivers product</p>
+            </div>
+            <div className="flex flex-col items-center text-center">
+              <CheckCircle className="h-8 w-8 text-primary mb-2" />
+              <p className="text-sm font-medium">Release</p>
+              <p className="text-xs text-muted-foreground">Funds go to seller</p>
+            </div>
+          </div>
 
-                        <p className="text-sm font-medium text-muted-foreground mt-4">
-                        COMING SOON ON
-                        </p>
-                        <div className="mt-2 flex items-center justify-center md:justify-start gap-4">
-                        <Image
-                            src="/ios.png"
-                            alt="iOS App coming soon"
-                            width={120}
-                            height={40}
-                            className="h-10 w-auto object-contain"
-                        />
-                        <Image
-                            src="/android.png"
-                            alt="Android App coming soon"
-                            width={120}
-                            height={40}
-                            className="h-10 w-auto object-contain"
-                        />
-                        </div>
-                    </div>
-                    </div>
+          <div className="mt-6">
+            <WaitlistForm />
+            <p className="mt-2 text-sm text-muted-foreground">
+              🚀 Join now to be first when we launch.
+            </p>
+          </div>
 
-                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
-                    <Carousel
-                        className="w-full max-w-xl mx-auto"
-                        opts={{ loop: true }}
-                        plugins={[plugin.current]}
-                        onMouseEnter={plugin.current.stop}
-                        onMouseLeave={plugin.current.reset}
-                        setApi={setApi}
-                    >
+          <div className="mt-8 text-center md:text-left">
+            <p className="text-sm font-medium text-muted-foreground">
+              WORKS WITH YOUR FAVOURITE NETWORK
+            </p>
+            <div className="mt-2 flex items-center justify-center md:justify-start gap-4">
+              <Image
+                src="/mtn.png"
+                alt="MTN Mobile Money"
+                width={48}
+                height={32}
+                className="h-8 w-auto object-contain"
+              />
+              <Image
+                src="/telecel.png"
+                alt="Telecel Cash"
+                width={48}
+                height={32}
+                className="h-8 w-auto object-contain"
+              />
+              <Image
+                src="/airteltigo.png"
+                alt="AirtelTigo Money"
+                width={48}
+                height={32}
+                className="h-8 w-auto object-contain"
+              />
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Landmark className="h-5 w-5" />
+                <span className="text-sm font-semibold">Bank</span>
+              </div>
+            </div>
+
+            <p className="text-sm font-medium text-muted-foreground mt-4">
+              COMING SOON ON
+            </p>
+            <div className="mt-2 flex items-center justify-center md:justify-start gap-4">
+              <Image
+                src="/ios.png"
+                alt="iOS App coming soon"
+                width={120}
+                height={40}
+                className="h-10 w-auto object-contain"
+              />
+              <Image
+                src="/android.png"
+                alt="Android App coming soon"
+                width={120}
+                height={40}
+                className="h-10 w-auto object-contain"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
+          <Carousel
+            className="w-full max-w-xl mx-auto"
+            opts={{ loop: true }}
+            plugins={[plugin.current]}
+            onMouseEnter={plugin.current.stop}
+            onMouseLeave={plugin.current.reset}
+            setApi={setApi}
+          >
                             <CarouselContent>
                                 {heroImages.map((image, index) => (
                                     <CarouselItem key={index}>
@@ -650,5 +670,4 @@ export default function LandingPage() {
   );
 }
 
-    
     
