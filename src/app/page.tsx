@@ -270,10 +270,9 @@ export default function LandingPage() {
             Tired of being scammed online? Maybe you’ve delivered a product and
             never got paid. Or sent money and never got what you bought.
             <br />
+            <strong>Betweena</strong> protects both sides!
             <br />
-            <strong>Betweena</strong> protects both sides: Buyer deposits via
-            Mobile Money → We hold the funds → Seller delivers → We release the
-            payment.
+            
           </p>
 
           <div className="mt-8">
@@ -393,7 +392,7 @@ export default function LandingPage() {
                         description="You negotiate the deal as usual in your favorite chat app. Once you agree, just move the details to Betweena."
                         image={
                             <Image 
-                                src="/whatsapp_chat.png" 
+                                src="/whatsapp_chat.png"
                                 width={1200}
                                 height={1200}
                                 alt="A screenshot of a WhatsApp chat where a buyer and seller agree on terms."
@@ -470,7 +469,7 @@ export default function LandingPage() {
                     <CardContent className="p-8 grid md:grid-cols-3 gap-8 items-center">
                         <div className="flex justify-center">
                             <Avatar className="h-24 w-24 border-4 border-background shadow-lg">
-                                <AvatarImage src="https://placehold.co/100x100.png" data-ai-hint="woman smiling portrait" />
+                                <AvatarImage src="/jd.png" data-ai-hint="woman smiling portrait" />
                                 <AvatarFallback>JD</AvatarFallback>
                             </Avatar>
                         </div>
