@@ -3,7 +3,7 @@
 
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound, Mail, Menu, ChevronDown, CheckCircle } from 'lucide-react';
+import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound, Mail, Menu, ChevronDown, CheckCircle, Landmark } from 'lucide-react';
 import Link from 'next/link';
 import { AppLogo } from '@/components/AppLogo';
 import Image from 'next/image';
@@ -22,39 +22,41 @@ const WaitlistForm = () => {
   const FORMSPREE_FORM_ID = "manbjyja";
 
   return (
-    <form action={`https://formspree.io/f/${FORMSPREE_FORM_ID}`} method="POST" className="mt-8 flex flex-col w-full max-w-2xl mx-auto md:mx-0 gap-4">
-      <Input
-        type="email"
-        name="email"
-        placeholder="Enter your email address"
-        className="flex-1 text-base"
-        required
-      />
-      <div className="flex flex-col sm:flex-row gap-2">
-         <Select name="role" required>
-            <SelectTrigger className="w-full text-base">
-              <SelectValue placeholder="I am a..." />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Buyer">Buyer</SelectItem>
-              <SelectItem value="Seller">Seller</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select name="platform" required>
-            <SelectTrigger className="w-full text-base">
-                <SelectValue placeholder="Preferred Platform..." />
-            </SelectTrigger>
-            <SelectContent>
-                <SelectItem value="Web">Web</SelectItem>
-                <SelectItem value="Android">Android</SelectItem>
-                <SelectItem value="iOS">iOS</SelectItem>
-            </SelectContent>
-          </Select>
-      </div>
-      <Button type="submit" size="lg">
-        Join the Waitlist
-      </Button>
-    </form>
+    <>
+      <form action={`https://formspree.io/f/${FORMSPREE_FORM_ID}`} method="POST" className="mt-8 flex flex-col w-full max-w-2xl mx-auto md:mx-0 gap-4">
+        <Input
+          type="email"
+          name="email"
+          placeholder="Enter your email address"
+          className="flex-1 text-base"
+          required
+        />
+        <div className="flex flex-col sm:flex-row gap-2">
+           <Select name="role" required>
+              <SelectTrigger className="w-full text-base">
+                <SelectValue placeholder="I am a..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Buyer">Buyer</SelectItem>
+                <SelectItem value="Seller">Seller</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select name="platform" required>
+              <SelectTrigger className="w-full text-base">
+                  <SelectValue placeholder="Preferred Platform..." />
+              </SelectTrigger>
+              <SelectContent>
+                  <SelectItem value="Web">Web</SelectItem>
+                  <SelectItem value="Android">Android</SelectItem>
+                  <SelectItem value="iOS">iOS</SelectItem>
+              </SelectContent>
+            </Select>
+        </div>
+        <Button type="submit" size="lg">
+          Join the Waitlist
+        </Button>
+      </form>
+    </>
   );
 };
 
@@ -212,7 +214,7 @@ export default function LandingPage() {
            <a href="#testimonials" className={cn(buttonVariants({ variant: "ghost" }))}>Testimonials</a>
            <a href="#faq" className={cn(buttonVariants({ variant: "ghost" }))}>FAQ</a>
           <Button asChild>
-            <Link href="#waitlist">Join Waitlist</Link>
+            <Link href="/login">Login</Link>
           </Button>
         </nav>
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
@@ -247,11 +249,11 @@ export default function LandingPage() {
                         FAQ
                     </Link>
                     <Link 
-                        href="#waitlist"
+                        href="/login"
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="text-muted-foreground hover:text-foreground"
+                        className={cn(buttonVariants({ variant: 'default', size: 'lg' }), "w-full mt-4")}
                     >
-                        Join Waitlist
+                        Login
                     </Link>
                 </nav>
             </SheetContent>
@@ -270,6 +272,18 @@ export default function LandingPage() {
                            Betweena is building the safest way for freelancers and online sellers and buyers in Ghana and across Africa to do business. Join our waitlist to get early access and be the first to know when we launch.
                         </p>
                         <WaitlistForm />
+                         <div className="mt-8 text-center md:text-left">
+                            <p className="text-sm font-medium text-muted-foreground">PAY WITH</p>
+                            <div className="mt-2 flex items-center justify-center md:justify-start gap-4">
+                                <div className="h-8 w-12 rounded-md bg-yellow-400 flex items-center justify-center text-white font-bold text-xs">MTN</div>
+                                <div className="h-8 w-12 rounded-md bg-red-600 flex items-center justify-center text-white font-bold text-xs">Telecel</div>
+                                <div className="h-8 w-12 rounded-md bg-blue-800 flex items-center justify-center text-white font-bold text-xs">AirtelTigo</div>
+                                <div className="flex items-center gap-2 text-muted-foreground">
+                                    <Landmark className="h-5 w-5" />
+                                    <span className="text-sm font-semibold">Bank</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
                         <Carousel
@@ -483,7 +497,7 @@ export default function LandingPage() {
                 >
                   <CarouselContent className="-ml-4">
                     {testimonials.map((testimonial, index) => (
-                      <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                      <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3 pl-4">
                         <div className="p-1 h-full">
                            <Card className="flex flex-col h-full">
                             <CardContent className="pt-6 flex-grow">
@@ -587,5 +601,3 @@ export default function LandingPage() {
     </div>
   );
 }
-
-    
