@@ -258,47 +258,90 @@ export default function LandingPage() {
                 </nav>
             </SheetContent>
         </Sheet>
-      </header>
-
-      <main className="flex-1">
-        <section id="waitlist" className="bg-background py-20 md:py-32">
-            <div className="container mx-auto px-4 md:px-6">
+    </header>
+        <main className="flex-1">
+            <section id="waitlist" className="bg-background py-20 md:py-32">
+                <div className="container mx-auto px-4 md:px-6">
                 <div className="grid gap-12 md:grid-cols-2 md:items-center">
                     <div className="text-center md:text-left animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl font-headline">
-                           Secure Your Sale. Guarantee Your Payment.
-                        </h1>
-                        <p className="mt-4 max-w-2xl text-lg text-muted-foreground md:text-xl">
-                           Betweena is building the safest way for freelancers and online sellers and buyers in Ghana and across Africa to do business. Join our waitlist to get early access and be the first to know when we launch.
-                        </p>
+                    <h1 className="text-4xl font-bold tracking-tight sm:text-5xl font-headline">
+                        Secure Your Sale. Guarantee Your Payment.
+                    </h1>
+                    <p className="mt-4 max-w-2xl text-lg text-muted-foreground md:text-xl">
+                        Betweena protects buyers and sellers — so freelancers, small
+                        businesses, and online traders in Ghana and across Africa can trust
+                        every deal.
+                    </p>
+                    <div className="mt-6">
                         <WaitlistForm />
-                         <div className="mt-8 text-center md:text-left">
-                            <p className="text-sm font-medium text-muted-foreground">PAY WITH</p>
-                            <div className="mt-2 flex items-center justify-center md:justify-start gap-4">
-                               <Image src="/mtn.png" alt="MTN Mobile Money" width={48} height={32} className="h-8 w-auto object-contain" />
-                                <Image src="/telecel.png" alt="Telecel Cash" width={48} height={32} className="h-8 w-auto object-contain" />
-                                <Image src="/airteltigo.png" alt="AirtelTigo Money" width={48} height={32} className="h-8 w-auto object-contain" />
-                                <div className="flex items-center gap-2 text-muted-foreground">
-                                    <Landmark className="h-5 w-5" />
-                                    <span className="text-sm font-semibold">Bank</span>
-                                </div>
-                            </div>
-                            <p className="text-sm font-medium text-muted-foreground mt-4">COMING SOON ON</p>
-                            <div className="mt-2 flex items-center justify-center md:justify-start gap-4">
-                                <Image src="/ios.png" alt="iOS App coming soon" width={120} height={40} className="h-10 w-auto object-contain" />
-                                <Image src="/android.png" alt="Android App coming soon" width={120} height={40} className="h-10 w-auto object-contain" />
-                            </div>
+                        <p className="mt-2 text-sm text-muted-foreground">
+                        🚀 Join now to be first when we launch.
+                        </p>
+                    </div>
+
+                    <div className="mt-8 text-center md:text-left">
+                        <p className="text-sm font-medium text-muted-foreground">
+                        WORKS WITH YOUR FAVOURITE NETWORK
+                        </p>
+                        <div className="mt-2 flex items-center justify-center md:justify-start gap-4">
+                        <Image
+                            src="/mtn.png"
+                            alt="MTN Mobile Money"
+                            width={48}
+                            height={32}
+                            className="h-8 w-auto object-contain"
+                        />
+                        <Image
+                            src="/telecel.png"
+                            alt="Telecel Cash"
+                            width={48}
+                            height={32}
+                            className="h-8 w-auto object-contain"
+                        />
+                        <Image
+                            src="/airteltigo.png"
+                            alt="AirtelTigo Money"
+                            width={48}
+                            height={32}
+                            className="h-8 w-auto object-contain"
+                        />
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                            <Landmark className="h-5 w-5" />
+                            <span className="text-sm font-semibold">Bank</span>
+                        </div>
+                        </div>
+
+                        <p className="text-sm font-medium text-muted-foreground mt-4">
+                        COMING SOON ON
+                        </p>
+                        <div className="mt-2 flex items-center justify-center md:justify-start gap-4">
+                        <Image
+                            src="/ios.png"
+                            alt="iOS App coming soon"
+                            width={120}
+                            height={40}
+                            className="h-10 w-auto object-contain"
+                        />
+                        <Image
+                            src="/android.png"
+                            alt="Android App coming soon"
+                            width={120}
+                            height={40}
+                            className="h-10 w-auto object-contain"
+                        />
                         </div>
                     </div>
+                    </div>
+
                     <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
-                        <Carousel
-                            className="w-full max-w-xl mx-auto"
-                            opts={{ loop: true }}
-                            plugins={[plugin.current]}
-                            onMouseEnter={plugin.current.stop}
-                            onMouseLeave={plugin.current.reset}
-                            setApi={setApi}
-                        >
+                    <Carousel
+                        className="w-full max-w-xl mx-auto"
+                        opts={{ loop: true }}
+                        plugins={[plugin.current]}
+                        onMouseEnter={plugin.current.stop}
+                        onMouseLeave={plugin.current.reset}
+                        setApi={setApi}
+                    >
                             <CarouselContent>
                                 {heroImages.map((image, index) => (
                                     <CarouselItem key={index}>
