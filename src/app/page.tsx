@@ -275,13 +275,18 @@ export default function LandingPage() {
                          <div className="mt-8 text-center md:text-left">
                             <p className="text-sm font-medium text-muted-foreground">PAY WITH</p>
                             <div className="mt-2 flex items-center justify-center md:justify-start gap-4">
-                                <div className="h-8 w-12 rounded-md bg-yellow-400 flex items-center justify-center text-white font-bold text-xs">MTN</div>
-                                <div className="h-8 w-12 rounded-md bg-red-600 flex items-center justify-center text-white font-bold text-xs">Telecel</div>
-                                <div className="h-8 w-12 rounded-md bg-blue-800 flex items-center justify-center text-white font-bold text-xs">AirtelTigo</div>
+                               <Image src="/mtn.png" alt="MTN Mobile Money" width={48} height={32} className="h-8 w-auto object-contain" />
+                                <Image src="/telecel.png" alt="Telecel Cash" width={48} height={32} className="h-8 w-auto object-contain" />
+                                <Image src="/airteltigo.png" alt="AirtelTigo Money" width={48} height={32} className="h-8 w-auto object-contain" />
                                 <div className="flex items-center gap-2 text-muted-foreground">
                                     <Landmark className="h-5 w-5" />
                                     <span className="text-sm font-semibold">Bank</span>
                                 </div>
+                            </div>
+                            <p className="text-sm font-medium text-muted-foreground mt-4">COMING SOON ON</p>
+                            <div className="mt-2 flex items-center justify-center md:justify-start gap-4">
+                                <Image src="/ios.png" alt="iOS App coming soon" width={120} height={40} className="h-10 w-auto object-contain" />
+                                <Image src="/android.png" alt="Android App coming soon" width={120} height={40} className="h-10 w-auto object-contain" />
                             </div>
                         </div>
                     </div>
@@ -601,3 +606,5 @@ export default function LandingPage() {
     </div>
   );
 }
+
+    
