@@ -214,7 +214,7 @@ export default function LandingPage() {
            <a href="#testimonials" className={cn(buttonVariants({ variant: "ghost" }))}>Testimonials</a>
            <a href="#faq" className={cn(buttonVariants({ variant: "ghost" }))}>FAQ</a>
           <Button asChild>
-            <Link href="/login">Login</Link>
+            <a href="#waitlist">Join Waitlist</a>
           </Button>
         </nav>
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
@@ -249,11 +249,11 @@ export default function LandingPage() {
                         FAQ
                     </Link>
                     <Link 
-                        href="/login"
+                        href="#waitlist"
                         onClick={() => setIsMobileMenuOpen(false)}
                         className={cn(buttonVariants({ variant: 'default', size: 'lg' }), "w-full mt-4")}
                     >
-                        Login
+                        Join the Waitlist
                     </Link>
                 </nav>
             </SheetContent>
@@ -607,4 +607,5 @@ export default function LandingPage() {
   );
 }
 
+    
     
