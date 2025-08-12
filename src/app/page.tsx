@@ -3,7 +3,7 @@
 
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound, Mail, Menu, ChevronDown, Star, Twitter, Facebook, Instagram, MessagesSquare, CheckCircle, Package } from 'lucide-react';
+import { ShieldCheck, Users, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound, Mail, Menu, ChevronDown, Star, Twitter, Facebook, Instagram, MessagesSquare, Package, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { AppLogo } from '@/components/AppLogo';
 import Image from 'next/image';
@@ -177,6 +177,9 @@ const heroImages = [
 export default function LandingPage() {
     const plugin = React.useRef(
         Autoplay({ delay: 3000, stopOnInteraction: true })
+    )
+    const testimonialsPlugin = React.useRef(
+        Autoplay({ delay: 5000, stopOnInteraction: true })
     )
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [api, setApi] = useState<CarouselApi>()
@@ -577,6 +580,9 @@ export default function LandingPage() {
                     loop: true,
                     slidesToScroll: 1,
                   }}
+                  plugins={[testimonialsPlugin.current]}
+                  onMouseEnter={testimonialsPlugin.current.stop}
+                  onMouseLeave={testimonialsPlugin.current.reset}
                   className="w-full"
                   setApi={setTestimonialsApi}
                 >
@@ -671,13 +677,13 @@ export default function LandingPage() {
             <span className="text-muted-foreground">Betweena &copy; {new Date().getFullYear()}</span>
           </div>
           <div className="flex gap-4">
-            <a href="https://twitter.com/betweena" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+            <a href="" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
               <Twitter className="h-5 w-5" />
             </a>
-            <a href="https://facebook.com/betweena" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+            <a href="" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
               <Facebook className="h-5 w-5" />
             </a>
-            <a href="https://instagram.com/betweena" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+            <a href="" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
               <Instagram className="h-5 w-5" />
             </a>
              <a href="mailto:asante.isaac@gmail.com" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
@@ -697,5 +703,7 @@ export default function LandingPage() {
     </div>
   );
 }
+
+    
 
     
