@@ -301,7 +301,7 @@ export default function LandingPage() {
                 className="h-8 w-auto object-contain"
               />
               <Image
-                src="/airteltigo.png"
+                src="/airteltigo copy.png"
                 alt="AirtelTigo Money"
                 width={48}
                 height={32}
@@ -318,14 +318,14 @@ export default function LandingPage() {
             </p>
             <div className="mt-2 flex items-center justify-center md:justify-start gap-4">
               <Image
-                src="/ios.png"
+                src="/ios copy.png"
                 alt="iOS App coming soon"
                 width={240}
                 height={80}
                 className="h-10 w-auto object-contain"
               />
               <Image
-                src="/android.png"
+                src="/android copy.png"
                 alt="Android App coming soon"
                 width={240}
                 height={80}
