@@ -3,7 +3,7 @@
 
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound, Mail, Menu, ChevronDown, Landmark, Send, Package, Star } from 'lucide-react';
+import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound, Mail, Menu, ChevronDown, CheckCircle, Star } from 'lucide-react';
 import Link from 'next/link';
 import { AppLogo } from '@/components/AppLogo';
 import Image from 'next/image';
@@ -16,7 +16,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { CheckCircle } from "lucide-react";
+import { Landmark } from "lucide-react";
 
 const WaitlistForm = () => {
   // Formspree form ID
@@ -229,7 +229,7 @@ export default function LandingPage() {
            <a href="#testimonials" onClick={handleSmoothScroll} className={cn(buttonVariants({ variant: "ghost" }))}>Testimonials</a>
            <a href="#faq" onClick={handleSmoothScroll} className={cn(buttonVariants({ variant: "ghost" }))}>FAQ</a>
           <Button asChild>
-            <a href="#waitlist" onClick={handleSmoothScroll}>Join Waitlist</a>
+            <a href="#waitlist-form">Join Waitlist</a>
           </Button>
         </nav>
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
@@ -252,14 +252,14 @@ export default function LandingPage() {
                         FAQ
                     </a>
                     <Button asChild size="lg" className="w-full mt-4">
-                        <a href="#waitlist" onClick={handleSmoothScroll}>Join Waitlist</a>
+                        <a href="#waitlist-form" onClick={handleSmoothScroll}>Join Waitlist</a>
                     </Button>
                 </nav>
             </SheetContent>
         </Sheet>
     </header>
         <main className="flex-1">
-  <section id="waitlist" className="bg-background py-20 md:py-32">
+  <section id="hero" className="bg-background py-20 md:py-32">
     <div className="container mx-auto px-4 md:px-6">
       <div className="grid gap-12 md:grid-cols-2 md:items-center">
         <div className="text-center md:text-left animate-in fade-in slide-in-from-bottom-4 duration-1000">
@@ -320,15 +320,15 @@ export default function LandingPage() {
               <Image
                 src="/ios.png"
                 alt="iOS App coming soon"
-                width={120}
-                height={40}
+                width={240}
+                height={80}
                 className="h-10 w-auto object-contain"
               />
               <Image
                 src="/android.png"
                 alt="Android App coming soon"
-                width={120}
-                height={40}
+                width={240}
+                height={80}
                 className="h-10 w-auto object-contain"
               />
             </div>
@@ -673,3 +673,5 @@ export default function LandingPage() {
     </div>
   );
 }
+
+    
