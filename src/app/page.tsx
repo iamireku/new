@@ -40,6 +40,7 @@ const WaitlistForm = () => {
               <SelectContent>
                 <SelectItem value="Buyer">Buyer</SelectItem>
                 <SelectItem value="Seller">Seller</SelectItem>
+                <SelectItem value="Both">Both</SelectItem>
               </SelectContent>
             </Select>
             <Select name="platform" required>
