@@ -3,7 +3,7 @@
 
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound, Mail, Menu, ChevronDown, CheckCircle, Star } from 'lucide-react';
+import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound, Mail, Menu, ChevronDown, Star, Twitter, Facebook, Instagram } from 'lucide-react';
 import Link from 'next/link';
 import { AppLogo } from '@/components/AppLogo';
 import Image from 'next/image';
@@ -332,14 +332,14 @@ export default function LandingPage() {
             </p>
             <div className="mt-2 flex items-center justify-center md:justify-start gap-4">
               <Image
-                src="/ios copy.png"
+                src="/ios.png"
                 alt="iOS App coming soon"
                 width={240}
                 height={80}
                 className="h-10 w-auto object-contain"
               />
               <Image
-                src="/android copy.png"
+                src="/android.png"
                 alt="Android App coming soon"
                 width={240}
                 height={80}
@@ -665,16 +665,26 @@ export default function LandingPage() {
       </main>
 
       <footer className="bg-background py-8">
-        <div className="container mx-auto flex flex-col items-center justify-between px-4 md:flex-row md:px-6">
+        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between px-4 md:px-6 gap-6">
           <div className="flex items-center gap-2">
             <Handshake className="h-5 w-5 text-muted-foreground" />
             <span className="text-muted-foreground">Betweena &copy; {new Date().getFullYear()}</span>
           </div>
-          <div className="mt-4 flex gap-4 md:mt-0">
+          <div className="flex gap-4">
+            <a href="https://twitter.com/betweena" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+              <Twitter className="h-5 w-5" />
+            </a>
+            <a href="https://facebook.com/betweena" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+              <Facebook className="h-5 w-5" />
+            </a>
+            <a href="https://instagram.com/betweena" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+              <Instagram className="h-5 w-5" />
+            </a>
              <a href="mailto:asante.isaac@gmail.com" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
                 <Mail className="h-4 w-4"/>
-                Partnerships
              </a>
+          </div>
+          <div className="flex gap-4">
             <Link href="/terms-of-service" className="text-sm text-muted-foreground hover:text-foreground">
               Terms of Service
             </Link>
