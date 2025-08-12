@@ -130,23 +130,23 @@ const testimonials = [
     {
       quote: "I was scammed once buying a phone on Instagram. Never again. Using Betweena for my online purchases is the only way I shop on social media now.",
       name: "Chidinma Okafor",
-      role: "Social Media Shopper, Lagos",
+      role: "Social Media Shopper, Tema",
       avatar: "user3.png",
       hint: "woman shopping"
     },
     {
-      quote: "Importing electronics from abroad was always risky. With Betweena, I can pay my suppliers with confidence, knowing the funds are only released after I've inspected the goods.",
+      quote: "I simply love Betweena! That's all ",
       name: "Kofi Mensah",
-      role: "Electronics Retailer, Accra",
+      role: "Frequent online buyer, Accra",
       avatar: "user4.png",
       hint: "man electronics store"
     },
     {
-      quote: "Managing rental deposits used to be a mess of bank transfers and disputes. Now, I use Betweena to hold security deposits. It's transparent for both me and my tenants.",
-      name: "Fatima Isah",
-      role: "Property Manager, Abuja",
+      quote: "Now, I can be sure that my customers will not stop the deal along the way after they have funded it through Betweena",
+      name: "Angela B",
+      role: "Baker, Nsawam",
       avatar: "user5.png",
-      hint: "woman property manager"
+      hint: "baker"
     }
 ];
 
@@ -332,14 +332,14 @@ export default function LandingPage() {
             </p>
             <div className="mt-2 flex items-center justify-center md:justify-start gap-4">
               <Image
-                src="/ios.png"
+                src="/ios copy.png"
                 alt="iOS App coming soon"
                 width={240}
                 height={80}
                 className="h-10 w-auto object-contain"
               />
               <Image
-                src="/android.png"
+                src="/android copy.png"
                 alt="Android App coming soon"
                 width={240}
                 height={80}
@@ -425,7 +425,7 @@ export default function LandingPage() {
                         description="The buyer receives the deal and pays. We hold the money safely, so the seller can start work without worry."
                         image={
                             <Image 
-                                src="/accept_and_fund.png" 
+                                src="/accept_and_fund copy.png" 
                                 width={1200}
                                 height={675}
                                 alt="A screenshot of the Betweena app showing the 'Accept & Fund' screen for a deal."
@@ -464,7 +464,7 @@ export default function LandingPage() {
                         description="The buyer confirms they're happy, and we release the money instantly to the seller's account. Simple, safe, done."
                         image={
                             <Image 
-                                src="/deal_completed.png" 
+                                src="/deal_completed copy.png" 
                                 width={1200}
                                 height={675}
                                 alt="A UI element from the Betweena app showing a 'Deal Completed' confirmation message."
