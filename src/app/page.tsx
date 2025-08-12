@@ -117,22 +117,36 @@ const testimonials = [
       quote: "Betweena has been a game-changer for my business. I no longer worry about getting paid for my designs. It's simple, secure, and gives my clients confidence.",
       name: "Amina Yusuf",
       role: "Fashion Designer, Accra",
-      avatar: "https://placehold.co/100x100.png",
+      avatar: "user1.png",
       hint: "woman fashion designer"
     },
     {
       quote: "As a freelancer, chasing payments was my biggest headache. With Betweena, I secure the project funds upfront. I can now focus completely on coding.",
       name: "Kwame Addo",
       role: "Web Developer, Kumasi",
-      avatar: "https://placehold.co/100x100.png",
+      avatar: "user2.png",
       hint: "man developer"
     },
     {
       quote: "I was scammed once buying a phone on Instagram. Never again. Using Betweena for my online purchases is the only way I shop on social media now.",
       name: "Chidinma Okafor",
       role: "Social Media Shopper, Lagos",
-      avatar: "https://placehold.co/100x100.png",
+      avatar: "user3.png",
       hint: "woman shopping"
+    },
+    {
+      quote: "Importing electronics from abroad was always risky. With Betweena, I can pay my suppliers with confidence, knowing the funds are only released after I've inspected the goods.",
+      name: "Kofi Mensah",
+      role: "Electronics Retailer, Accra",
+      avatar: "user4.png",
+      hint: "man electronics store"
+    },
+    {
+      quote: "Managing rental deposits used to be a mess of bank transfers and disputes. Now, I use Betweena to hold security deposits. It's transparent for both me and my tenants.",
+      name: "Fatima Isah",
+      role: "Property Manager, Abuja",
+      avatar: "user5.png",
+      hint: "woman property manager"
     }
 ];
 
@@ -411,7 +425,7 @@ export default function LandingPage() {
                         description="The buyer receives the deal and pays. We hold the money safely, so the seller can start work without worry."
                         image={
                             <Image 
-                                src="/accept_and_fund copy.png" 
+                                src="/accept_and_fund.png" 
                                 width={1200}
                                 height={675}
                                 alt="A screenshot of the Betweena app showing the 'Accept & Fund' screen for a deal."
@@ -450,7 +464,7 @@ export default function LandingPage() {
                         description="The buyer confirms they're happy, and we release the money instantly to the seller's account. Simple, safe, done."
                         image={
                             <Image 
-                                src="/deal_completed copy.png" 
+                                src="/deal_completed.png" 
                                 width={1200}
                                 height={675}
                                 alt="A UI element from the Betweena app showing a 'Deal Completed' confirmation message."
@@ -579,7 +593,7 @@ export default function LandingPage() {
                             </CardContent>
                             <CardHeader className="flex flex-row items-center gap-4">
                                 <Avatar className="h-12 w-12">
-                                    <AvatarImage src={testimonial.avatar} alt={testimonial.name} data-ai-hint={testimonial.hint} />
+                                    <AvatarImage src={`/${testimonial.avatar}`} alt={testimonial.name} data-ai-hint={testimonial.hint} />
                                     <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
                                 </Avatar>
                                 <div>
@@ -673,5 +687,3 @@ export default function LandingPage() {
     </div>
   );
 }
-
-    
