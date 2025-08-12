@@ -3,7 +3,7 @@
 
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound, Mail, Menu, ChevronDown, CheckCircle } from 'lucide-react';
+import { ShieldCheck, Users, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound, Mail, Menu, ChevronDown, Star, Twitter, Facebook, Instagram, MessagesSquare, Package, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { AppLogo } from '@/components/AppLogo';
 import Image from 'next/image';
@@ -16,45 +16,49 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Landmark } from "lucide-react";
 
 const WaitlistForm = () => {
   // Formspree form ID
   const FORMSPREE_FORM_ID = "manbjyja";
 
   return (
-    <form action={`https://formspree.io/f/${FORMSPREE_FORM_ID}`} method="POST" className="mt-8 flex flex-col w-full max-w-2xl mx-auto md:mx-0 gap-4">
-      <Input
-        type="email"
-        name="email"
-        placeholder="Enter your email address"
-        className="flex-1 text-base"
-        required
-      />
-      <div className="flex flex-col sm:flex-row gap-2">
-         <Select name="role" required>
-            <SelectTrigger className="w-full text-base">
-              <SelectValue placeholder="I am a..." />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Buyer">Buyer</SelectItem>
-              <SelectItem value="Seller">Seller</SelectItem>
-            </SelectContent>
-          </Select>
-          <Select name="platform" required>
-            <SelectTrigger className="w-full text-base">
-                <SelectValue placeholder="Preferred Platform..." />
-            </SelectTrigger>
-            <SelectContent>
-                <SelectItem value="Web">Web</SelectItem>
-                <SelectItem value="Android">Android</SelectItem>
-                <SelectItem value="iOS">iOS</SelectItem>
-            </SelectContent>
-          </Select>
-      </div>
-      <Button type="submit" size="lg">
-        Join the Waitlist
-      </Button>
-    </form>
+    <>
+      <form action={`https://formspree.io/f/${FORMSPREE_FORM_ID}`} method="POST" className="mt-8 flex flex-col w-full max-w-2xl mx-auto md:mx-0 gap-4">
+        <Input
+          type="email"
+          name="email"
+          placeholder="Enter your email address"
+          className="flex-1 text-base"
+          required
+        />
+        <div className="flex flex-col sm:flex-row gap-2">
+           <Select name="role" required>
+              <SelectTrigger className="w-full text-base">
+                <SelectValue placeholder="I am a..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Buyer">Buyer</SelectItem>
+                <SelectItem value="Seller">Seller</SelectItem>
+                <SelectItem value="Both">Both</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select name="platform" required>
+              <SelectTrigger className="w-full text-base">
+                  <SelectValue placeholder="Preferred Platform..." />
+              </SelectTrigger>
+              <SelectContent>
+                  <SelectItem value="Web">Web</SelectItem>
+                  <SelectItem value="Android">Android</SelectItem>
+                  <SelectItem value="iOS">iOS</SelectItem>
+              </SelectContent>
+            </Select>
+        </div>
+        <Button type="submit" size="lg">
+          Join the Waitlist
+        </Button>
+      </form>
+    </>
   );
 };
 
@@ -114,22 +118,36 @@ const testimonials = [
       quote: "Betweena has been a game-changer for my business. I no longer worry about getting paid for my designs. It's simple, secure, and gives my clients confidence.",
       name: "Amina Yusuf",
       role: "Fashion Designer, Accra",
-      avatar: "https://placehold.co/100x100.png",
+      avatar: "user1.png",
       hint: "woman fashion designer"
     },
     {
       quote: "As a freelancer, chasing payments was my biggest headache. With Betweena, I secure the project funds upfront. I can now focus completely on coding.",
       name: "Kwame Addo",
       role: "Web Developer, Kumasi",
-      avatar: "https://placehold.co/100x100.png",
+      avatar: "user2.png",
       hint: "man developer"
     },
     {
       quote: "I was scammed once buying a phone on Instagram. Never again. Using Betweena for my online purchases is the only way I shop on social media now.",
       name: "Chidinma Okafor",
-      role: "Social Media Shopper, Lagos",
-      avatar: "https://placehold.co/100x100.png",
+      role: "Social Media Shopper, Tema",
+      avatar: "user3.png",
       hint: "woman shopping"
+    },
+    {
+      quote: "I simply love Betweena! That's all ",
+      name: "Kofi Mensah",
+      role: "Frequent online buyer, Accra",
+      avatar: "user4.png",
+      hint: "man electronics store"
+    },
+    {
+      quote: "Now, I can be sure that my customers will not stop the deal along the way after they have funded it through Betweena",
+      name: "Angela B",
+      role: "Baker, Nsawam",
+      avatar: "user5.png",
+      hint: "baker"
     }
 ];
 
@@ -161,6 +179,9 @@ export default function LandingPage() {
     const plugin = React.useRef(
         Autoplay({ delay: 3000, stopOnInteraction: true })
     )
+    const testimonialsPlugin = React.useRef(
+        Autoplay({ delay: 5000, stopOnInteraction: true })
+    )
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [api, setApi] = useState<CarouselApi>()
     const [current, setCurrent] = useState(0)
@@ -184,7 +205,7 @@ export default function LandingPage() {
         const maxScrolls = Math.ceil(scrollSnaps / slidesToScroll);
 
         const handleSelect = (api: CarouselApi) => {
-            const selected = api.selectedScrollSnap();
+            const selected = testimonialsApi.selectedScrollSnap();
             const currentScroll = Math.floor(selected / slidesToScroll);
             setTestimonialsCurrent(currentScroll);
         };
@@ -202,17 +223,31 @@ export default function LandingPage() {
         return () => { benefitsApi.off("select", handleSelect) }
     }, [benefitsApi])
 
+    const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        e.preventDefault();
+        const href = e.currentTarget.getAttribute('href');
+        if (href) {
+            const targetElement = document.querySelector(href);
+            if (targetElement) {
+                targetElement.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        if (isMobileMenuOpen) {
+            setIsMobileMenuOpen(false);
+        }
+    };
+
 
   return (
     <div className="flex min-h-screen flex-col bg-secondary">
       <header className="sticky top-0 z-50 container mx-auto flex h-20 items-center justify-between px-4 md:px-6 bg-secondary">
         <AppLogo />
         <nav className="hidden md:flex items-center gap-4">
-           <a href="#features" className={cn(buttonVariants({ variant: "ghost" }))}>How it Works</a>
-           <a href="#testimonials" className={cn(buttonVariants({ variant: "ghost" }))}>Testimonials</a>
-           <a href="#faq" className={cn(buttonVariants({ variant: "ghost" }))}>FAQ</a>
+           <a href="#features" onClick={handleSmoothScroll} className={cn(buttonVariants({ variant: "ghost" }))}>How it Works</a>
+           <a href="#testimonials" onClick={handleSmoothScroll} className={cn(buttonVariants({ variant: "ghost" }))}>Testimonials</a>
+           <a href="#faq" onClick={handleSmoothScroll} className={cn(buttonVariants({ variant: "ghost" }))}>FAQ</a>
           <Button asChild>
-            <Link href="#waitlist">Join Waitlist</Link>
+            <a href="#waitlist-form">Join Waitlist</a>
           </Button>
         </nav>
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
@@ -225,61 +260,108 @@ export default function LandingPage() {
             <SheetContent side="left">
                 <nav className="grid gap-6 text-lg font-medium mt-8">
                     <AppLogo />
-                    <Link 
-                        href="#features" 
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="text-muted-foreground hover:text-foreground"
-                    >
+                    <a href="#features" onClick={handleSmoothScroll} className="text-muted-foreground hover:text-foreground">
                         How it Works
-                    </Link>
-                    <Link 
-                        href="#testimonials" 
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="text-muted-foreground hover:text-foreground"
-                    >
+                    </a>
+                    <a href="#testimonials" onClick={handleSmoothScroll} className="text-muted-foreground hover:text-foreground">
                         Testimonials
-                    </Link>
-                    <Link 
-                        href="#faq"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="text-muted-foreground hover:text-foreground"
-                    >
+                    </a>
+                    <a href="#faq" onClick={handleSmoothScroll} className="text-muted-foreground hover:text-foreground">
                         FAQ
-                    </Link>
-                    <Link 
-                        href="#waitlist"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="text-muted-foreground hover:text-foreground"
-                    >
-                        Join Waitlist
-                    </Link>
+                    </a>
+                    <Button asChild size="lg" className="w-full mt-4">
+                        <a href="#waitlist-form" onClick={handleSmoothScroll}>Join Waitlist</a>
+                    </Button>
                 </nav>
             </SheetContent>
         </Sheet>
-      </header>
+    </header>
+        <main className="flex-1">
+  <section id="hero" className="bg-background py-20 md:py-32">
+    <div className="container mx-auto px-4 md:px-6">
+      <div className="grid gap-12 md:grid-cols-2 md:items-center">
+        <div className="text-center md:text-left animate-in fade-in slide-in-from-bottom-4 duration-1000">
+          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl font-headline">
+             Secure Your Sale. Guarantee Your Payment.
+          </h1>
+          <p className="mt-4 max-w-2xl text-lg text-muted-foreground md:text-xl">
+            Tired of being scammed online? Maybe you’ve delivered a product and
+            never got paid. Or sent money and never got what you bought.
+            <br />
+            <strong>Betweena</strong> protects both sides!
+            <br />
+            
+          </p>
 
-      <main className="flex-1">
-        <section id="waitlist" className="bg-background py-20 md:py-32">
-            <div className="container mx-auto px-4 md:px-6">
-                <div className="grid gap-12 md:grid-cols-2 md:items-center">
-                    <div className="text-center md:text-left animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                        <h1 className="text-4xl font-bold tracking-tight sm:text-5xl font-headline">
-                           Secure Your Sale. Guarantee Your Payment.
-                        </h1>
-                        <p className="mt-4 max-w-2xl text-lg text-muted-foreground md:text-xl">
-                           Betweena is building the safest way for freelancers and online sellers and buyers in Ghana and across Africa to do business. Join our waitlist to get early access and be the first to know when we launch.
-                        </p>
-                        <WaitlistForm />
-                    </div>
-                    <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
-                        <Carousel
-                            className="w-full max-w-xl mx-auto"
-                            opts={{ loop: true }}
-                            plugins={[plugin.current]}
-                            onMouseEnter={plugin.current.stop}
-                            onMouseLeave={plugin.current.reset}
-                            setApi={setApi}
-                        >
+          <div className="mt-8">
+            <Button size="lg" asChild>
+                <a href="#waitlist-form" onClick={handleSmoothScroll}>Join the Waitlist Now</a>
+            </Button>
+          </div>
+
+          <div className="mt-8 text-center md:text-left">
+            <p className="text-sm font-medium text-muted-foreground">
+              WORKS WITH YOUR FAVOURITE NETWORK
+            </p>
+            <div className="mt-2 flex items-center justify-center md:justify-start gap-4">
+              <Image
+                src="/mtn.png"
+                alt="MTN Mobile Money"
+                width={48}
+                height={32}
+                className="h-8 w-auto object-contain"
+              />
+              <Image
+                src="/telecel.png"
+                alt="Telecel Cash"
+                width={48}
+                height={32}
+                className="h-8 w-auto object-contain"
+              />
+              <Image
+                src="/airteltigo copy.png"
+                alt="AirtelTigo Money"
+                width={48}
+                height={32}
+                className="h-8 w-auto object-contain"
+              />
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Landmark className="h-5 w-5" />
+                <span className="text-sm font-semibold">Bank</span>
+              </div>
+            </div>
+
+            <p className="text-sm font-medium text-muted-foreground mt-4">
+              COMING SOON ON
+            </p>
+            <div className="mt-2 flex items-center justify-center md:justify-start gap-4">
+              <Image
+                src="/ios copy.png"
+                alt="iOS App coming soon"
+                width={240}
+                height={80}
+                className="h-10 w-auto object-contain"
+              />
+              <Image
+                src="/android copy.png"
+                alt="Android App coming soon"
+                width={240}
+                height={80}
+                className="h-10 w-auto object-contain"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-200">
+          <Carousel
+            className="w-full max-w-xl mx-auto"
+            opts={{ loop: true }}
+            plugins={[plugin.current]}
+            onMouseEnter={plugin.current.stop}
+            onMouseLeave={plugin.current.reset}
+            setApi={setApi}
+          >
                             <CarouselContent>
                                 {heroImages.map((image, index) => (
                                     <CarouselItem key={index}>
@@ -323,14 +405,14 @@ export default function LandingPage() {
             <div className="py-10 md:py-16">
                  <div className="container mx-auto px-4 md:px-6">
                     <ProcessStep
-                        icon={<Handshake className="h-6 w-6" />}
+                        icon={<MessagesSquare className="h-6 w-6" />}
                         title="1. Agree on Terms"
                         description="You negotiate the deal as usual in your favorite chat app. Once you agree, just move the details to Betweena."
                         image={
                             <Image 
-                                src="/whatsapp_chat.png" 
+                                src="/whatsapp_chat.png"
                                 width={1200}
-                                height={1200}
+                                height={675}
                                 alt="A screenshot of a WhatsApp chat where a buyer and seller agree on terms."
                                 className="rounded-lg shadow-md border"
                             />
@@ -342,14 +424,14 @@ export default function LandingPage() {
             <div className="py-10 md:py-16 bg-background">
                 <div className="container mx-auto px-4 md:px-6">
                     <ProcessStep
-                        icon={<DollarSign className="h-6 w-6" />}
+                        icon={<ShieldCheck className="h-6 w-6" />}
                         title="2. Buyer Pays Securely"
                         description="The buyer receives the deal and pays. We hold the money safely, so the seller can start work without worry."
                         image={
                             <Image 
-                                src="/accept_and_fund.png" 
+                                src="/accept_and_fund copy.png" 
                                 width={1200}
-                                height={1200}
+                                height={675}
                                 alt="A screenshot of the Betweena app showing the 'Accept & Fund' screen for a deal."
                                 className="rounded-lg shadow-md border"
                             />
@@ -362,14 +444,14 @@ export default function LandingPage() {
             <div className="py-10 md:py-16">
                 <div className="container mx-auto px-4 md:px-6">
                     <ProcessStep
-                        icon={<Briefcase className="h-6 w-6" />}
+                        icon={<Package className="h-6 w-6" />}
                         title="3. Seller Delivers"
                         description="Once the money is secured, the seller delivers the goods or services as agreed upon in the deal."
                         image={
                             <Image 
                                 src="/funds_secured.png" 
                                 width={1200}
-                                height={1200}
+                                height={675}
                                 alt="A UI element from the Betweena app indicating that funds are secured and it's safe to deliver."
                                 className="rounded-lg shadow-md border"
                             />
@@ -381,14 +463,14 @@ export default function LandingPage() {
             <div className="py-10 md:py-16 bg-background">
                 <div className="container mx-auto px-4 md:px-6">
                     <ProcessStep
-                        icon={<Users className="h-6 w-6" />}
+                        icon={<CheckCircle className="h-6 w-6" />}
                         title="4. Funds are Released"
                         description="The buyer confirms they're happy, and we release the money instantly to the seller's account. Simple, safe, done."
                         image={
                             <Image 
-                                src="/deal_completed.png" 
+                                src="/deal_completed copy.png" 
                                 width={1200}
-                                height={1200}
+                                height={675}
                                 alt="A UI element from the Betweena app showing a 'Deal Completed' confirmation message."
                                 className="rounded-lg shadow-md border"
                             />
@@ -396,6 +478,27 @@ export default function LandingPage() {
                         imageSide='left'
                     />
                 </div>
+            </div>
+        </section>
+
+        <section className="py-10 md:py-16">
+            <div className="container mx-auto px-4 md:px-6">
+                <Card className="bg-primary/5 border-primary/20">
+                    <CardContent className="p-8 grid md:grid-cols-3 gap-8 items-center">
+                        <div className="flex justify-center">
+                            <Avatar className="h-24 w-24 border-4 border-background shadow-lg">
+                                <AvatarImage src="/jd.png" data-ai-hint="woman smiling portrait" />
+                                <AvatarFallback>JD</AvatarFallback>
+                            </Avatar>
+                        </div>
+                        <div className="md:col-span-2 text-center md:text-left">
+                            <h3 className="text-xl font-headline font-bold">Your Personal Deal Manager</h3>
+                            <p className="text-muted-foreground mt-2">
+                                "Hi, I'm Jane, your dedicated resolution officer. While 99% of deals go smoothly, I'm here to ensure fairness and provide support if a disagreement ever arises. At Betweena, you're never alone."
+                            </p>
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
         </section>
 
@@ -478,20 +581,26 @@ export default function LandingPage() {
                     loop: true,
                     slidesToScroll: 1,
                   }}
+                  plugins={[testimonialsPlugin.current]}
+                  onMouseEnter={testimonialsPlugin.current.stop}
+                  onMouseLeave={testimonialsPlugin.current.reset}
                   className="w-full"
                   setApi={setTestimonialsApi}
                 >
                   <CarouselContent className="-ml-4">
                     {testimonials.map((testimonial, index) => (
-                      <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                      <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3 pl-4">
                         <div className="p-1 h-full">
                            <Card className="flex flex-col h-full">
-                            <CardContent className="pt-6 flex-grow">
+                             <CardContent className="pt-6 flex-grow space-y-4">
+                                <div className="flex items-center gap-0.5">
+                                    {[...Array(5)].map((_, i) => <Star key={i} className="h-5 w-5 fill-yellow-400 text-yellow-400"/>)}
+                                </div>
                                 <p className="text-muted-foreground">"{testimonial.quote}"</p>
                             </CardContent>
                             <CardHeader className="flex flex-row items-center gap-4">
                                 <Avatar className="h-12 w-12">
-                                    <AvatarImage src={testimonial.avatar} alt={testimonial.name} data-ai-hint={testimonial.hint} />
+                                    <AvatarImage src={`/${testimonial.avatar}`} alt={testimonial.name} data-ai-hint={testimonial.hint} />
                                     <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
                                 </Avatar>
                                 <div>
@@ -550,14 +659,12 @@ export default function LandingPage() {
             </div>
         </section>
 
-         <section className="py-20 md:py-32">
+         <section id="waitlist-form" className="py-20 md:py-32 bg-background">
             <div className="container mx-auto text-center">
                 <h2 className="text-3xl font-bold font-headline">Ready to Transact with Confidence?</h2>
                 <p className="mt-4 text-lg text-muted-foreground">Join thousands of savvy individuals and businesses In Ghana and across Africa securing their payments.</p>
-                <div className="mt-8">
-                    <Button size="lg" asChild>
-                        <Link href="#waitlist">Join the Waitlist</Link>
-                    </Button>
+                <div className="mt-8 max-w-2xl mx-auto">
+                    <WaitlistForm />
                 </div>
             </div>
         </section>
@@ -565,16 +672,26 @@ export default function LandingPage() {
       </main>
 
       <footer className="bg-background py-8">
-        <div className="container mx-auto flex flex-col items-center justify-between px-4 md:flex-row md:px-6">
+        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between px-4 md:px-6 gap-6">
           <div className="flex items-center gap-2">
             <Handshake className="h-5 w-5 text-muted-foreground" />
             <span className="text-muted-foreground">Betweena &copy; {new Date().getFullYear()}</span>
           </div>
-          <div className="mt-4 flex gap-4 md:mt-0">
+          <div className="flex gap-4">
+            <a href="" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+              <Twitter className="h-5 w-5" />
+            </a>
+            <a href="" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+              <Facebook className="h-5 w-5" />
+            </a>
+            <a href="" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+              <Instagram className="h-5 w-5" />
+            </a>
              <a href="mailto:asante.isaac@gmail.com" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
                 <Mail className="h-4 w-4"/>
-                Partnerships
              </a>
+          </div>
+          <div className="flex gap-4">
             <Link href="/terms-of-service" className="text-sm text-muted-foreground hover:text-foreground">
               Terms of Service
             </Link>
@@ -587,5 +704,7 @@ export default function LandingPage() {
     </div>
   );
 }
+
+    
 
     
