@@ -3,7 +3,7 @@
 
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound, Mail, Menu, ChevronDown, Star, Twitter, Facebook, Instagram } from 'lucide-react';
+import { ShieldCheck, Users, DollarSign, Handshake, Briefcase, ShoppingCart, Paintbrush, Lock, KeyRound, Mail, Menu, ChevronDown, Star, Twitter, Facebook, Instagram, MessagesSquare, CheckCircle, Package } from 'lucide-react';
 import Link from 'next/link';
 import { AppLogo } from '@/components/AppLogo';
 import Image from 'next/image';
@@ -401,7 +401,7 @@ export default function LandingPage() {
             <div className="py-10 md:py-16">
                  <div className="container mx-auto px-4 md:px-6">
                     <ProcessStep
-                        icon={<Handshake className="h-6 w-6" />}
+                        icon={<MessagesSquare className="h-6 w-6" />}
                         title="1. Agree on Terms"
                         description="You negotiate the deal as usual in your favorite chat app. Once you agree, just move the details to Betweena."
                         image={
@@ -420,7 +420,7 @@ export default function LandingPage() {
             <div className="py-10 md:py-16 bg-background">
                 <div className="container mx-auto px-4 md:px-6">
                     <ProcessStep
-                        icon={<DollarSign className="h-6 w-6" />}
+                        icon={<ShieldCheck className="h-6 w-6" />}
                         title="2. Buyer Pays Securely"
                         description="The buyer receives the deal and pays. We hold the money safely, so the seller can start work without worry."
                         image={
@@ -440,7 +440,7 @@ export default function LandingPage() {
             <div className="py-10 md:py-16">
                 <div className="container mx-auto px-4 md:px-6">
                     <ProcessStep
-                        icon={<Briefcase className="h-6 w-6" />}
+                        icon={<Package className="h-6 w-6" />}
                         title="3. Seller Delivers"
                         description="Once the money is secured, the seller delivers the goods or services as agreed upon in the deal."
                         image={
@@ -459,7 +459,7 @@ export default function LandingPage() {
             <div className="py-10 md:py-16 bg-background">
                 <div className="container mx-auto px-4 md:px-6">
                     <ProcessStep
-                        icon={<Users className="h-6 w-6" />}
+                        icon={<CheckCircle className="h-6 w-6" />}
                         title="4. Funds are Released"
                         description="The buyer confirms they're happy, and we release the money instantly to the seller's account. Simple, safe, done."
                         image={
@@ -697,3 +697,5 @@ export default function LandingPage() {
     </div>
   );
 }
+
+    
