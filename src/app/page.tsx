@@ -394,7 +394,7 @@ export default function LandingPage() {
                             <Image 
                                 src="/whatsapp_chat.png"
                                 width={1200}
-                                height={1200}
+                                height={675}
                                 alt="A screenshot of a WhatsApp chat where a buyer and seller agree on terms."
                                 className="rounded-lg shadow-md border"
                             />
@@ -413,7 +413,7 @@ export default function LandingPage() {
                             <Image 
                                 src="/accept_and_fund.png" 
                                 width={1200}
-                                height={1200}
+                                height={675}
                                 alt="A screenshot of the Betweena app showing the 'Accept & Fund' screen for a deal."
                                 className="rounded-lg shadow-md border"
                             />
@@ -433,7 +433,7 @@ export default function LandingPage() {
                             <Image 
                                 src="/funds_secured.png" 
                                 width={1200}
-                                height={1200}
+                                height={675}
                                 alt="A UI element from the Betweena app indicating that funds are secured and it's safe to deliver."
                                 className="rounded-lg shadow-md border"
                             />
@@ -452,7 +452,7 @@ export default function LandingPage() {
                             <Image 
                                 src="/deal_completed.png" 
                                 width={1200}
-                                height={1200}
+                                height={675}
                                 alt="A UI element from the Betweena app showing a 'Deal Completed' confirmation message."
                                 className="rounded-lg shadow-md border"
                             />
