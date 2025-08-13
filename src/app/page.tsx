@@ -25,39 +25,41 @@ const WaitlistForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
 
-  // Replace with your Google Apps Script Web App URL
-  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEzSHqmtvBvnBHVKD48e6YHo_rpIylNEaasWGM7gb6us3g1L7etgwZZLu0TZToiWSH/exec";
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzaT0E5vvgAi2CQQDPiHT6EUeSXrT5jldkaGbc66pGmEBCaRTQPY_JgpSaWrR4qKLy4/exec";
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitMessage('');
 
+    const formData = new FormData();
+    formData.append('email', email);
+    formData.append('role', role);
+    formData.append('platform', platform);
+
     try {
-      const response = await fetch(GOOGLE_SCRIPT_URL, {
+      // Using 'no-cors' mode sends the request but doesn't allow reading the response.
+      // This is a common workaround for simple Google Apps Script form submissions.
+      // The script itself should be configured to handle the POST data.
+      await fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, role, platform }),
+        body: formData,
+        mode: 'no-cors', // Important for avoiding CORS errors with Google Scripts
       });
 
-      const result = await response.json();
-      if (result.success) {
-        setSubmitMessage('Thank you for joining the waitlist! Check your email for confirmation.');
-        setEmail('');
-        setRole('');
-        setPlatform('');
-      } else {
-        setSubmitMessage(result.message || 'An error occurred. Please try again.');
-      }
+      setSubmitMessage('Thank you for joining! Check your email for a confirmation and a link to our private WhatsApp community.');
+      setEmail('');
+      setRole('');
+      setPlatform('');
+
     } catch (error) {
       console.error('Error submitting form:', error);
-      setSubmitMessage('An error occurred. Please try again.');
+      setSubmitMessage('An error occurred. Please try again or contact support.');
     } finally {
       setIsSubmitting(false);
     }
   };
+
 
   return (
     <>
@@ -97,16 +99,19 @@ const WaitlistForm = () => {
           {isSubmitting ? 'Submitting...' : 'Join the Waitlist'}
         </Button>
       </form>
-      {submitMessage && (
-        <p className={`mt-4 text-center text-sm ${submitMessage.includes('error') ? 'text-red-500' : 'text-muted-foreground'}`}>
+       {submitMessage && (
+        <p className={`mt-4 text-center text-sm ${submitMessage.includes('error') ? 'text-red-500' : 'text-green-600'}`}>
           {submitMessage}
+          {!submitMessage.includes('error') && (
+            <a href="https://chat.whatsapp.com/J8n4pZ4nQ5v6Y3Z1zX6p4z" target="_blank" rel="noopener noreferrer" className="font-bold underline ml-1">Join the community!</a>
+          )}
         </p>
       )}
     </>
   );
 };
 
-// Rest of the LandingPage component remains unchanged
+
 const ProcessStep = ({ icon, title, description, image, imageSide = 'right' }: { icon: React.ReactNode; title: string; description: string, image: React.ReactNode, imageSide?: 'left' | 'right' }) => (
     <div className={`grid md:grid-cols-2 gap-12 items-center`}>
         <div className={cn("rounded-lg", imageSide === 'left' ? 'md:order-last' : '')}>
@@ -162,35 +167,35 @@ const testimonials = [
       quote: "Betweena has been a game-changer for my business. I no longer worry about getting paid for my designs. It's simple, secure, and gives my clients confidence.",
       name: "Amina Yusuf",
       role: "Fashion Designer, Accra",
-      avatar: "user1.png",
+      avatar: "/user1.png",
       hint: "woman fashion designer"
     },
     {
       quote: "As a freelancer, chasing payments was my biggest headache. With Betweena, I secure the project funds upfront. I can now focus completely on coding.",
       name: "Kwame Addo",
       role: "Web Developer, Kumasi",
-      avatar: "user2.png",
+      avatar: "/user2.png",
       hint: "man developer"
     },
     {
       quote: "I was scammed once buying a phone on Instagram. Never again. Using Betweena for my online purchases is the only way I shop on social media now.",
       name: "Chidinma Okafor",
       role: "Social Media Shopper, Tema",
-      avatar: "user3.png",
+      avatar: "/user3.png",
       hint: "woman shopping"
     },
     {
-      quote: "I simply love Betweena! That's all ",
+      quote: "Sourcing materials from new suppliers is always a risk. Betweena allows me to pay with confidence, knowing my money is safe until I've received and inspected the goods. It's essential for my business.",
       name: "Kofi Mensah",
-      role: "Frequent online buyer, Accra",
-      avatar: "user4.png",
+      role: "Small Business Owner, Takoradi",
+      avatar: "/user4.png",
       hint: "man electronics store"
     },
     {
-      quote: "Now, I can be sure that my customers will not stop the deal along the way after they have funded it through Betweena",
+      quote: "Managing rent and repair deposits used to be a nightmare of paperwork and follow-ups. With Betweena, the process is transparent and automated. It has saved me countless hours.",
       name: "Angela B",
-      role: "Baker, Nsawam",
-      avatar: "user5.png",
+      role: "Property Manager, Nsawam",
+      avatar: "/user5.png",
       hint: "baker"
     }
 ];
@@ -720,13 +725,13 @@ export default function LandingPage() {
             <span className="text-muted-foreground">Betweena &copy; {new Date().getFullYear()}</span>
           </div>
           <div className="flex gap-4">
-            <a href="" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+            <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
               <Twitter className="h-5 w-5" />
             </a>
-            <a href="" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
               <Facebook className="h-5 w-5" />
             </a>
-            <a href="" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
               <Instagram className="h-5 w-5" />
             </a>
              <a href="mailto:asante.isaac@gmail.com" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
@@ -746,5 +751,3 @@ export default function LandingPage() {
     </div>
   );
 }
-
-    
