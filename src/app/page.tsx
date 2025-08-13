@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -16,27 +17,19 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Landmark } from "lucide-react";
-import ReCAPTCHA from "react-google-recaptcha";
 
 const WaitlistForm = () => {
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('');
   const [platform, setPlatform] = useState('');
-  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
 
   // Replace with your Google Apps Script Web App URL
   const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEzSHqmtvBvnBHVKD48e6YHo_rpIylNEaasWGM7gb6us3g1L7etgwZZLu0TZToiWSH/exec";
-  // Replace with your reCAPTCHA site key
-  const RECAPTCHA_SITE_KEY = "6LdfZaUrAAAAAB1sB6lmqw_b63z0mkjhwhECTl68";
-
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!recaptchaToken) {
-      setSubmitMessage('Please complete the reCAPTCHA.');
-      return;
-    }
     setIsSubmitting(true);
     setSubmitMessage('');
 
@@ -46,7 +39,7 @@ const WaitlistForm = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, role, platform, token: recaptchaToken }),
+        body: JSON.stringify({ email, role, platform }),
       });
 
       const result = await response.json();
@@ -55,7 +48,6 @@ const WaitlistForm = () => {
         setEmail('');
         setRole('');
         setPlatform('');
-        setRecaptchaToken(null);
       } else {
         setSubmitMessage(result.message || 'An error occurred. Please try again.');
       }
@@ -101,13 +93,7 @@ const WaitlistForm = () => {
             </SelectContent>
           </Select>
         </div>
-        <div className="my-4">
-          <ReCAPTCHA
-            sitekey={RECAPTCHA_SITE_KEY}
-            onChange={(token) => setRecaptchaToken(token)}
-          />
-        </div>
-        <Button type="submit" size="lg" disabled={isSubmitting || !recaptchaToken}>
+        <Button type="submit" size="lg" disabled={isSubmitting}>
           {isSubmitting ? 'Submitting...' : 'Join the Waitlist'}
         </Button>
       </form>
@@ -760,3 +746,5 @@ export default function LandingPage() {
     </div>
   );
 }
+
+    
