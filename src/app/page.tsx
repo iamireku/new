@@ -29,7 +29,7 @@ const WaitlistForm = () => {
   // Replace with your Google Apps Script Web App URL
   const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzEzSHqmtvBvnBHVKD48e6YHo_rpIylNEaasWGM7gb6us3g1L7etgwZZLu0TZToiWSH/exec";
   // Replace with your reCAPTCHA site key
-  const RECAPTCHA_SITE_KEY = "6Lc9YaUrAAAAAOYGm6cfHrKjO1scPbFjpfOKj5zM";
+  const RECAPTCHA_SITE_KEY = "6LdfZaUrAAAAAB1sB6lmqw_b63z0mkjhwhECTl68";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
