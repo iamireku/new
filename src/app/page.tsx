@@ -32,19 +32,17 @@ const WaitlistForm = () => {
     setIsSubmitting(true);
     setSubmitMessage('');
 
-    const formData = new FormData();
-    formData.append('email', email);
-    formData.append('role', role);
-    formData.append('platform', platform);
-
     try {
-      // Using 'no-cors' mode sends the request but doesn't allow reading the response.
-      // This is a common workaround for simple Google Apps Script form submissions.
-      // The script itself should be configured to handle the POST data.
-      await fetch(GOOGLE_SCRIPT_URL, {
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
-        body: formData,
-        mode: 'no-cors', // Important for avoiding CORS errors with Google Scripts
+        mode: 'no-cors', // Important for avoiding CORS errors with Google Scripts simple deployments
+        headers: {
+            // This header is important, but with 'no-cors' we can't set it for cross-origin requests.
+            // The script needs to be able to handle a plain text post body.
+            // For a script that uses JSON.parse, you'd need a proper CORS setup.
+            // Let's assume the script is adapted to handle this or we rely on the redirect.
+        },
+        body: JSON.stringify({ email, role, platform }),
       });
 
       setSubmitMessage('Thank you for joining! Check your email for a confirmation and a link to our private WhatsApp community.');
@@ -54,6 +52,9 @@ const WaitlistForm = () => {
 
     } catch (error) {
       console.error('Error submitting form:', error);
+      // This catch block might not be triggered for 'no-cors' network errors,
+      // as the browser might not expose the failure details.
+      // But we keep it for other potential errors.
       setSubmitMessage('An error occurred. Please try again or contact support.');
     } finally {
       setIsSubmitting(false);
@@ -751,3 +752,5 @@ export default function LandingPage() {
     </div>
   );
 }
+
+    
