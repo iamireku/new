@@ -35,7 +35,6 @@ const WaitlistForm = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate email
     if (!validateEmail(email)) {
       setEmailError('Please enter a valid email address');
       return;
@@ -46,10 +45,11 @@ const WaitlistForm = () => {
     setSubmitMessage('');
 
     try {
-      const response = await fetch(GOOGLE_SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, role, platform }),
+      const url = `${GOOGLE_SCRIPT_URL}?email=${encodeURIComponent(email)}&role=${encodeURIComponent(role)}&platform=${encodeURIComponent(platform)}`;
+      
+      await fetch(url, {
+        method: 'GET',
+        mode: 'no-cors', // Important to prevent CORS errors, though we won't get a response back
       });
 
       setSubmitMessage('Thank you for joining! Check your email for a confirmation and a link to our private WhatsApp community.');
@@ -59,7 +59,10 @@ const WaitlistForm = () => {
 
     } catch (error) {
       console.error('Error submitting form:', error);
-      setSubmitMessage('An error occurred. Please try again or contact support.');
+      // Since 'no-cors' mode prevents reading the response, we optimistically assume success.
+      // A true failure here is likely a network issue, which is less common.
+      // For a more robust solution, the Apps Script would need to be configured for proper CORS.
+       setSubmitMessage('An error occurred. Please try again or contact support.');
     } finally {
       setIsSubmitting(false);
     }
