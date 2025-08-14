@@ -24,7 +24,6 @@ const WaitlistForm = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
   const [emailError, setEmailError] = useState('');
-
   const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzaT0E5vvgAi2CQQDPiHT6EUeSXrT5jldkaGbc66pGmEBCaRTQPY_JgpSaWrR4qKLy4/exec";
   
   const validateEmail = (email: string) => {
