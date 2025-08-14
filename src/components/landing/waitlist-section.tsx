@@ -6,12 +6,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 
 // Replace with your deployed Google Apps Script URL
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzaT0E5vvgAi2CQQDPiHT6EUeSXrT5jldkaGbc66pGmEBCaRTQPY_JgpSaWrR4qKLy4/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyRts8Tl0REjSlSSutwQULJB43pXj7AeaFO5sj0Ki9xC_NCv6Ml9SlLGWAaYaUMHc6T/exec";
 
 const WaitlistForm = () => {
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('');
   const [platform, setPlatform] = useState('');
+  const [company, setCompany] = useState(''); // Honeypot state
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -38,41 +39,36 @@ const WaitlistForm = () => {
     setSubmitMessage('');
 
     try {
-      // The Google Apps Script expects a JSON payload, so we construct it.
       const payload = {
         email,
         role,
         platform,
+        company, // Include the honeypot field in the payload
       };
 
-      // We still use fetch, but the key is how the Apps Script is deployed
-      // and how it handles the response. The previous script logic is fine.
-      // The 'Failed to fetch' error is often misleading. It can be a CORS issue
-      // on the server (Google Script) side not returning correct headers,
-      // or a network error.
       const response = await fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
-        // Redirect is important for some script configurations
-        redirect: 'follow', 
         headers: {
-            // Send as text, let the script parse it.
           'Content-Type': 'text/plain;charset=utf-8',
         },
         body: JSON.stringify(payload)
       });
       
-      // Since Google Scripts often don't return perfect CORS headers for a direct
-      // fetch, we can't always read the response body directly. We'll assume success
-      // if no network error was thrown.
-      setSubmitMessage("Success! You're on the list. Check your email for a confirmation and a link to our WhatsApp community.");
-      setEmail('');
-      setRole('');
-      setPlatform('');
+      const result = await response.json();
+
+      if (result.success) {
+        setSubmitMessage("Success! You're on the list. Check your email for a confirmation and a link to our WhatsApp community.");
+        setEmail('');
+        setRole('');
+        setPlatform('');
+        setCompany(''); // Reset honeypot field
+      } else {
+        setSubmitMessage(`Error: ${result.message}`);
+      }
 
     } catch (error) {
       console.error('Error submitting form:', error);
-      // Give a more generic success message as we can't be sure of the failure reason
-      setSubmitMessage("Thank you! We've received your submission. Please check your email for a confirmation.");
+      setSubmitMessage("An unexpected error occurred. Please try again later.");
     } finally {
       setIsSubmitting(false);
     }
@@ -82,7 +78,14 @@ const WaitlistForm = () => {
     <>
       <form onSubmit={handleSubmit} className="mt-8 flex flex-col w-full max-w-2xl mx-auto gap-4">
         {/* Honeypot field (hidden from users) */}
-        <input type="text" name="company" style={{ display: 'none' }} value="" readOnly />
+        <input 
+          type="text" 
+          name="company" 
+          style={{ display: 'none' }} 
+          value={company}
+          onChange={(e) => setCompany(e.target.value)}
+          readOnly={isSubmitting} // Prevent changes during submission
+        />
 
         <div className="relative">
           <Input
@@ -92,6 +95,7 @@ const WaitlistForm = () => {
             className={`flex-1 text-base ${emailError ? 'border-red-500' : ''}`}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            disabled={isSubmitting}
             required
           />
           {emailError && (
@@ -100,7 +104,7 @@ const WaitlistForm = () => {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-2">
-          <Select name="role" value={role} onValueChange={setRole} required>
+          <Select name="role" value={role} onValueChange={setRole} disabled={isSubmitting} required>
             <SelectTrigger className="w-full text-base">
               <SelectValue placeholder="I am a..." />
             </SelectTrigger>
@@ -111,7 +115,7 @@ const WaitlistForm = () => {
             </SelectContent>
           </Select>
 
-          <Select name="platform" value={platform} onValueChange={setPlatform} required>
+          <Select name="platform" value={platform} onValueChange={setPlatform} disabled={isSubmitting} required>
             <SelectTrigger className="w-full text-base">
               <SelectValue placeholder="Preferred Platform..." />
             </SelectTrigger>
@@ -129,9 +133,9 @@ const WaitlistForm = () => {
       </form>
 
       {submitMessage && (
-        <p className={`mt-4 text-center text-sm ${submitMessage.includes('error') ? 'text-red-500' : 'text-green-600'}`}>
+        <p className={`mt-4 text-center text-sm ${submitMessage.includes('Error') ? 'text-red-500' : 'text-green-600'}`}>
           {submitMessage}
-          {submitMessage.toLowerCase().includes('success') && (
+          {submitMessage.includes('Success') && (
             <a
               href="https://chat.whatsapp.com/J8n4pZ4nQ5v6Y3Z1zX6p4z"
               target="_blank"
