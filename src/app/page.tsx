@@ -483,7 +483,7 @@ export default function LandingPage() {
                         description="The buyer receives the deal and pays. We hold the money safely, so the seller can start work without worry."
                         image={
                             <Image 
-                                src="/accept_and_fund.png" 
+                                src="/accept_deal.png" 
                                 width={1200}
                                 height={675}
                                 alt="A screenshot of the Betweena app showing the 'Accept & Fund' screen for a deal."
@@ -522,7 +522,7 @@ export default function LandingPage() {
                         description="The buyer confirms they're happy, and we release the money instantly to the seller's account. Simple, safe, done."
                         image={
                             <Image 
-                                src="/deal_completed.png" 
+                                src="/deal_final.png" 
                                 width={1200}
                                 height={675}
                                 alt="A UI element from the Betweena app showing a 'Deal Completed' confirmation message."
