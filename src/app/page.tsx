@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -24,24 +23,32 @@ const WaitlistForm = () => {
   const [platform, setPlatform] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitMessage, setSubmitMessage] = useState('');
+  const [emailError, setEmailError] = useState('');
 
   const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzaT0E5vvgAi2CQQDPiHT6EUeSXrT5jldkaGbc66pGmEBCaRTQPY_JgpSaWrR4qKLy4/exec";
   
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate email
+    if (!validateEmail(email)) {
+      setEmailError('Please enter a valid email address');
+      return;
+    }
+
+    setEmailError('');
     setIsSubmitting(true);
     setSubmitMessage('');
 
     try {
       const response = await fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
-        mode: 'no-cors', // Important for avoiding CORS errors with Google Scripts simple deployments
-        headers: {
-            // This header is important, but with 'no-cors' we can't set it for cross-origin requests.
-            // The script needs to be able to handle a plain text post body.
-            // For a script that uses JSON.parse, you'd need a proper CORS setup.
-            // Let's assume the script is adapted to handle this or we rely on the redirect.
-        },
+        mode: 'no-cors',
         body: JSON.stringify({ email, role, platform }),
       });
 
@@ -52,28 +59,29 @@ const WaitlistForm = () => {
 
     } catch (error) {
       console.error('Error submitting form:', error);
-      // This catch block might not be triggered for 'no-cors' network errors,
-      // as the browser might not expose the failure details.
-      // But we keep it for other potential errors.
       setSubmitMessage('An error occurred. Please try again or contact support.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-
   return (
     <>
       <form onSubmit={handleSubmit} className="mt-8 flex flex-col w-full max-w-2xl mx-auto md:mx-0 gap-4">
-        <Input
-          type="email"
-          name="email"
-          placeholder="Enter your email address"
-          className="flex-1 text-base"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+        <div className="relative">
+          <Input
+            type="email"
+            name="email"
+            placeholder="Enter your email address"
+            className={`flex-1 text-base ${emailError ? 'border-red-500' : ''}`}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          {emailError && (
+            <p className="mt-1 text-sm text-red-500">{emailError}</p>
+          )}
+        </div>
         <div className="flex flex-col sm:flex-row gap-2">
           <Select name="role" value={role} onValueChange={setRole} required>
             <SelectTrigger className="w-full text-base">
@@ -100,7 +108,7 @@ const WaitlistForm = () => {
           {isSubmitting ? 'Submitting...' : 'Join the Waitlist'}
         </Button>
       </form>
-       {submitMessage && (
+      {submitMessage && (
         <p className={`mt-4 text-center text-sm ${submitMessage.includes('error') ? 'text-red-500' : 'text-green-600'}`}>
           {submitMessage}
           {!submitMessage.includes('error') && (
@@ -111,7 +119,6 @@ const WaitlistForm = () => {
     </>
   );
 };
-
 
 const ProcessStep = ({ icon, title, description, image, imageSide = 'right' }: { icon: React.ReactNode; title: string; description: string, image: React.ReactNode, imageSide?: 'left' | 'right' }) => (
     <div className={`grid md:grid-cols-2 gap-12 items-center`}>
@@ -726,13 +733,13 @@ export default function LandingPage() {
             <span className="text-muted-foreground">Betweena &copy; {new Date().getFullYear()}</span>
           </div>
           <div className="flex gap-4">
-            <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+            <a href="betweena.app" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
               <Twitter className="h-5 w-5" />
             </a>
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+            <a href="hbetweena.app" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
               <Facebook className="h-5 w-5" />
             </a>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+            <a href="betweena.app" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
               <Instagram className="h-5 w-5" />
             </a>
              <a href="mailto:asante.isaac@gmail.com" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
@@ -752,5 +759,3 @@ export default function LandingPage() {
     </div>
   );
 }
-
-    
