@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -47,7 +48,7 @@ const WaitlistForm = () => {
     try {
       const response = await fetch(GOOGLE_SCRIPT_URL, {
         method: 'POST',
-        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, role, platform }),
       });
 
@@ -353,11 +354,11 @@ export default function LandingPage() {
             </Button>
           </div>
 
-          <div className="mt-8 text-center md:text-left">
+          <div className="mt-8 text-center">
             <p className="text-sm font-medium text-muted-foreground">
               WORKS WITH YOUR FAVOURITE NETWORK
             </p>
-            <div className="mt-2 flex items-center justify-center md:justify-start gap-4">
+            <div className="mt-2 flex items-center justify-center gap-4">
               <Image
                 src="/mtn.png"
                 alt="MTN Mobile Money"
@@ -388,7 +389,7 @@ export default function LandingPage() {
             <p className="text-sm font-medium text-muted-foreground mt-4">
               COMING SOON ON
             </p>
-            <div className="mt-2 flex items-center justify-center md:justify-start gap-4">
+            <div className="mt-2 flex items-center justify-center gap-4">
               <Image
                 src="/ios.png"
                 alt="iOS App coming soon"
@@ -732,13 +733,13 @@ export default function LandingPage() {
             <span className="text-muted-foreground">Betweena &copy; {new Date().getFullYear()}</span>
           </div>
           <div className="flex gap-4">
-            <a href="betweena.app" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+            <a href="https://x.com/betweena_app" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
               <Twitter className="h-5 w-5" />
             </a>
-            <a href="hbetweena.app" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+            <a href="https://facebook.com/betweena" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
               <Facebook className="h-5 w-5" />
             </a>
-            <a href="betweena.app" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
+            <a href="https://instagram.com/betweena_app" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground">
               <Instagram className="h-5 w-5" />
             </a>
              <a href="mailto:asante.isaac@gmail.com" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
