@@ -137,7 +137,7 @@ const WaitlistForm = () => {
           {submitMessage}
           {submitMessage.includes('Success') && (
             <a
-              href="https://chat.whatsapp.com/J8n4pZ4nQ5v6Y3Z1zX6p4z"
+              href="https://chat.whatsapp.com/HDtTegpcd5W3lWjkxSJ9jV?mode=ac_t"
               target="_blank"
               rel="noopener noreferrer"
               className="font-bold underline ml-1"
