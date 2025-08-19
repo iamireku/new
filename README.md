@@ -65,7 +65,7 @@ The public-facing marketing page is designed to be engaging and drive waitlist s
     *   Go to your Firebase project settings.
     *   Click on your web app and find the `firebaseConfig` object.
     *   Copy your project's credentials and paste them into the `.env.local` file.
-    *   You will also need to add your Google Apps Script URL to the environment variables for the waitlist form to function.
+    *   You will also need to add your Google Apps Script URL to the environment variables for the waitlist form to function. A key variable is `NEXT_PUBLIC_SITE_URL` which should be set to `https://betweena.app`.
 
 4.  **Run the development server:**
     ```bash
