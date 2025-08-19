@@ -6,8 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 
 // Replace with your deployed Google Apps Script URL
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzHnETUH2a_K5IKgxv1ELw3Pr_Rt-lyinwKYfaOYgEDIGfLXyyFkjGpC-RamimKhsQn/exec";
-
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbym5RDectiCaLbdYHhnYuws_r-Kzpedym-Uz9Imsbt3kXCTjOFj1tMGEKLb1iqqPNYu/exec";
 const WaitlistForm = () => {
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('');
