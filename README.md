@@ -1,7 +1,7 @@
 
 # Betweena: Secure Escrow for Social Commerce & Freelancers
 
-Welcome to the Betweena project repository. This document provides instructions for setting up and running the project locally, as well as deploying it to Firebase.
+Welcome to the Betweena project repository. This document provides instructions for setting up and running the project locally, as well as deploying it to Vercel.
 
 For a comprehensive overview of the project's features, user flows, and technical requirements, please see the **[Project Brief & Requirements](./PROJECT_BRIEF.md)**.
 
@@ -45,7 +45,7 @@ The public-facing marketing page is designed to be engaging and drive waitlist s
 
 *   Node.js (v18 or later)
 *   npm or yarn
-*   A Firebase project
+*   A Firebase project for authentication and backend services.
 
 ### Installation & Setup
 
@@ -76,37 +76,29 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ---
 
-## Deployment to Firebase
+## Deployment to Vercel
 
-This project is configured for one-command deployment to **Firebase App Hosting**. Follow these steps to go live.
+This project is optimized for deployment to **Vercel**, the platform from the creators of Next.js.
 
 ### Prerequisites
 
-1.  **Install Firebase CLI:** If you don't have it, install it globally.
-    ```bash
-    npm install -g firebase-tools
-    ```
-2.  **Firebase Project:** Make sure you have created a Firebase project on the [Firebase Console](https://console.firebase.google.com/).
+1.  **Vercel Account:** Create a free account at [vercel.com](https://vercel.com).
+2.  **Git Repository:** Your project should be in a Git repository (e.g., on GitHub, GitLab, or Bitbucket).
 
 ### Deployment Steps
 
-1.  **Login to Firebase:**
-    ```bash
-    firebase login
-    ```
+1.  **Import Project:**
+    *   Log in to your Vercel dashboard.
+    *   Click "Add New..." and select "Project".
+    *   Connect your Git provider and import the repository for this project.
 
-2.  **Connect to Your Firebase Project:**
-    Run `firebase use --add` and select your project.
+2.  **Configure Environment Variables:**
+    *   During the import process, Vercel will prompt you to configure your project.
+    *   Go to the "Environment Variables" section.
+    *   Add all the variables from your local `.env.local` file (e.g., `NEXT_PUBLIC_FIREBASE_API_KEY`, `NEXT_PUBLIC_SITE_URL`, etc.). Vercel will use these for the production build.
+    *   **This is a critical step.** Your application will not connect to Firebase without these variables.
 
-3.  **Build the Application:**
-    ```bash
-    npm run build
-    ```
+3.  **Deploy:**
+    *   Click the "Deploy" button. Vercel will automatically build and deploy your application.
 
-4.  **Deploy:**
-    This command will upload your build to Firebase App Hosting.
-    ```bash
-    firebase apphosting:backends:deploy --id betweena-backend --region us-central1
-    ```
-
-After the command finishes, it will give you the live URL for your application.
+After the first deployment, Vercel will automatically redeploy your application every time you push a new commit to your main branch. You will get a live URL for your application.
