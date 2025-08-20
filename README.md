@@ -108,4 +108,4 @@ This project is optimized for deployment to **Vercel**, the platform from the cr
         ```
     *   Vercel will automatically detect the push, build your project in the cloud, and deploy it.
 
-**Important:** You do not need to run `vercel deploy` or other CLI commands from your local machine. This can cause build errors like the one you saw. The Git-based workflow is the standard and most reliable method for Vercel.
+**Important:** You do not need to run `vercel deploy` or other CLI commands from your local machine. 
