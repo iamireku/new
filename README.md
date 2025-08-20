@@ -85,7 +85,7 @@ This project is optimized for deployment to **Vercel**, the platform from the cr
 1.  **Vercel Account:** Create a free account at [vercel.com](https://vercel.com).
 2.  **Git Repository:** Your project should be in a Git repository (e.g., on GitHub, GitLab, or Bitbucket).
 
-### Deployment Steps
+### Automated Deployment Steps (Recommended)
 
 1.  **Import Project:**
     *   Log in to your Vercel dashboard.
@@ -98,7 +98,14 @@ This project is optimized for deployment to **Vercel**, the platform from the cr
     *   Add all the variables from your local `.env.local` file (e.g., `NEXT_PUBLIC_FIREBASE_API_KEY`, `NEXT_PUBLIC_SITE_URL`, etc.). Vercel will use these for the production build.
     *   **This is a critical step.** Your application will not connect to Firebase without these variables.
 
-3.  **Deploy:**
-    *   Click the "Deploy" button. Vercel will automatically build and deploy your application.
+3.  **Deploy via Git Push:**
+    *   Once your project is set up, you do not need to run any special commands to deploy.
+    *   Simply commit your changes and push them to your main branch:
+        ```bash
+        git add .
+        git commit -m "My latest changes"
+        git push
+        ```
+    *   Vercel will automatically detect the push, build your project in the cloud, and deploy it.
 
-After the first deployment, Vercel will automatically redeploy your application every time you push a new commit to your main branch. You will get a live URL for your application.
+**Important:** You do not need to run `vercel deploy` or other CLI commands from your local machine. This can cause build errors like the one you saw. The Git-based workflow is the standard and most reliable method for Vercel.
